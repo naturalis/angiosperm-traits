@@ -7,6 +7,7 @@ linear modeling. The general idea is that
 [values](https://raw.githubusercontent.com/rvosa/sdmdl-angiosperm-data/master/data/niche_traits_merged.csv)
 for 
 [GIS data](https://drive.google.com/drive/u/0/folders/1EFPurfyxhClDBsxjEAXf00A3LL2MrkQw) 
-at curated 
+at 
+[curated](https://github.com/rvosa/sdmdl-angiosperm-data/blob/master/script/coordinate_cleaner.R)
 [localities](https://github.com/rvosa/sdmdl-angiosperm-data/tree/master/data/occurrences) 
 are the predictors for three binary traits.
