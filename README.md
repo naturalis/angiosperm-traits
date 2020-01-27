@@ -28,3 +28,12 @@ are the predictors for three traits:
    unchanged (e.g. Dioscorea sp.). We probably keep 1+3 and omit 2 from the data. We then take
    other species from the other two data sets (woody/myco) as the background of undomesticated
    species.
+
+Things to probably do:
+
+1. Recode dependent characters to binary states - mostly just for technical reason, but also to 
+   shape the exact test that we're trying to do
+2. Correct for collinearity in the predictor characters - probably using variable inflation factor
+   or correlation matrix
+3. Model selection, i.e. which predictors go in the formula for the selected dependent - probably
+   using phylostep
