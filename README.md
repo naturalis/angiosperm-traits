@@ -33,7 +33,7 @@ Things to probably do:
 
 1. Recode dependent characters to binary states - mostly just for technical reason, but also to 
    shape the exact test that we're trying to do
-2. Correct for collinearity in the predictor characters - probably using variable inflation factor
+2. Correct for collinearity in the predictor characters - probably using variance inflation factor
    or correlation matrix
-3. Model selection, i.e. which predictors go in the formula for the selected dependent - probably
+3. Model selection, i.e. which predictors go in the formula for the selected dependent variable - probably
    using phylostep
