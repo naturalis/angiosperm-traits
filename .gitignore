@@ -28,5 +28,3 @@ vignettes/*.pdf
 .Renviron
 .Rproj.user
 .Rproj
-# Rmd files
-Pipeline.Rmd
