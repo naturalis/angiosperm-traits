@@ -1,69 +1,96 @@
 ---
 title: "Pipeline"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Pipeline of the necessary R steps
+# Pipeline of the necessary steps in R and outside of R
 
 ## 1 Import data
 
-First the traits table, the original tree, and the GIS data have to be read into R:
+First the traits table and the original tree have to be read into R in the right format. 
 
-###Secondary woodiness
-```{r import secondary woodiness, echo= FALSE}
+### Secondary woodiness
+```{r import secondary woodiness}
+#load required package
 library(ape)
+#define trait table and original tree
 swo <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/woody.nex")
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-GIS_swo
+
   
 ```
 
 ### Mycorrhiza
-```{r import mycorrhiza, echo= FALSE}
+```{r import mycorrhiza}
+#load required package
 library(ape)
+#define trait table and original tree
 myc <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/myco.nex")
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-GIS_myc
+
 
 ```
 
 ### Domestication 
-```{r import domestication, echo= FALSE }
+```{r import domestication}
+#load required package
 library(ape)
+#define trait table and original tree
 dom <- read.table("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/crops.tsv", header = T, sep = "\t")
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-GIS_dom 
+
   
 ```
 
 ## 2 Recode dependent variables to binary
 
-The data of the dependent characters (the plant traits) have to be recoded, as a binary input is prefered for this analysis. 
+The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
+input is prefered for this analysis because of technical reasons, while all the data has 3 or 4 states. 
 
 ### Secondary woodiness
-For secondary woodiness, there are 3 trait-states: derived woody, non-woody, ancestral woody. This will be turned into: --- 
+For secondary woodiness, there are 3 trait-states: derived woody (0), non-woody (1), ancestral woody (2). 
+This will be turned into: derived woody (0) and non-woody (1). As this is the actual shift between 
+non-woody and derived woodiness. So all the plants with ancestral woodiness (3) as trait, have to be 
+eliminated from the analysis. 
 ```{r}
+#cut out the plants that have trait state 2
+
+#define new sub-swo
 
 ```
 
 
 ### Mycorrhiza
-For mycorrhiza, there are 4 trait-states: EM, AM, both, neither. This will be turned into: ---
+For mycorrhiza, there are 4 trait-states: EM, AM, both, neither. This will be turned into: AM (0) and 
+the rest together (1). So in this case nothing will be eliminated from the analysis, just (1)(2)(3) have 
+to be collapsed together. 
 ```{r}
+#combine all the plants that have 1/2/3 as trait states
+
+#define new sub-myc
 
 ```
-
 
 ### Domestication
-For domestication, there are 4 trait-states: domesticated, progenitor of domesticated, semi-domesticated, non-domesticated. This will be turned into: ---
+For domestication, there are 4 trait-states: progenitor of domesticated (1), only domesticated (2)
+semi-domesticated (3), non-domesticated (0). 
+This will be turned into: non-domesticated (0) and progenitor of domesticated and semi-domesticated 
+together (1). This eliminates the species that just exist in their domesticated form, which have 
+already been altered by human selection, so they can't tell us anything about pre-adaptations. 
 ```{r}
+#cut out the plants that have trait state 2
+
+#combine states 1 and 3
+
+#define new sub-dom
 
 ```
-
 
 ## 3 Tidy data
 
@@ -72,31 +99,36 @@ traits table -> cut these out of the tree.
 
 ### Secondary woodiness
 ```{r match tips sec. wood.}
-tips_to_drop_swo <- setdiff(tree$---, row.names(swo))
-subtree_swo <- drop.tip(tree, tip=tips_to_drop_swo)
+#define sub-tree for swo
+
 ```
 
 ### Mycorrhiza 
 ```{r match tips myc.}
-tips_to_drop_myc <- setdiff(tree$---, row.names(myc))
-subtree_myc <- drop.tip(tree, tip=tips_to_drop_myc)
+#define sub-tree for myc
+
 ```
 
 ### Domestication 
 ```{r match tips dom.}
-tips_to_drop_dom <- setdiff(tree$---, row.names(dom))
-subtree_dom <- drop.tip(tree, tip=tips_to_drop_dom)
+#define sub-tree for dom
+
 ```
 
 ## 4 Correct for colinearity in the predictor variables
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
-so a correction will have to be done. This can be done using the variance inflation factor (of the sdm package)
+so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
 or a correlation matrix. 
 
 ### VIF-analysis
 ```{r}
-library(sdm)
+# import GIS data 
+
+#load sdm package
+library(usdm)
+
+#execute VIF function 
 
 ```
 
@@ -112,18 +144,27 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 
 ### Secondary woodiness
 ```{r}
+#define formula components
+
+#construct formula
 
 ```
 
 
 ### Mycorrhiza
 ```{r}
+#define formula components
+
+#construct formula
 
 ```
 
 
 ### Domestication
 ```{r}
+#define formula components
+
+#construct formula
 
 ```
 
@@ -135,18 +176,21 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 
 ### Secondary woodiness
 ```{r}
+#fill in the arguments for the phyloglm function and execute it
 
 ```
 
 
 ### Mycorrhiza
 ```{r}
+#fill in the arguments for the phyloglm function and execute it
 
 ```
 
 
 ### Domestication
 ```{r}
+#fill in the arguments for the phyloglm function and execute it
 
 ```
 
