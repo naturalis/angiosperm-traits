@@ -22,8 +22,6 @@ library(ape)
 #define trait table and original tree
 swo <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/woody.nex")
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-
-  
 ```
 
 ### Mycorrhiza
@@ -33,8 +31,6 @@ library(ape)
 #define trait table and original tree
 myc <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/myco.nex")
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-
-
 ```
 
 ### Domestication 
@@ -44,14 +40,13 @@ library(ape)
 #define trait table and original tree
 dom <- read.table("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/crops.tsv", header = T, sep = "\t")
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-
-  
 ```
 
 ## 2 Recode dependent variables to binary form
 
 The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
-input is prefered for this analysis because of technical reasons, while all the data has 3 or 4 states. 
+input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
+moment. 
 
 ### Secondary woodiness
 For secondary woodiness, there are 3 trait-states: derived woody (0), non-woody (1), ancestral woody (2). 
@@ -79,7 +74,7 @@ to be collapsed together.
 
 ### Domestication
 The domestication database is not complete yet, some non-domesticated plants have to be added to 
-serve as the 0 state. 
+serve as the 0 state. These plants will come from the other two databases. 
 ```{r}
 #load domestication, original myc and original swo
 
@@ -88,6 +83,10 @@ serve as the 0 state.
 #make a sub-selection of myc+swo that does not contain the domestication plants
 
 #take a random sample of this sub-tree to be included in the domestication part
+
+#add a 0 to the domesticated column for these new plants
+
+#add this to the domestication database 
 
 ```
 
