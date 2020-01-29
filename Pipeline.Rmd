@@ -48,7 +48,7 @@ tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
   
 ```
 
-## 2 Recode dependent variables to binary
+## 2 Recode dependent variables to binary form
 
 The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
 input is prefered for this analysis because of technical reasons, while all the data has 3 or 4 states. 
@@ -78,8 +78,21 @@ to be collapsed together.
 ```
 
 ### Domestication
-For domestication, there are 4 trait-states: progenitor of domesticated (1), only domesticated (2)
-semi-domesticated (3), non-domesticated (0). 
+The domestication database is not complete yet, some non-domesticated plants have to be added to 
+serve as the 0 state. 
+```{r}
+#load domestication, original myc and original swo
+
+#combine myc and swo
+
+#make a sub-selection of myc+swo that does not contain the domestication plants
+
+#take a random sample of this sub-tree to be included in the domestication part
+
+```
+
+Now, for domestication, there are 4 trait-states: non-domesticated (0), progenitor of domesticated (1), 
+only domesticated (2) and semi-domesticated (3). 
 This will be turned into: non-domesticated (0) and progenitor of domesticated and semi-domesticated 
 together (1). This eliminates the species that just exist in their domesticated form, which have 
 already been altered by human selection, so they can't tell us anything about pre-adaptations. 
