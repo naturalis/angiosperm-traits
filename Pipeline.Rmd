@@ -54,9 +54,23 @@ This will be turned into: derived woody (0) and non-woody (1). As this is the ac
 non-woody and derived woodiness. So all the plants with ancestral woodiness (3) as trait, have to be 
 eliminated from the analysis. 
 ```{r}
-#cut out the plants that have trait state 2
+#load required package 
+library(ape)
 
-#define new sub-swo
+#define trait table for swo
+swo <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/woody.nex")
+
+#load tsv file and make selection
+swo_tsv <- read.table(file = "C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/woody.tsv", sep = '\t', header = TRUE)
+swo_tsv_bin <- subset(swo_tsv, (swo_tsv$woody == 0 | swo_tsv$woody ==1))
+
+#the taxa that should not be included (with value 2)
+swo_tsv_2 <- subset(swo_tsv, (swo_tsv$woody == 2)) 
+unwanted_tips <- as.character(unlist(c(swo_tsv_2[1])))
+unwanted_numbers <- as.numeric(row.names(swo_tsv_2))
+
+#make a subset of nex file with these taxa as condition and give new name 
+swo_bin <- drop.tip(swo, unwanted_numbers)
 
 ```
 
@@ -74,19 +88,16 @@ to be collapsed together.
 
 ### Domestication
 The domestication database is not complete yet, some non-domesticated plants have to be added to 
-serve as the 0 state. These plants will come from the other two databases. 
+serve as the 0 state. These plants will come from the main tree, based on their distance on the
+pylogeny to the plants already included in the domestication traits table. 
 ```{r}
-#load domestication, original myc and original swo
+#load domestication trait table and the tree
 
-#combine myc and swo
+#make a sub-selection of the tree based on earlier selected plants (based on location in phylogeny)
 
-#make a sub-selection of myc+swo that does not contain the domestication plants
-
-#take a random sample of this sub-tree to be included in the domestication part
+#add this sub-selection of the tree to the domestication trait table 
 
 #add a 0 to the domesticated column for these new plants
-
-#add this to the domestication database 
 
 ```
 
