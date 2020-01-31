@@ -38,7 +38,7 @@ tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
 #load required package
 library(ape)
 #define trait table and original tree
-dom <- read.table("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/crops.tsv", header = T, sep = "\t")
+dom_incomplete <- read.table("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/crops.tsv", header = T, sep = "\t")
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
 ```
 
@@ -60,18 +60,30 @@ library(ape)
 #define trait table for swo
 swo <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/woody.nex")
 
-#load tsv file and make selection
+#load tsv file and make selection which to keep 
 swo_tsv <- read.table(file = "C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/woody.tsv", sep = '\t', header = TRUE)
-swo_tsv_bin <- subset(swo_tsv, (swo_tsv$woody == 0 | swo_tsv$woody ==1))
+swo_tsv_bi <- subset(swo_tsv, (swo_tsv$woody == 0 | swo_tsv$woody ==1))
 
-#the taxa that should not be included (with value 2)
+#define the taxa that should not be included (with value 2)
 swo_tsv_2 <- subset(swo_tsv, (swo_tsv$woody == 2)) 
-unwanted_tips <- as.character(unlist(c(swo_tsv_2[1])))
-unwanted_numbers <- as.numeric(row.names(swo_tsv_2))
+unwanted_tips_swo <- as.character(unlist(c(swo_tsv_2[1]))) 
+unwanted_tips_swo <- sub(" ", "_", unwanted_tips_swo) #to make the names the same as in the swo tree. 
+
+#make the subset in the original woody.nex file 
+swo_bi_wrong <- drop.tip(swo, unwanted_tips_swo)
+
+#the previous command yielded a wrong dataset (as the name already tells us), it seems like the names still 
+#do not match completely, we'll have to fix that. For now this is a different solution that also works: 
+unwanted_numbers_swo <- as.numeric(row.names(swo_tsv_2))
 
 #make a subset of nex file with these taxa as condition and give new name 
-swo_bin <- drop.tip(swo, unwanted_numbers)
+#so define new sub-swo, which contains binary trait values
+swo_bi <- drop.tip(swo, unwanted_numbers_swo)
 
+#save this file as a new file.
+???
+
+#the root edge is not present anymore in swo_bin, but that is okay. 
 ```
 
 
@@ -82,8 +94,12 @@ to be collapsed together.
 ```{r}
 #combine all the plants that have 1/2/3 as trait states
 
-#define new sub-myc
+#define new sub-myc, which contains binary trait values
+myc_bi <- 
 
+#save this file as a new file.
+???
+  
 ```
 
 ### Domestication
@@ -96,7 +112,7 @@ pylogeny to the plants already included in the domestication traits table.
 #make a sub-selection of the tree based on earlier selected plants (based on location in phylogeny)
 
 #add this sub-selection of the tree to the domestication trait table 
-
+dom <- 
 #add a 0 to the domesticated column for these new plants
 
 ```
@@ -108,10 +124,21 @@ together (1). This eliminates the species that just exist in their domesticated 
 already been altered by human selection, so they can't tell us anything about pre-adaptations. 
 ```{r}
 #cut out the plants that have trait state 2
+library(ape)
+dom <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/...")
+dom_tsv <- read.table(file = "C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/crops.tsv", sep = '\t', header = TRUE)
+dom_tsv_2 <- subset(dom_tsv, (dom_tsv$domestication == 2))
+unwanted_tips_dom <- as.character(unlist(c(dom_tsv_2[1])))
+dom_0_1_3 <- drop.tip(dom, unwanted_tips_dom)
 
 #combine states 1 and 3
 
-#define new sub-dom
+
+#define new sub-dom, which contains binary trait values
+dom_bi <- 
+
+#save this file as a new file.
+???
 
 ```
 
@@ -123,18 +150,30 @@ traits table -> cut these out of the tree.
 ### Secondary woodiness
 ```{r match tips sec. wood.}
 #define sub-tree for swo
+tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
+swo_bi <- read.nexus("C:/...")
+tips_to_drop_swo <- setdiff(tree$tip.label, swo_bi$tip.label)
+swo_bi_sub <- drop.tip(tree,tip=tips_to_drop_swo)
 
 ```
 
 ### Mycorrhiza 
 ```{r match tips myc.}
 #define sub-tree for myc
+tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
+myc_bi <- read.nexus("C:/...")
+tips_to_drop_myc <- setdiff(tree$tip.label, myc_bi$tip.label)
+myc_bi_sub <- drop.tip(tree,tip=tips_to_drop_myc)
 
 ```
 
 ### Domestication 
 ```{r match tips dom.}
 #define sub-tree for dom
+tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
+dom_bi <- read.nexus("C:/...")
+tips_to_drop_dom <- setdiff(tree$tip.label, dom_bi$tip.label)
+dom_bi_sub <- drop.tip(tree,tip=tips_to_drop_dom)
 
 ```
 
