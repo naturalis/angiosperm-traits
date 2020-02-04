@@ -15,10 +15,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 First the traits table and the original tree have to be read into R in the right format to be able to use them. 
 
-### The main tree
+### The project root and the main tree
 ```{r import tree}
+#load required package
+library(ape)
+
+#import and define data
 project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
-tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
+tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
+tree <- read.tree(tree_file)
 ```
 
 
@@ -26,7 +31,8 @@ tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
 ```{r import secondary woodiness}
 #load required package
 library(ape)
-#define trait tables
+
+#import and define trait tables
 woody_nex_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.nex'), collapse = '')
 woody_nex <- read.nexus(woody_nex_file)
 
@@ -39,7 +45,8 @@ woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
 ```{r import mycorrhiza}
 #load required package
 library(ape)
-#define trait table 
+
+#import and define trait table 
 myco_nex_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco.nex'), collapse = '')
 myco_nex <- read.nexus(myco_nex_file)
 
@@ -56,7 +63,62 @@ crops_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/crops.tsv'),
 crops_tsv <- read.table(crops_tsv_file, sep = '\t', header = TRUE)
 ```
 
-## 2 Recode dependent variables to binary form
+## 2 Match the names of the nexus files and the tsv files
+
+While doing the recoding (step 3), it turned out that the taxa names in the nexus file and in the tsv 
+file of woody did not match, this has to be solved and checked for the other traits as well.
+
+### Secondary woodiness
+
+```{r}
+#load package and required data
+package(ape)
+woody_tsv
+woody_nex
+
+#make vector of the names inside the two files 
+taxa_woody_tsv <- as.character(unlist(c(woody_tsv[1]))) 
+taxa_woody_tsv <- sub(" ", "_", taxa_woody_tsv)
+
+taxa_woody_nex <- 
+
+  
+#check whether there are differences 
+  
+#print the different names for both files
+  
+#correct these names in the tsv file (as nexus file has more specific rules it should stick to)
+
+```
+
+
+### Mycorrhiza
+
+```{r}
+#load package and required data
+package(ape)
+myco_tsv
+myco_nex
+
+#make vector of the names inside the two files 
+taxa_myco_tsv <- as.character(unlist(c(myco_tsv[1]))) 
+taxa_myco_tsv <- sub(" ", "_", taxa_myco_tsv)
+
+taxa_woody_nex <- 
+
+#check whether there are differences 
+  
+#print the different names for both files
+  
+#correct these names in the tsv file (as nexus file has more specific rules it should stick to)
+
+```
+
+
+### Domestication
+For domestication there is no nexus file. 
+
+## 3 Recode dependent variables to binary form
 
 The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
 input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
@@ -71,12 +133,9 @@ eliminated from the analysis.
 #load required package 
 library(ape)
 
-#define trait table for swo
+#import the trait tables for woody
 woody_nex
-
-#load tsv file and make selection which to keep 
 woody_tsv
-woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
 
 #define the taxa that should not be included (with value 2)
 woody_tsv_2 <- subset(woody_tsv, (woody_tsv$woody == 2)) 
@@ -89,12 +148,9 @@ woody_bi_wrong <- drop.tip(woody_nex, unwanted_tips_woody)
 #do not match completely, we'll have to fix that. For now this is a different solution that also works: 
 unwanted_numbers_woody <- as.numeric(row.names(woody_tsv_2))
 
-#make a subset of nex file with these taxa as condition and give new name 
-#so define new sub-swo, which contains binary trait values
-woody_bi <- drop.tip(woody_nex, unwanted_numbers_woody)
-
-#save this file as a new file.
-???
+#so define new sub-woody, which contains binary trait values (both nex and tsv)
+woody_nex_bi <- drop.tip(woody_nex, unwanted_numbers_woody)
+woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
 
 #the root edge is not present anymore in swo_bin, but that is okay. 
 ```
@@ -112,13 +168,11 @@ myco_nex
 myco_tsv
 
 #combine all the plants that have 1/2/3 as trait states
-myco_tsv_bin <- sub("2", "1", myco$charstatelabels)
+myco_tsv_bi <- 
 
 #define new sub-myc, which contains binary trait values
-myco_bi <- 
-
-#save this file as a new file.
-???
+myco_nex_bi <- 
+myco_tsv_bi 
   
 ```
 
@@ -128,11 +182,14 @@ serve as the 0 state. These plants will come from the main tree, based on their 
 pylogeny to the plants already included in the domestication traits table. 
 ```{r}
 #load domestication trait table and the tree
+crops_tsv
 
 #make a sub-selection of the tree based on earlier selected plants (based on location in phylogeny)
 
+
 #add this sub-selection of the tree to the domestication trait table 
 crops_tsv_complete <- 
+
 #add a 0 to the domesticated column for these new plants
 
 ```
@@ -148,7 +205,7 @@ library(ape)
 crops_tsv_complete
 
 #cut out all the plants that have trait state 2 from the tsv file 
-crops_tsv_013 <- subset(crops_tsv, (crops_tsv$domestication == 0 | crops_tsv$domestication == 1))
+crops_tsv_013 <- subset(crops_tsv_complete, (crops_tsv_complete$domestication == 0 | crops_tsv_complete$domestication == 1))
 
 #combine states 1 and 3
 
@@ -156,53 +213,58 @@ crops_tsv_013 <- subset(crops_tsv, (crops_tsv$domestication == 0 | crops_tsv$dom
 #define new sub-dom, which contains binary trait values
 crops_tsv_bi <- 
 
-#save this file as a new file.
-???
-
 ```
 
-## 3 Tidy data
+## 4 Tidy data
 
-The tree and the traits-table have to match, as there will be plants in the phylogeny that are not in the 
-traits table -> cut these out of the tree. 
+The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
+not in the traits table -> cut these out of the tree. 
 
 ### Secondary woodiness
 ```{r match tips sec. wood.}
 #load required packages and data
-tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-woody_bi
+library(ape)
+tree 
+woody_tsv_bi
 
-#define the final tree for swo
-tips_to_drop_woody <- setdiff(tree$tip.label, woody_bi$tip.label)
-woody_final <- drop.tip(tree,tip=tips_to_drop_woody)
+#define the final tree for woodiness
+keep_tips_woody_tsv_bi <- as.character(unlist(c(woody_tsv_bi[1]))) 
+keep_tips_woody_tsv_bi <- sub(" ", "_", keep_tips_woody_tsv_bi)
+tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody_tsv_bi)
+woody_tree <- drop.tip(tree, tips_to_drop_woody)
 
 ```
 
 ### Mycorrhiza 
 ```{r match tips myc.}
 #load required packages and data
-tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-myco_bi 
+library(ape)
+tree
+myco_tsv_bi 
 
 #define the final tree for myc
-tips_to_drop_myco <- setdiff(tree$tip.label, myco_bi$tip.label)
-myco_tree <- drop.tip(tree,tip=tips_to_drop_myco)
+keep_tips_myco_tsv_bi <- as.character(unlist(c(myco_tsv_bi[1]))) 
+keep_tips_myco_tsv_bi <- sub(" ", "_", keep_tips_myco_tsv_bi)
+tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco_tsv_bi)
+myco_tree <- drop.tip(tree, tips_to_drop_myco)
 
 ```
 
 ### Domestication 
 ```{r match tips dom.}
-
-tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-crops_bi 
+#load required packages and data
+library(ape)
+tree 
+crops_tsv_bi 
 
 #define the final tree for dom
-tips_to_drop_crops <- setdiff(tree$tip.label, crops_bi$tip.label)
-crops_tree <- drop.tip(tree,tip=tips_to_drop_crops)
-
+keep_tips_crops_tsv_bi <- as.character(unlist(c(crops_tsv_bi[1]))) 
+keep_tips_crops_tsv_bi <- sub(" ", "_", keep_tips_crops_tsv_bi)
+tips_to_drop_crops <- setdiff(tree$tip.label, keep_tips_crops_tsv_bi)
+crops_tree <- drop.tip(tree, tips_to_drop_crops)
 ```
 
-## 4 Correct for colinearity in the predictor variables
+## 5 Correct for colinearity in the predictor variables
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
@@ -224,7 +286,7 @@ For each of the separate research question, check whether the predictor variable
 not present anymore, still make sense in terms of biological interpretation. 
 
 
-## 5 Model selection: Define formula and select model 
+## 6 Model selection: Define formula and select model 
 
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
@@ -256,7 +318,7 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 ```
 
 
-## 6 Analysis
+## 7 Analysis
 
 After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
@@ -282,7 +344,7 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 ```
 
 
-## 7 Biological interpretation
+## 8 Biological interpretation
 
 In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
 With this knowledge, the thesis can be completed. 
