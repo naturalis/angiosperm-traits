@@ -50,8 +50,12 @@ library(ape)
 myco_nex_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco.nex'), collapse = '')
 myco_nex <- read.nexus(myco_nex_file)
 
-myco_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco.tsv'), collapse = '')
+myco_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco_taxa.tsv'), collapse = '')
 myco_tsv <- read.table(myco_tsv_file, sep = '\t', header = TRUE)
+
+myco_idk_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco.tsv'), collapse = '')
+myco_idk <- read.table(myco_idk_file, sep = '\t', header = TRUE)
+
 ```
 
 ### Domestication 
@@ -96,21 +100,23 @@ taxa_woody_nex <-
 
 ```{r}
 #load package and required data
-package(ape)
+library(ape)
 myco_tsv
-myco_nex
+tree
 
 #make vector of the names inside the two files 
 taxa_myco_tsv <- as.character(unlist(c(myco_tsv[1]))) 
 taxa_myco_tsv <- sub(" ", "_", taxa_myco_tsv)
 
-taxa_woody_nex <- 
+taxa_tree <- as.character(unlist(c(tree$tip.label))) #does not work!! 
 
 #check whether there are differences 
-  
-#print the different names for both files
-  
-#correct these names in the tsv file (as nexus file has more specific rules it should stick to)
+
+
+#print the different names for both files that differ 
+
+
+#correct these names in the tsv file (as the tree file has more specific rules it should stick to)
 
 ```
 
@@ -134,6 +140,19 @@ eliminated from the analysis.
 library(ape)
 
 #import the trait tables for woody
+woody_tsv
+
+#define new sub-woody, which contains binary trait values (tsv)
+woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
+
+```
+
+How to do this in the nexus file (not necessary):
+```{r}
+#load required package 
+library(ape)
+
+#import the trait tables for woody
 woody_nex
 woody_tsv
 
@@ -150,7 +169,6 @@ unwanted_numbers_woody <- as.numeric(row.names(woody_tsv_2))
 
 #so define new sub-woody, which contains binary trait values (both nex and tsv)
 woody_nex_bi <- drop.tip(woody_nex, unwanted_numbers_woody)
-woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
 
 #the root edge is not present anymore in swo_bin, but that is okay. 
 ```
@@ -163,23 +181,27 @@ to be collapsed together.
 ```{r}
 #load required package
 library(ape)
-#define trait table 
-myco_nex
+
+#load required trait table 
 myco_tsv
 
-#combine all the plants that have 1/2/3 as trait states
-myco_tsv_bi <- 
+#create new column
+myco_tsv["myco_state_int"] <- NA
 
-#define new sub-myc, which contains binary trait values
-myco_nex_bi <- 
-myco_tsv_bi 
-  
+#add binary values to column based on names 
+myco_tsv$myco_state_int[myco_tsv$myco_state == "arbuscular"] <- "0"
+myco_tsv$myco_state_int[myco_tsv$myco_state == "ecto"] <- "1"
+myco_tsv$myco_state_int[myco_tsv$myco_state == "both"] <- "1"
+myco_tsv$myco_state_int[myco_tsv$myco_state == "neither"] <- "1"
+
+#now myco_tsv contains an added column with binary state values
 ```
 
 ### Domestication
 The domestication database is not complete yet, some non-domesticated plants have to be added to 
 serve as the 0 state. These plants will come from the main tree, based on their distance on the
 pylogeny to the plants already included in the domestication traits table. 
+
 ```{r}
 #load domestication trait table and the tree
 crops_tsv
