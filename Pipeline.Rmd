@@ -13,33 +13,47 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1 Import data
 
-First the traits table and the original tree have to be read into R in the right format. 
+First the traits table and the original tree have to be read into R in the right format to be able to use them. 
+
+### The main tree
+```{r import tree}
+project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
+tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
+```
+
 
 ### Secondary woodiness
 ```{r import secondary woodiness}
 #load required package
 library(ape)
-#define trait table and original tree
-swo <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/woody.nex")
-tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
+#define trait tables
+woody_nex_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.nex'), collapse = '')
+woody_nex <- read.nexus(woody_nex_file)
+
+woody_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.tsv'), collapse = '')
+woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
+  
 ```
 
 ### Mycorrhiza
 ```{r import mycorrhiza}
 #load required package
 library(ape)
-#define trait table and original tree
-myc <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/myco.nex")
-tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
+#define trait table 
+myco_nex_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco.nex'), collapse = '')
+myco_nex <- read.nexus(myco_nex_file)
+
+myco_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco.tsv'), collapse = '')
+myco_tsv <- read.table(myco_tsv_file, sep = '\t', header = TRUE)
 ```
 
 ### Domestication 
 ```{r import domestication}
 #load required package
 library(ape)
-#define trait table and original tree
-dom_incomplete <- read.table("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/crops.tsv", header = T, sep = "\t")
-tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
+#define trait table 
+crops_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/crops.tsv'), collapse = '')
+crops_tsv <- read.table(crops_tsv_file, sep = '\t', header = TRUE)
 ```
 
 ## 2 Recode dependent variables to binary form
@@ -58,27 +72,26 @@ eliminated from the analysis.
 library(ape)
 
 #define trait table for swo
-swo <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/woody.nex")
+woody_nex
 
 #load tsv file and make selection which to keep 
-swo_tsv <- read.table(file = "C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/woody.tsv", sep = '\t', header = TRUE)
-swo_tsv_bi <- subset(swo_tsv, (swo_tsv$woody == 0 | swo_tsv$woody ==1))
+woody_tsv
+woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
 
 #define the taxa that should not be included (with value 2)
-swo_tsv_2 <- subset(swo_tsv, (swo_tsv$woody == 2)) 
-unwanted_tips_swo <- as.character(unlist(c(swo_tsv_2[1]))) 
-unwanted_tips_swo <- sub(" ", "_", unwanted_tips_swo) #to make the names the same as in the swo tree. 
+woody_tsv_2 <- subset(woody_tsv, (woody_tsv$woody == 2)) 
+unwanted_tips_woody <- as.character(unlist(c(woody_tsv_2[1]))) 
+unwanted_tips_woody <- sub(" ", "_", unwanted_tips_woody) #to make the names the same as in the swo tree. 
 
 #make the subset in the original woody.nex file 
-swo_bi_wrong <- drop.tip(swo, unwanted_tips_swo)
-
+woody_bi_wrong <- drop.tip(woody_nex, unwanted_tips_woody)
 #the previous command yielded a wrong dataset (as the name already tells us), it seems like the names still 
 #do not match completely, we'll have to fix that. For now this is a different solution that also works: 
-unwanted_numbers_swo <- as.numeric(row.names(swo_tsv_2))
+unwanted_numbers_woody <- as.numeric(row.names(woody_tsv_2))
 
 #make a subset of nex file with these taxa as condition and give new name 
 #so define new sub-swo, which contains binary trait values
-swo_bi <- drop.tip(swo, unwanted_numbers_swo)
+woody_bi <- drop.tip(woody_nex, unwanted_numbers_woody)
 
 #save this file as a new file.
 ???
@@ -92,10 +105,17 @@ For mycorrhiza, there are 4 trait-states: EM, AM, both, neither. This will be tu
 the rest together (1). So in this case nothing will be eliminated from the analysis, just (1)(2)(3) have 
 to be collapsed together. 
 ```{r}
+#load required package
+library(ape)
+#define trait table 
+myco_nex
+myco_tsv
+
 #combine all the plants that have 1/2/3 as trait states
+myco_tsv_bin <- sub("2", "1", myco$charstatelabels)
 
 #define new sub-myc, which contains binary trait values
-myc_bi <- 
+myco_bi <- 
 
 #save this file as a new file.
 ???
@@ -112,7 +132,7 @@ pylogeny to the plants already included in the domestication traits table.
 #make a sub-selection of the tree based on earlier selected plants (based on location in phylogeny)
 
 #add this sub-selection of the tree to the domestication trait table 
-dom <- 
+crops_tsv_complete <- 
 #add a 0 to the domesticated column for these new plants
 
 ```
@@ -123,19 +143,18 @@ This will be turned into: non-domesticated (0) and progenitor of domesticated an
 together (1). This eliminates the species that just exist in their domesticated form, which have 
 already been altered by human selection, so they can't tell us anything about pre-adaptations. 
 ```{r}
-#cut out the plants that have trait state 2
+#load necessary packages and data 
 library(ape)
-dom <- read.nexus("C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/...")
-dom_tsv <- read.table(file = "C:/Users/Esther/Documents/Master/Stage/sdmdl-angiosperm-data/data/crops.tsv", sep = '\t', header = TRUE)
-dom_tsv_2 <- subset(dom_tsv, (dom_tsv$domestication == 2))
-unwanted_tips_dom <- as.character(unlist(c(dom_tsv_2[1])))
-dom_0_1_3 <- drop.tip(dom, unwanted_tips_dom)
+crops_tsv_complete
+
+#cut out all the plants that have trait state 2 from the tsv file 
+crops_tsv_013 <- subset(crops_tsv, (crops_tsv$domestication == 0 | crops_tsv$domestication == 1))
 
 #combine states 1 and 3
 
 
 #define new sub-dom, which contains binary trait values
-dom_bi <- 
+crops_tsv_bi <- 
 
 #save this file as a new file.
 ???
@@ -149,31 +168,37 @@ traits table -> cut these out of the tree.
 
 ### Secondary woodiness
 ```{r match tips sec. wood.}
-#define sub-tree for swo
+#load required packages and data
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-swo_bi <- read.nexus("C:/...")
-tips_to_drop_swo <- setdiff(tree$tip.label, swo_bi$tip.label)
-swo_bi_sub <- drop.tip(tree,tip=tips_to_drop_swo)
+woody_bi
+
+#define the final tree for swo
+tips_to_drop_woody <- setdiff(tree$tip.label, woody_bi$tip.label)
+woody_final <- drop.tip(tree,tip=tips_to_drop_woody)
 
 ```
 
 ### Mycorrhiza 
 ```{r match tips myc.}
-#define sub-tree for myc
+#load required packages and data
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-myc_bi <- read.nexus("C:/...")
-tips_to_drop_myc <- setdiff(tree$tip.label, myc_bi$tip.label)
-myc_bi_sub <- drop.tip(tree,tip=tips_to_drop_myc)
+myco_bi 
+
+#define the final tree for myc
+tips_to_drop_myco <- setdiff(tree$tip.label, myco_bi$tip.label)
+myco_tree <- drop.tip(tree,tip=tips_to_drop_myco)
 
 ```
 
 ### Domestication 
 ```{r match tips dom.}
-#define sub-tree for dom
+
 tree <- read.tree("C:/Users/Esther/Documents/Master/Stage/ALLMB.tre")
-dom_bi <- read.nexus("C:/...")
-tips_to_drop_dom <- setdiff(tree$tip.label, dom_bi$tip.label)
-dom_bi_sub <- drop.tip(tree,tip=tips_to_drop_dom)
+crops_bi 
+
+#define the final tree for dom
+tips_to_drop_crops <- setdiff(tree$tip.label, crops_bi$tip.label)
+crops_tree <- drop.tip(tree,tip=tips_to_drop_crops)
 
 ```
 
