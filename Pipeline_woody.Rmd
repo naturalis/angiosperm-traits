@@ -1,0 +1,122 @@
+---
+title: "Pipeline_woody"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Pipeline of the necessary steps in R and outside of R
+
+## 1 Import data
+
+First the traits table and the original tree have to be read into R in the right format to be able to use them. 
+
+### The project root and the main tree
+```{r define data root and import tree}
+#load required package
+library(ape)
+
+#import and define data
+project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
+tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
+tree <- read.tree(tree_file)
+
+```
+
+### Secondary woodiness
+```{r import secondary woodiness}
+#import and define trait tables
+woody_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.tsv'), collapse = '')
+woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
+  
+```
+
+## 3 Recode dependent variables to binary form
+
+The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
+input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
+moment. For secondary woodiness, there are 3 trait-states: derived woody (0), non-woody (1), ancestral woody (2). 
+This will be turned into: derived woody (0) and non-woody (1). As this is the actual shift between 
+non-woody and derived woodiness. So all the plants with ancestral woodiness (3) as trait, have to be 
+eliminated from the analysis. 
+
+```{r binary woodiness tsv}
+#define new sub-woody, which contains binary trait values (tsv)
+woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
+```
+
+## 4 Tidy data
+
+4a. 
+The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
+not in the traits table -> cut these out of the tree. It could be true that the taxa names don't 
+match between the tree file and the trait-table, in that case not the same amount of taxa will still
+be in the tree as there are in the trait table. If that is the case, this has to be fixed!
+
+```{r match tips sec. wood.}
+#load required packages 
+library(stringi)
+
+#define the taxa names for the final tree for woodiness
+keep_tips_woody_tsv_bi <- as.character(unlist(c(woody_tsv_bi[1]))) 
+keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\p{WHITE_SPACE}", "_")
+
+tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody_tsv_bi)
+woody_tree <- drop.tip(tree, tips_to_drop_woody)
+
+```
+
+## 5 Correct for colinearity in the predictor variables
+
+There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
+so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
+or a correlation matrix. 
+
+### VIF-analysis
+```{r}
+# import GIS data 
+
+#load sdm package
+library(usdm)
+
+#execute VIF function 
+
+```
+
+### Biological interpretation
+For each of the separate research question, check whether the predictor variables that are still present and
+not present anymore, still make sense in terms of biological interpretation. 
+
+## 6 Model selection: Define formula and select model 
+
+The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
+GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
+
+```{r}
+#define formula components
+
+#construct formula
+
+```
+
+## 7 Analysis
+
+After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
+There is a function in the phylolm package that allows us to do this: phyloglm. 
+
+```{r}
+#fill in the arguments for the phyloglm function and execute it
+
+```
+
+## 8 Biological interpretation
+
+In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
+With this knowledge, the thesis can be completed. 
+
+
+
