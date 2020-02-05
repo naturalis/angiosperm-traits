@@ -110,15 +110,6 @@ not present anymore, still make sense in terms of biological interpretation.
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
-### Secondary woodiness
-```{r}
-#define formula components
-
-#construct formula
-
-```
-
-
 ### Mycorrhiza
 ```{r}
 #define formula components
@@ -126,42 +117,17 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 #construct formula
 
 ```
-
-
-### Domestication
-```{r}
-#define formula components
-
-#construct formula
-
-```
-
 
 ## 7 Analysis
 
 After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
-### Secondary woodiness
-```{r}
-#fill in the arguments for the phyloglm function and execute it
-
-```
-
-
 ### Mycorrhiza
 ```{r}
 #fill in the arguments for the phyloglm function and execute it
 
 ```
-
-
-### Domestication
-```{r}
-#fill in the arguments for the phyloglm function and execute it
-
-```
-
 
 ## 8 Biological interpretation
 
@@ -169,27 +135,3 @@ In the end, the final models and the predictor variables that are included will 
 With this knowledge, the thesis can be completed. 
 
 
-
-nclude=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

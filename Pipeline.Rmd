@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 First the traits table and the original tree have to be read into R in the right format to be able to use them. 
 
 ### The project root and the main tree
-```{r import tree}
+```{r define data root and import tree}
 #load required package
 library(ape)
 
@@ -67,63 +67,6 @@ crops_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/crops.tsv'),
 crops_tsv <- read.table(crops_tsv_file, sep = '\t', header = TRUE)
 ```
 
-## 2 Match the names of the nexus files and the tsv files
-
-While doing the recoding (step 3), it turned out that the taxa names in the nexus file and in the tsv 
-file of woody did not match, this has to be solved and checked for the other traits as well.
-
-### Secondary woodiness
-
-```{r}
-#load package and required data
-package(ape)
-woody_tsv
-woody_nex
-
-#make vector of the names inside the two files 
-taxa_woody_tsv <- as.character(unlist(c(woody_tsv[1]))) 
-taxa_woody_tsv <- sub(" ", "_", taxa_woody_tsv)
-
-taxa_woody_nex <- 
-
-  
-#check whether there are differences 
-  
-#print the different names for both files
-  
-#correct these names in the tsv file (as nexus file has more specific rules it should stick to)
-
-```
-
-
-### Mycorrhiza
-
-```{r}
-#load package and required data
-library(ape)
-myco_tsv
-tree
-
-#make vector of the names inside the two files 
-taxa_myco_tsv <- as.character(unlist(c(myco_tsv[1]))) 
-taxa_myco_tsv <- sub(" ", "_", taxa_myco_tsv)
-
-taxa_tree <- as.character(unlist(c(tree$tip.label))) #does not work!! 
-
-#check whether there are differences 
-
-
-#print the different names for both files that differ 
-
-
-#correct these names in the tsv file (as the tree file has more specific rules it should stick to)
-
-```
-
-
-### Domestication
-For domestication there is no nexus file. 
-
 ## 3 Recode dependent variables to binary form
 
 The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
@@ -135,7 +78,7 @@ For secondary woodiness, there are 3 trait-states: derived woody (0), non-woody 
 This will be turned into: derived woody (0) and non-woody (1). As this is the actual shift between 
 non-woody and derived woodiness. So all the plants with ancestral woodiness (3) as trait, have to be 
 eliminated from the analysis. 
-```{r}
+```{r binary woodiness tsv}
 #load required package 
 library(ape)
 
@@ -148,7 +91,7 @@ woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
 ```
 
 How to do this in the nexus file (not necessary):
-```{r}
+```{r binary woodiness nex}
 #load required package 
 library(ape)
 
@@ -156,7 +99,7 @@ library(ape)
 woody_nex
 woody_tsv
 
-#define the taxa that should not be included (with value 2)
+#define the taxathat should not be included (with value 2)
 woody_tsv_2 <- subset(woody_tsv, (woody_tsv$woody == 2)) 
 unwanted_tips_woody <- as.character(unlist(c(woody_tsv_2[1]))) 
 unwanted_tips_woody <- sub(" ", "_", unwanted_tips_woody) #to make the names the same as in the swo tree. 
@@ -178,7 +121,7 @@ woody_nex_bi <- drop.tip(woody_nex, unwanted_numbers_woody)
 For mycorrhiza, there are 4 trait-states: EM, AM, both, neither. This will be turned into: AM (0) and 
 the rest together (1). So in this case nothing will be eliminated from the analysis, just (1)(2)(3) have 
 to be collapsed together. 
-```{r}
+```{r binary mycorrhiza tsv}
 #load required package
 library(ape)
 
@@ -194,79 +137,95 @@ myco_tsv$myco_state_int[myco_tsv$myco_state == "ecto"] <- "1"
 myco_tsv$myco_state_int[myco_tsv$myco_state == "both"] <- "1"
 myco_tsv$myco_state_int[myco_tsv$myco_state == "neither"] <- "1"
 
-#now myco_tsv contains an added column with binary state values
+#now myco_tsv_bi contains an added column with binary state values
 ```
 
+How to do this in the nexus file (not necessary):
+```{r binary mycorrhiza nex}
+
+```
+
+
 ### Domestication
+For domestication, there are 3 trait-states: progenitor of domesticated (1), only domesticated (2) 
+and semi-domesticated (3). 
+This will be turned into: progenitor of domesticated and semi-domesticated together (1). This 
+eliminates the species that just exist in their domesticated form, which have already been altered 
+by human selection, so they can't tell us anything about pre-adaptations. 
+```{r}
+#load necessary packages and data 
+library(ape)
+crops_tsv
+
+#cut out all the plants that have trait state 2 from the tsv file 
+crops_tsv_1_3 <- subset(crops_tsv, (crops_tsv$domestication == 1 | crops_tsv$domestication == 3))
+
+#combine states 1 and 3
+crops_tsv_1_3$domestication_binary[crops_tsv_1_3$domestication == "1"] <- "1"
+crops_tsv_1_3$domestication_binary[crops_tsv_1_3$domestication == "3"] <- "1"
+
+```
+
 The domestication database is not complete yet, some non-domesticated plants have to be added to 
 serve as the 0 state. These plants will come from the main tree, based on their distance on the
 pylogeny to the plants already included in the domestication traits table. 
 
 ```{r}
 #load domestication trait table and the tree
-crops_tsv
+crops_tsv_1_3
+tree
 
 #make a sub-selection of the tree based on earlier selected plants (based on location in phylogeny)
+#Maybe: show node label for that specific tip label (taxa), then show taxa for that node, pick a taxa from that node (check whether it is in the tsv document on github), add if it's not on github
 
 
 #add this sub-selection of the tree to the domestication trait table 
 crops_tsv_complete <- 
 
-#add a 0 to the domesticated column for these new plants
+#add a 0 to the domestication_binary and the domestication column for these new plants
 
+  
 ```
 
-Now, for domestication, there are 4 trait-states: non-domesticated (0), progenitor of domesticated (1), 
-only domesticated (2) and semi-domesticated (3). 
-This will be turned into: non-domesticated (0) and progenitor of domesticated and semi-domesticated 
-together (1). This eliminates the species that just exist in their domesticated form, which have 
-already been altered by human selection, so they can't tell us anything about pre-adaptations. 
-```{r}
-#load necessary packages and data 
-library(ape)
-crops_tsv_complete
-
-#cut out all the plants that have trait state 2 from the tsv file 
-crops_tsv_013 <- subset(crops_tsv_complete, (crops_tsv_complete$domestication == 0 | crops_tsv_complete$domestication == 1))
-
-#combine states 1 and 3
-
-
-#define new sub-dom, which contains binary trait values
-crops_tsv_bi <- 
-
-```
 
 ## 4 Tidy data
 
+4a. 
 The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
-not in the traits table -> cut these out of the tree. 
+not in the traits table ->cut these out of the tree. It could be true that the taxa names don't 
+match between the tree file and the trait-table, in that case not the same amount of taxa will still
+be in the tree as there are in the trait table. If that is the case, this has to be fixed!
 
 ### Secondary woodiness
 ```{r match tips sec. wood.}
 #load required packages and data
 library(ape)
+library(stringi)
 tree 
 woody_tsv_bi
 
 #define the final tree for woodiness
 keep_tips_woody_tsv_bi <- as.character(unlist(c(woody_tsv_bi[1]))) 
-keep_tips_woody_tsv_bi <- sub(" ", "_", keep_tips_woody_tsv_bi)
+keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\p{WHITE_SPACE}", "_")
+
 tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody_tsv_bi)
 woody_tree <- drop.tip(tree, tips_to_drop_woody)
 
+#it works! the woody_tree now also contains only 749 tips/taxa.  
 ```
 
 ### Mycorrhiza 
 ```{r match tips myc.}
 #load required packages and data
 library(ape)
+library(stringi)
 tree
-myco_tsv_bi 
+myco_tsv 
 
 #define the final tree for myc
-keep_tips_myco_tsv_bi <- as.character(unlist(c(myco_tsv_bi[1]))) 
-keep_tips_myco_tsv_bi <- sub(" ", "_", keep_tips_myco_tsv_bi)
+keep_tips_myco_tsv_bi <- as.character(unlist(c(myco_tsv[1]))) 
+keep_tips_myco_tsv_bi <- stri_replace_all_charclass(keep_tips_myco_tsv_bi, "\\p{WHITE_SPACE}", "_")
+
 tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco_tsv_bi)
 myco_tree <- drop.tip(tree, tips_to_drop_myco)
 
@@ -281,10 +240,34 @@ crops_tsv_bi
 
 #define the final tree for dom
 keep_tips_crops_tsv_bi <- as.character(unlist(c(crops_tsv_bi[1]))) 
-keep_tips_crops_tsv_bi <- sub(" ", "_", keep_tips_crops_tsv_bi)
+keep_tips_crops_tsv_bi <- stri_replace_all_charclass(keep_tips_crops_tsv_bi, "\\p{WHITE_SPACE}", "_")
+
 tips_to_drop_crops <- setdiff(tree$tip.label, keep_tips_crops_tsv_bi)
 crops_tree <- drop.tip(tree, tips_to_drop_crops)
 ```
+
+4b. Make sure the names match 
+### Example for checking the names if they don't match: Secondary woodiness
+```{r matching woody}
+#load package and required data
+package(ape)
+keep_tips_woody_tsv_bi
+woody_tree
+
+#make vector of the names that do not match
+keep_tips_woody_tsv_bi
+nomatch_names_woody <- setdiff(keep_tips_woody_tsv_bi, woody_tree$tip.label)
+
+#print the names
+print(nomatch_names_woody) 
+
+#it turns out that not all the white spaces were substituted by _ with the sub(" ", "_") command
+#so tried a different command: 
+keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\p{WHITE_SPACE}", "_")
+
+#this worked! now implemented in the code above 
+```
+
 
 ## 5 Correct for colinearity in the predictor variables
 
