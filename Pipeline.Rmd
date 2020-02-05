@@ -180,7 +180,7 @@ tree
 
 
 #add this sub-selection of the tree to the domestication trait table 
-crops_tsv_complete <- 
+crops_tsv_bi <- 
 
 #add a 0 to the domestication_binary and the domestication column for these new plants
 
