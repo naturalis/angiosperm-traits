@@ -1,0 +1,162 @@
+---
+title: "Pipeline_crops"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Pipeline of the necessary steps in R and outside of R
+
+## 1 Import data
+
+First the traits table and the original tree have to be read into R in the right format to be able to use them. 
+
+### The project root and the main tree
+```{r define data root and import tree}
+#load required package
+library(ape)
+
+#import and define data
+project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
+tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
+tree <- read.tree(tree_file)
+```
+
+### Domestication 
+```{r import domestication}
+#define trait table 
+crops_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/crops.tsv'), collapse = '')
+crops_tsv <- read.table(crops_tsv_file, sep = '\t', header = TRUE)
+```
+
+## 3 Recode dependent variables to binary form
+
+The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
+input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
+moment. 
+
+### Domestication
+For domestication, there are 3 trait-states: progenitor of domesticated (1), only domesticated (2) 
+and semi-domesticated (3). 
+This will be turned into: progenitor of domesticated and semi-domesticated together (1). This 
+eliminates the species that just exist in their domesticated form, which have already been altered 
+by human selection, so they can't tell us anything about pre-adaptations. 
+```{r}
+#load necessary packages and data 
+library(ape)
+crops_tsv
+
+#cut out all the plants that have trait state 2 from the tsv file 
+crops_tsv_1_3 <- subset(crops_tsv, (crops_tsv$domestication == 1 | crops_tsv$domestication == 3))
+
+#combine states 1 and 3
+crops_tsv_1_3$domestication_binary[crops_tsv_1_3$domestication == "1"] <- "1"
+crops_tsv_1_3$domestication_binary[crops_tsv_1_3$domestication == "3"] <- "1"
+
+```
+
+The domestication database is not complete yet, some non-domesticated plants have to be added to 
+serve as the 0 state. These plants will come from the main tree, based on their distance on the
+pylogeny to the plants already included in the domestication traits table. 
+
+```{r}
+#load domestication trait table and the tree
+crops_tsv_1_3
+tree
+
+#make a sub-selection of the tree based on earlier selected plants (based on location in phylogeny)
+#Maybe: show node label for that specific tip label (taxa), then show taxa for that node, pick a taxa from that node (check whether it is in the tsv document on github), add if it's not on github
+
+
+#add this sub-selection of the tree to the domestication trait table 
+crops_tsv_complete <- 
+
+#add a 0 to the domestication_binary and the domestication column for these new plants
+
+  
+```
+
+
+## 4 Tidy data
+
+4a. 
+The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
+not in the traits table ->cut these out of the tree. It could be true that the taxa names don't 
+match between the tree file and the trait-table, in that case not the same amount of taxa will still
+be in the tree as there are in the trait table. If that is the case, this has to be fixed!
+
+### Domestication 
+```{r match tips dom.}
+#load required packages and data
+library(ape)
+tree 
+crops_tsv_bi 
+
+#define the final tree for dom
+keep_tips_crops_tsv_bi <- as.character(unlist(c(crops_tsv_bi[1]))) 
+keep_tips_crops_tsv_bi <- stri_replace_all_charclass(keep_tips_crops_tsv_bi, "\\p{WHITE_SPACE}", "_")
+
+tips_to_drop_crops <- setdiff(tree$tip.label, keep_tips_crops_tsv_bi)
+crops_tree <- drop.tip(tree, tips_to_drop_crops)
+```
+
+## 5 Correct for colinearity in the predictor variables
+
+There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
+so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
+or a correlation matrix. 
+
+### VIF-analysis
+```{r}
+# import GIS data 
+
+
+#load sdm package
+library(usdm)
+
+#execute VIF function 
+
+```
+
+### Biological interpretation
+For each of the separate research question, check whether the predictor variables that are still present and
+not present anymore, still make sense in terms of biological interpretation. 
+
+
+## 6 Model selection: Define formula and select model 
+
+The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
+GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
+
+### Domestication
+```{r}
+#define formula components
+
+#construct formula
+
+```
+
+
+## 7 Analysis
+
+After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
+There is a function in the phylolm package that allows us to do this: phyloglm. 
+
+### Domestication
+```{r}
+#fill in the arguments for the phyloglm function and execute it
+
+```
+
+
+## 8 Biological interpretation
+
+In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
+With this knowledge, the thesis can be completed. 
+
+
+
