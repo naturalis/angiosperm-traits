@@ -1,0 +1,195 @@
+---
+title: "Pipeline_myco"
+output: html_document
+---
+
+```{r setup, i---
+title: "Pipeline"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Pipeline of the necessary steps in R and outside of R
+
+## 1 Import data
+
+First the traits table and the original tree have to be read into R in the right format to be able to use them. 
+
+### The project root and the main tree
+```{r define data root and import tree}
+#load required package
+library(ape)
+
+#import and define data
+project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
+tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
+tree <- read.tree(tree_file)
+```
+
+### Mycorrhiza
+```{r import mycorrhiza}
+#import and define trait table 
+myco_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco_taxa.tsv'), collapse = '')
+myco_tsv <- read.table(myco_tsv_file, sep = '\t', header = TRUE)
+```
+
+## 3 Recode dependent variables to binary form
+
+The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
+input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
+moment. 
+
+### Mycorrhiza
+For mycorrhiza, there are 4 trait-states: EM, AM, both, neither. This will be turned into: AM (0) and 
+the rest together (1). So in this case nothing will be eliminated from the analysis, just (1)(2)(3) have 
+to be collapsed together. 
+```{r binary mycorrhiza tsv}
+#create new column
+myco_tsv["myco_state_int"] <- NA
+
+#add binary values to column based on names 
+myco_tsv$myco_state_int[myco_tsv$myco_state == "arbuscular"] <- "0"
+myco_tsv$myco_state_int[myco_tsv$myco_state == "ecto"] <- "1"
+myco_tsv$myco_state_int[myco_tsv$myco_state == "both"] <- "1"
+myco_tsv$myco_state_int[myco_tsv$myco_state == "neither"] <- "1"
+
+#now myco_tsv_bi contains an added column with binary state values
+```
+
+## 4 Tidy data
+
+4a. 
+The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
+not in the traits table ->cut these out of the tree. It could be true that the taxa names don't 
+match between the tree file and the trait-table, in that case not the same amount of taxa will still
+be in the tree as there are in the trait table. If that is the case, this has to be fixed!
+
+### Mycorrhiza 
+```{r match tips myc.}
+#load required packages and data
+library(stringi)
+
+#define the final tree for myc
+keep_tips_myco_tsv_bi <- as.character(unlist(c(myco_tsv[1]))) 
+keep_tips_myco_tsv_bi <- stri_replace_all_charclass(keep_tips_myco_tsv_bi, "\\p{WHITE_SPACE}", "_")
+
+tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco_tsv_bi)
+myco_tree <- drop.tip(tree, tips_to_drop_myco)
+
+```
+
+## 5 Correct for colinearity in the predictor variables
+
+There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
+so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
+or a correlation matrix. 
+
+### VIF-analysis
+```{r}
+# import GIS data 
+
+#load sdm package
+library(usdm)
+
+#execute VIF function 
+
+```
+
+### Biological interpretation
+For each of the separate research question, check whether the predictor variables that are still present and
+not present anymore, still make sense in terms of biological interpretation. 
+
+
+## 6 Model selection: Define formula and select model 
+
+The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
+GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
+
+### Secondary woodiness
+```{r}
+#define formula components
+
+#construct formula
+
+```
+
+
+### Mycorrhiza
+```{r}
+#define formula components
+
+#construct formula
+
+```
+
+
+### Domestication
+```{r}
+#define formula components
+
+#construct formula
+
+```
+
+
+## 7 Analysis
+
+After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
+There is a function in the phylolm package that allows us to do this: phyloglm. 
+
+### Secondary woodiness
+```{r}
+#fill in the arguments for the phyloglm function and execute it
+
+```
+
+
+### Mycorrhiza
+```{r}
+#fill in the arguments for the phyloglm function and execute it
+
+```
+
+
+### Domestication
+```{r}
+#fill in the arguments for the phyloglm function and execute it
+
+```
+
+
+## 8 Biological interpretation
+
+In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
+With this knowledge, the thesis can be completed. 
+
+
+
+nclude=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
