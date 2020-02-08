@@ -70,6 +70,15 @@ woody_tree <- drop.tip(tree, tips_to_drop_woody)
 
 ```
 
+4b. 
+Make the taxa names the same in the table as in the tree. 
+```{r}
+#replace the spaces in the taxa names for _ 
+woody_tsv_bi$allmb_name <- stri_replace_all_charclass(woody_tsv_bi$allmb_name, "\\p{WHITE_SPACE}", "_")
+
+```
+
+
 ## 5 Correct for colinearity in the predictor variables
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 

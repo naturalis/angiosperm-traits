@@ -64,18 +64,23 @@ serve as the 0 state. These plants will come from the main tree, based on their 
 pylogeny to the plants already included in the domestication traits table. 
 
 ```{r}
-#load domestication trait table and the tree
+#load tree
 crops_tsv_1_3
-tree
+woody_tree
 
-#make a sub-selection of the tree based on earlier selected plants (based on location in phylogeny)
-#Maybe: show node label for that specific tip label (taxa), then show taxa for that node, pick a taxa from that node (check whether it is in the tsv document on github), add if it's not on github
+#make a patristic distance matrix 
+distances <- cophenetic.phylo(tree)
 
+#search for a progenitor/semi-domesticated species inside the matrix, select the species in the matrix that has the shortest distance and add it to the vector 
 
-#add this sub-selection of the tree to the domestication trait table 
-crops_tsv_bi <- 
+crops_state0 <- 
+  
+#add the domestication column for these new plants and a 0 to the domestication_binary and
+crops_state0$domestication_binary <- "0"
 
-#add a 0 to the domestication_binary and the domestication column for these new plants
+#add the vector to crops_tsv_bi
+crops_tsv_bi <- crops_tsv_1_3
+crops_tsv_bi <- crops_state0
 
   
 ```

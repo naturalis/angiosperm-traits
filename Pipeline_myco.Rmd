@@ -83,6 +83,14 @@ myco_tree <- drop.tip(tree, tips_to_drop_myco)
 
 ```
 
+4b. 
+Make the taxa names the same in the table as in the tree. 
+```{r}
+#replace the spaces in the taxa names for _ 
+myco_tsv$allmb_name <- stri_replace_all_charclass(myco_tsv$allmb_name, "\\p{WHITE_SPACE}", "_")
+
+```
+
 ## 5 Correct for colinearity in the predictor variables
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
@@ -92,6 +100,7 @@ or a correlation matrix.
 ### VIF-analysis
 ```{r}
 # import GIS data 
+
 
 #load sdm package
 library(usdm)
