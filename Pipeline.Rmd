@@ -269,7 +269,86 @@ keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\
 ```
 
 
-## 5 Correct for colinearity in the predictor variables
+## 5 Combine the data
+
+The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
+
+### Import data
+Import the data and make sure the taxa names are the same in this table as in the tsv file and in the tree file,
+so with _ instead of spaces 
+```{r}
+#import GIS data
+GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
+GIS <- read.table(GIS_file, sep = ',', header = TRUE)
+
+#change names of GIS data 
+GIS_names <- as.character(unlist(c(GIS[1])))
+GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
+GIS$allmb_name <- GIS_names
+```
+
+### Tidy data
+Make the right selection of taxa out of the GIS variables table. 
+#### Woodiness
+```{r}
+#define the taxa that should be selected from the GIS file
+keep_GIS_woody <- as.character(unlist(c(woody_tsv_bi[1]))) 
+
+#make the selection in the GIS file
+GIS_woody <- GIS[GIS$allmb_name %in% keep_GIS_woody,]
+```
+#### Mycorrhiza
+```{r}
+#define the taxa that should be selected from the GIS file
+keep_GIS_myco <- as.character(unlist(c(myco_tsv[1]))) 
+
+#make the selection in the GIS file
+GIS_myco <- GIS[GIS$allmb_name %in% keep_GIS_myco,]
+
+```
+#### Crops
+```{r}
+#define the taxa that should be selected from the GIS file
+keep_GIS_crops <- as.character(unlist(c(crops_tsv_bi[1]))) 
+
+#make the selection in the GIS file
+GIS_crops <- GIS[GIS$allmb_name %in% keep_GIS_crops,]
+```
+
+### Add the binary trait state to the GIS table
+
+#### Woodiness
+```{r}
+#select the taxa of woody_tsv_bi that are in GIS_woody
+woody_tsv_bi_GIS <- woody_tsv_bi[woody_tsv_bi$allmb_name %in% GIS_woody$allmb_name,]
+
+#add a column to GIS_woody that contains the binary trait values
+GIS_woody$woody <- 
+
+```
+
+#### Mycorrhiza
+```{r}
+#select the taxa of woody_tsv_bi that are in GIS_woody
+myco_tsv_GIS <- myco_tsv[myco_tsv$allmb_name %in% GIS_myco$allmb_name,]
+
+#add a column to GIS_myco that contains the binary trait values
+GIS_myco$mycorrhiza <- 
+
+```
+
+#### Domestication
+```{r}
+#select the taxa of woody_tsv_bi that are in GIS_woody
+crops_tsv_bi_GIS <- crops_tsv_bi[crops_tsv_bi$allmb_name %in% GIS_crops$allmb_name,]
+
+#add a column to GIS_woody that contains the binary trait values
+GIS_crops$domestication <- 
+
+```
+
+
+## 6 Correct for colinearity in the predictor variables
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
@@ -291,7 +370,7 @@ For each of the separate research question, check whether the predictor variable
 not present anymore, still make sense in terms of biological interpretation. 
 
 
-## 6 Model selection: Define formula and select model 
+## 7 Model selection: Define formula and select model 
 
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
@@ -323,7 +402,7 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 ```
 
 
-## 7 Analysis
+## 8 Analysis
 
 After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
@@ -349,7 +428,7 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 ```
 
 
-## 8 Biological interpretation
+## 9 Biological interpretation
 
 In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
 With this knowledge, the thesis can be completed. 

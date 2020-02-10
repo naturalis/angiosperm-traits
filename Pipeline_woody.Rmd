@@ -79,7 +79,51 @@ woody_tsv_bi$allmb_name <- stri_replace_all_charclass(woody_tsv_bi$allmb_name, "
 ```
 
 
-## 5 Correct for colinearity in the predictor variables
+## 5 Combine the data
+
+The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
+
+### Import data
+Import the data and make sure the taxa names are the same in this table as in the tsv file and in the tree file,
+so with _ instead of spaces 
+```{r}
+#import GIS data
+GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
+GIS <- read.table(GIS_file, sep = ',', header = TRUE)
+
+#change names of GIS data 
+GIS_names <- as.character(unlist(c(GIS[1])))
+GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
+GIS$allmb_name <- GIS_names
+```
+
+### Tidy data
+Make the right selection of taxa out of the GIS variables table. 
+```{r}
+#define the taxa that should be selected from the GIS file
+keep_GIS_woody <- as.character(unlist(c(woody_tsv_bi[1])))
+
+#make the selection in the GIS file
+GIS_woody <- GIS[GIS$allmb_name %in% keep_GIS_woody,]
+
+```
+
+### Add the binary trait state to the GIS table
+```{r}
+#select the taxa of woody_tsv_bi that are in GIS_woody
+woody_tsv_bi_GIS <- woody_tsv_bi[woody_tsv_bi$allmb_name %in% GIS_woody$allmb_name,]
+
+#make sure that both files are displaying the names alphabetically, so that the trait values are not added
+#randomly but are really connected to the names. 
+GIS_woody <- GIS_woody[order(GIS_woody$allmb_name),]
+woody_tsv_bi_GIS <- woody_tsv_bi_GIS[order(woody_tsv_bi_GIS$allmb_name),]
+
+#add a column to GIS_woody that contains the binary trait values
+GIS_woody$woody <-  
+
+```
+
+## 6 Correct for colinearity in the predictor variables
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
@@ -100,7 +144,7 @@ library(usdm)
 For each of the separate research question, check whether the predictor variables that are still present and
 not present anymore, still make sense in terms of biological interpretation. 
 
-## 6 Model selection: Define formula and select model 
+## 7 Model selection: Define formula and select model 
 
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
@@ -112,7 +156,7 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 
 ```
 
-## 7 Analysis
+## 8 Analysis
 
 After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
@@ -122,7 +166,7 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 
 ```
 
-## 8 Biological interpretation
+## 9 Biological interpretation
 
 In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
 With this knowledge, the thesis can be completed. 
