@@ -190,16 +190,16 @@ GIS_crops <- GIS[GIS$allmb_name %in% keep_GIS_crops,]
 
 ### Add the binary trait state to the GIS table
 ```{r}
-#select the taxa of crops_tsv_bi that are in GIS_crops
-crops_tsv_bi_GIS <- crops_tsv_bi[crops_tsv_bi$allmb_name %in% GIS_crops$allmb_name,]
+#make new tables for both domestication states separately 
+GIS_crops_1 <- crops_tsv_1_3[crops_tsv_1_3$allmb_name %in% GIS$allmb_name,]
+GIS_crops_0 <- crops_df_state0[crops_df_state0$allmb_name %in% GIS$allmb_name,]
 
-#make sure that both files are displaying the names alphabetically, so that the trait values are not added
-#randomly but are really connected to the names. 
-GIS_crops <- GIS_crops[order(GIS_crops$allmb_name),]
-crops_tsv_bi_GIS <- crops_tsv_bi_GIS[order(crops_tsv_bi_GIS$allmb_name),]
+#add column to GIS_crops and add domestication state
+GIS_crops$domestication[GIS_crops$allmb_name %in% GIS_crops_1$allmb_name] <- "1"
+GIS_crops$domestication[GIS_crops$allmb_name %in% GIS_crops_0$allmb_name] <- "0"
 
-#add a column to GIS_crops that contains the binary trait values
-GIS_crops$domestication <- crops_tsv_bi_GIS$domestication_binary
+#change order of the columns for esthetics
+GIS_crops <- GIS_crops[,c(1,43, 2:42)]
 
 ```
 

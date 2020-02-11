@@ -105,7 +105,22 @@ GIS <- read.table(GIS_file, sep = ',', header = TRUE)
 
 #change names of GIS data 
 GIS_names <- as.character(unlist(c(GIS[1])))
+GIS_names <- gsub('  ', '. ', GIS_names)
 GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
+
+#there is a discrepancy with several names that should have a - instead of a _ in some places. 
+#So we have to change those specific GIS names:
+GIS_names[GIS_names == "Acaena_novae_zelandiae"] <- "Acaena_novae-zelandiae"
+GIS_names[GIS_names == "Impatiens_noli_tangere"] <- "Impatiens_noli-tangere"  
+GIS_names[GIS_names == "Myrrhidendron_donnell_smithii" ] <- "Myrrhidendron_donnell-smithii" 
+GIS_names[GIS_names == "Silene_flos_cuculi"] <- "Silene_flos-cuculi"
+GIS_names[GIS_names == "Pithecellobium_unguis_cati"] <- "Pithecellobium_unguis-cati"
+GIS_names[GIS_names == "Hyacinthoides_non_scripta" ] <- "Hyacinthoides_non-scripta" 
+GIS_names[GIS_names == "Alisma_plantago_aquatica"] <- "Alisma_plantago-aquatica" 
+GIS_names[GIS_names == "Apera_spica_venti"] <- "Apera_spica-venti"
+GIS_names[GIS_names == "Arctostaphylos_uva_ursi"] <- "Arctostaphylos_uva-ursi"
+GIS_names[GIS_names == "Blitum_bonus_henricus"] <- "Blitum_bonus-henricus"
+GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
 GIS$allmb_name <- GIS_names
 ```
 
@@ -122,16 +137,16 @@ GIS_myco <- GIS[GIS$allmb_name %in% keep_GIS_myco,]
 
 ### Add the binary trait state to the GIS table
 ```{r}
-#select the taxa of woody_tsv_bi that are in GIS_woody
-myco_tsv_GIS <- myco_tsv[myco_tsv$allmb_name %in% GIS_myco$allmb_name,]
-
-#make sure that both files are displaying the names alphabetically, so that the trait values are not added
-#randomly but are really connected to the names. 
-GIS_myco <- GIS_myco[order(GIS_myco$allmb_name),]
-myco_tsv_GIS <- myco_tsv_GIS[order(myco_tsv_GIS$allmb_name),]
+#make new tables for both mycorrhiza states separately 
+GIS_myco_0 <- myco_tsv[myco_tsv$myco_state_int == "0",]
+GIS_myco_1 <- myco_tsv[myco_tsv$myco_state_int == "1",]
 
 #add a column to GIS_myco that contains the binary trait values
-GIS_myco$mycorrhiza <- 
+GIS_myco$mycorrhiza[GIS_myco$allmb_name %in% GIS_myco_0$allmb_name] <- "0"
+GIS_myco$mycorrhiza[GIS_myco$allmb_name %in% GIS_myco_1$allmb_name] <- "1"
+
+#change order of the columns for esthetics
+GIS_myco <- GIS_myco[,c(1,43, 2:42)]
 
 ```
 
