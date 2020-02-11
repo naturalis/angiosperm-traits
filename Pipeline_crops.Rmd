@@ -46,10 +46,6 @@ This will be turned into: progenitor of domesticated and semi-domesticated toget
 eliminates the species that just exist in their domesticated form, which have already been altered 
 by human selection, so they can't tell us anything about pre-adaptations. 
 ```{r}
-#load necessary packages and data 
-library(ape)
-crops_tsv
-
 #cut out all the plants that have trait state 2 from the tsv file 
 crops_tsv_1_3 <- subset(crops_tsv, (crops_tsv$domestication == 1 | crops_tsv$domestication == 3))
 
@@ -63,69 +59,121 @@ The domestication database is not complete yet, some non-domesticated plants hav
 serve as the 0 state. These plants will come from the main tree, based on their distance on the
 pylogeny to the plants already included in the domestication traits table. 
 
+A. Import the right GIS data and make a GIS tree: 
 ```{r}
-#load tree
-crops_tsv_1_3
-tree
+#import GIS data 
+GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
+GIS <- read.table(GIS_file, sep = ',', header = TRUE)
 
-#make a patristic distance matrix 
-distanced <- cophenetic.phylo(tree)
+#change names of GIS data 
+library(stringi)
+GIS_names <- as.character(unlist(c(GIS[1])))
+GIS_names <- gsub('  ', '. ', GIS_names)
+GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
 
-#search for a progenitor/semi-domesticated species inside the matrix, select the species in the matrix that has the shortest distance and add it to the vector 
+#there is a discrepancy with several names that should have a - instead of a _ in some places. 
+#So we have to change those specific GIS names:
+GIS_names[GIS_names == "Acaena_novae_zelandiae"] <- "Acaena_novae-zelandiae"
+GIS_names[GIS_names == "Impatiens_noli_tangere"] <- "Impatiens_noli-tangere"  
+GIS_names[GIS_names == "Myrrhidendron_donnell_smithii" ] <- "Myrrhidendron_donnell-smithii" 
+GIS_names[GIS_names == "Silene_flos_cuculi"] <- "Silene_flos-cuculi"
+GIS_names[GIS_names == "Pithecellobium_unguis_cati"] <- "Pithecellobium_unguis-cati"
+GIS_names[GIS_names == "Hyacinthoides_non_scripta" ] <- "Hyacinthoides_non-scripta" 
+GIS_names[GIS_names == "Alisma_plantago_aquatica"] <- "Alisma_plantago-aquatica" 
+GIS_names[GIS_names == "Apera_spica_venti"] <- "Apera_spica-venti"
+GIS_names[GIS_names == "Arctostaphylos_uva_ursi"] <- "Arctostaphylos_uva-ursi"
+GIS_names[GIS_names == "Blitum_bonus_henricus"] <- "Blitum_bonus-henricus"
+GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
+GIS$allmb_name <- GIS_names
 
-crops_state0 <- 
-  
-#add the domestication column for these new plants and a 0 to the domestication_binary and
-crops_state0$domestication_binary <- "0"
+#make the selection
+tips_to_drop_GIS <- setdiff(tree$tip.label, GIS_names)
+GIS_tree <- drop.tip(tree, tips_to_drop_GIS)
 
-#add the vector to crops_tsv_bi
-crops_tsv_bi <- crops_tsv_1_3
-crops_tsv_bi <- crops_state0
+#are there still names that do not match?
+nomatch_tree_GIS <- setdiff(GIS_names, GIS_tree$tip.label)
+print(nomatch_tree_GIS)
 
-  
+#yes there is one name that is in the GIS table but not in the GIS tree: "Zea_mays_subsp._parviglumis"
+
 ```
 
+B. Tidy data
 
-## 4 Tidy data
-
-4a. 
 The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
-not in the traits table ->cut these out of the tree. It could be true that the taxa names don't 
+not in the traits table -> cut these out of the tree. It could be true that the taxa names don't 
 match between the tree file and the trait-table, in that case not the same amount of taxa will still
 be in the tree as there are in the trait table. If that is the case, this has to be fixed!
 
 ### Domestication 
 ```{r match tips dom.}
-#load required packages and data
-library(ape)
-tree 
-crops_tsv_bi 
+#define the temporary tree for domestication out of the GIS tree
+keep_tips_crops_tsv_bi <- as.character(unlist(c(crops_tsv_1_3[1]))) 
+tips_to_drop_crops <- setdiff(GIS_tree$tip.label, keep_tips_crops_tsv_bi)
+crops_tree <- drop.tip(GIS_tree, tips_to_drop_crops)
 
-#define the final tree for dom
-keep_tips_crops_tsv_bi <- as.character(unlist(c(crops_tsv_bi[1]))) 
-keep_tips_crops_tsv_bi <- stri_replace_all_charclass(keep_tips_crops_tsv_bi, "\\p{WHITE_SPACE}", "_")
+#make a vector of the taxa names that are still in the tree
+crops_names <- as.character(unlist(c(crops_tree$tip.label)))
 
-tips_to_drop_crops <- setdiff(tree$tip.label, keep_tips_crops_tsv_bi)
-crops_tree <- drop.tip(tree, tips_to_drop_crops)
 ```
+
+C. Now do the distance matrix calculations
+```{r}
+#make a patristic distance matrix 
+distances <- cophenetic.phylo(GIS_tree)
+
+#search for a progenitor/semi-domesticated species inside the matrix, select the species in the matrix that has the shortest distance and add it to the vector 
+head(sort(distances[,colnames(distances) == crops_names[1]]), n=20) #repeat this for 1-33
+#1 Euphorbia_usambarica                     #2 Calycophysum_pedunculatum
+#3 Solena_heterophylla                      #4 Cucumis_myriocarpus
+#5 Coccinia_adoensis                        #6 Coccinia_grandis
+#7 Morus_alba                               #8 Arachis_hypogaea_var._peruviana
+#9 Pistacia_lentiscus                       #10 Ipomoea_batatas
+#11 Heliconia_psittacorum                   #12 Tradescantia_zebrina
+#13 Amischotolype_hispida                   #14 Oenocarpus_bataua
+#15 Festuca_arundinacea_subsp._orientalis   #16 Pogonarthria_squarrosa
+#17 Setaria_glauca                          #18 Hordeum_vulgare_subsp._vulgare
+#19 Aegilops_cylindrica                     #20 Aegilops_crassa
+#21 Triticum_spelta                         #22 Microlaena_stipoides
+#23 Dioscorea_communis                      #24 Tacca_chantrieri
+#25 Freycinetia_banksii                     #26 Evodianthus_funifer
+#27 Schoenoplectus_pungens_var._badius      #28 Helictotrichon_desertorum_subsp._basalticum
+#29 Eleocharis_acutangula_subsp._breviseta  #30 Raddiella_esenbeckii
+#31 Dienia_ophrydis                         #32 Arum_maculatum
+#33 Calla_palustris
+
+head(sort(distances[,colnames(distances) == crops_names[33]]), n=20)
+
+#define a new vector with the 33 new taxa names 
+allmb_name <- c("Euphorbia_usambarica", "Calycophysum_pedunculatum", "Solena_heterophylla", "Cucumis_myriocarpus", "Coccinia_adoensis", "Coccinia_grandis", "Morus_alba", "Arachis_hypogaea_var._peruviana", "Pistacia_lentiscus", "Ipomoea_batatas", "Heliconia_psittacorum", "Tradescantia_zebrina", "Amischotolype_hispida", "Oenocarpus_bataua", "Festuca_arundinacea_subsp._orientalis", "Pogonarthria_squarrosa", "Setaria_glauca", "Hordeum_vulgare_subsp._vulgare", "Aegilops_cylindrica", "Aegilops_crassa", "Triticum_spelta", "Microlaena_stipoides", "Dioscorea_communis", "Tacca_chantrieri", "Freycinetia_banksii", "Evodianthus_funifer", "Schoenoplectus_pungens_var._badius", "Helictotrichon_desertorum_subsp._basalticum", "Eleocharis_acutangula_subsp._breviseta", "Raddiella_esenbeckii", "Dienia_ophrydis", "Arum_maculatum", "Calla_palustris")
+
+#create a new dataframe and add columns corresponding with crops_tsv_1_3
+crops_df_state0 <- data.frame(allmb_name)
+crops_df_state0$gbif_species_key <- "NA"
+crops_df_state0$domestication <- "0"
+crops_df_state0$progenitor_of <- "NA"
+crops_df_state0$domestication_binary <- "0"
+
+#combine the two dataframes into one new dataframe 
+crops_tsv_bi <- rbind(crops_tsv_1_3, crops_df_state0)  
+
+```
+
+```{r}
+#Trying to do it in code:
+library(dplyr)
+distances_2 <- head(sort(distances[,colnames(distances) == crops_names[2]]))
+
+nth(head(sort(distances[,colnames(distances) == crops_names[2]])), 2)
+
+print(row.names(nth(head(sort(distances[,colnames(distances) == crops_names[2]])), 2)))
+
+```
+
 
 ## 5 Combine the data
 
 The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
-
-### Import data
-Import the data and make sure the taxa names are the same in this table as in the tsv file and in the tree file,
-so with _ instead of spaces 
-```{r}
-#import GIS data
-GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
-GIS <- read.table(GIS_file, sep = ',', header = TRUE)
-
-#change names of GIS data 
-GIS_names <- as.character(unlist(c(GIS[1])))
-GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
-GIS$allmb_name <- GIS_names
-```
 
 ### Tidy data
 Make the right selection of taxa out of the GIS variables table. 
@@ -135,11 +183,14 @@ keep_GIS_crops <- as.character(unlist(c(crops_tsv_bi[1])))
 
 #make the selection in the GIS file
 GIS_crops <- GIS[GIS$allmb_name %in% keep_GIS_crops,]
+
+#this has 67 values instead of the expected 66 because it still contains the "Zea_mays_subsp._parviglumis"
+
 ```
 
 ### Add the binary trait state to the GIS table
 ```{r}
-#select the taxa of woody_tsv_bi that are in GIS_woody
+#select the taxa of crops_tsv_bi that are in GIS_crops
 crops_tsv_bi_GIS <- crops_tsv_bi[crops_tsv_bi$allmb_name %in% GIS_crops$allmb_name,]
 
 #make sure that both files are displaying the names alphabetically, so that the trait values are not added
@@ -148,10 +199,9 @@ GIS_crops <- GIS_crops[order(GIS_crops$allmb_name),]
 crops_tsv_bi_GIS <- crops_tsv_bi_GIS[order(crops_tsv_bi_GIS$allmb_name),]
 
 #add a column to GIS_crops that contains the binary trait values
-GIS_crops$domestication <- 
+GIS_crops$domestication <- crops_tsv_bi_GIS$domestication_binary
 
 ```
-
 
 ## 6 Correct for colinearity in the predictor variables
 
