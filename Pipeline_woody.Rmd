@@ -24,7 +24,6 @@ library(ape)
 project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
 tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
 tree <- read.tree(tree_file)
-
 ```
 
 ### Secondary woodiness
@@ -32,7 +31,6 @@ tree <- read.tree(tree_file)
 #import and define trait tables
 woody_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.tsv'), collapse = '')
 woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
-  
 ```
 
 ## 3 Recode dependent variables to binary form
@@ -66,8 +64,7 @@ keep_tips_woody_tsv_bi <- as.character(unlist(c(woody_tsv_bi[1])))
 keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\p{WHITE_SPACE}", "_")
 
 tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody_tsv_bi)
-woody_tree <- drop.tip(tree, tips_to_drop_woody)
-
+tree_woody <- drop.tip(tree, tips_to_drop_woody)
 ```
 
 4b. 
@@ -75,7 +72,6 @@ Make the taxa names the same in the table as in the tree.
 ```{r}
 #replace the spaces in the taxa names for _ 
 woody_tsv_bi$allmb_name <- stri_replace_all_charclass(woody_tsv_bi$allmb_name, "\\p{WHITE_SPACE}", "_")
-
 ```
 
 
@@ -110,7 +106,6 @@ GIS_names[GIS_names == "Arctostaphylos_uva_ursi"] <- "Arctostaphylos_uva-ursi"
 GIS_names[GIS_names == "Blitum_bonus_henricus"] <- "Blitum_bonus-henricus"
 GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
 GIS$allmb_name <- GIS_names
-
 ```
 
 ### Tidy data
@@ -121,7 +116,6 @@ keep_GIS_woody <- as.character(unlist(c(woody_tsv_bi[1])))
 
 #make the selection in the GIS file
 GIS_woody <- GIS[GIS$allmb_name %in% keep_GIS_woody,]
-
 ```
 
 ### Add the binary trait state to the GIS table
@@ -137,6 +131,8 @@ GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_1$allmb_name] <- "1"
 #change order of the columns for esthetics
 GIS_woody <- GIS_woody[,c(1,43, 2:42)]
 
+#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as there
+#are not enough occurrences for each plant in the ALLMB tree. 
 ```
 
 ## 6 Correct for colinearity in the predictor variables
@@ -147,12 +143,11 @@ or a correlation matrix.
 
 ### VIF-analysis
 ```{r}
-# import GIS data 
-
-#load sdm package
+#load required package
 library(usdm)
 
-#execute VIF function 
+#fill in the arguments of the function and execute it 
+vif(GIS_woody)
 
 ```
 
@@ -166,9 +161,12 @@ The linear model will have to be made, with the trait-presence-column as the dep
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
 ```{r}
-#define formula components
+#load required package
+library(phylolm)
 
-#construct formula
+#define formula components and run function
+phylostep(formula = , starting.formula = woody ~ 1, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
+
 
 ```
 
@@ -179,7 +177,7 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 
 ```{r}
 #fill in the arguments for the phyloglm function and execute it
-
+phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
 ## 9 Biological interpretation

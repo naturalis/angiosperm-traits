@@ -95,7 +95,6 @@ nomatch_tree_GIS <- setdiff(GIS_names, GIS_tree$tip.label)
 print(nomatch_tree_GIS)
 
 #yes there is one name that is in the GIS table but not in the GIS tree: "Zea_mays_subsp._parviglumis"
-
 ```
 
 B. Tidy data
@@ -105,7 +104,6 @@ not in the traits table -> cut these out of the tree. It could be true that the 
 match between the tree file and the trait-table, in that case not the same amount of taxa will still
 be in the tree as there are in the trait table. If that is the case, this has to be fixed!
 
-### Domestication 
 ```{r match tips dom.}
 #define the temporary tree for domestication out of the GIS tree
 keep_tips_crops_tsv_bi <- as.character(unlist(c(crops_tsv_1_3[1]))) 
@@ -114,7 +112,6 @@ crops_tree <- drop.tip(GIS_tree, tips_to_drop_crops)
 
 #make a vector of the taxa names that are still in the tree
 crops_names <- as.character(unlist(c(crops_tree$tip.label)))
-
 ```
 
 C. Now do the distance matrix calculations
@@ -156,7 +153,6 @@ crops_df_state0$domestication_binary <- "0"
 
 #combine the two dataframes into one new dataframe 
 crops_tsv_bi <- rbind(crops_tsv_1_3, crops_df_state0)  
-
 ```
 
 ```{r}
@@ -178,6 +174,12 @@ The trait states, the selected subset of taxa names, and the GIS information all
 ### Tidy data
 Make the right selection of taxa out of the GIS variables table. 
 ```{r}
+#define the final tree for domestication
+keep_tips_crops_tsv_bi <- as.character(unlist(c(crops_tsv_bi[1]))) 
+keep_tips_crops_tsv_bi <- stri_replace_all_charclass(keep_tips_crops_tsv_bi, "\\p{WHITE_SPACE}", "_")
+tips_to_drop_crops <- setdiff(tree$tip.label, keep_tips_crops_tsv_bi)
+tree_crops <- drop.tip(tree, tips_to_drop_crops)
+
 #define the taxa that should be selected from the GIS file
 keep_GIS_crops <- as.character(unlist(c(crops_tsv_bi[1]))) 
 
@@ -185,7 +187,6 @@ keep_GIS_crops <- as.character(unlist(c(crops_tsv_bi[1])))
 GIS_crops <- GIS[GIS$allmb_name %in% keep_GIS_crops,]
 
 #this has 67 values instead of the expected 66 because it still contains the "Zea_mays_subsp._parviglumis"
-
 ```
 
 ### Add the binary trait state to the GIS table
@@ -201,6 +202,8 @@ GIS_crops$domestication[GIS_crops$allmb_name %in% GIS_crops_0$allmb_name] <- "0"
 #change order of the columns for esthetics
 GIS_crops <- GIS_crops[,c(1,43, 2:42)]
 
+#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as there
+#are not enough occurrences for each plant in the ALLMB tree. 
 ```
 
 ## 6 Correct for colinearity in the predictor variables
@@ -211,10 +214,11 @@ or a correlation matrix.
 
 ### VIF-analysis
 ```{r}
-#load usdm package
+#load required package
 library(usdm)
 
-#execute VIF function 
+#fill in the arguments of the function and execute it 
+vif(GIS_crops)
 
 ```
 
@@ -230,9 +234,12 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 
 ### Domestication
 ```{r}
-#define formula components
+#load required package
+library(phylolm)
 
-#construct formula
+#define formula components and run function
+phylostep(formula = , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
+
 
 ```
 
@@ -245,7 +252,7 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 ### Domestication
 ```{r}
 #fill in the arguments for the phyloglm function and execute it
-
+phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
 

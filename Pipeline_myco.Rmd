@@ -79,8 +79,7 @@ keep_tips_myco_tsv_bi <- as.character(unlist(c(myco_tsv[1])))
 keep_tips_myco_tsv_bi <- stri_replace_all_charclass(keep_tips_myco_tsv_bi, "\\p{WHITE_SPACE}", "_")
 
 tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco_tsv_bi)
-myco_tree <- drop.tip(tree, tips_to_drop_myco)
-
+tree_myco <- drop.tip(tree, tips_to_drop_myco)
 ```
 
 4b. 
@@ -88,7 +87,6 @@ Make the taxa names the same in the table as in the tree.
 ```{r}
 #replace the spaces in the taxa names for _ 
 myco_tsv$allmb_name <- stri_replace_all_charclass(myco_tsv$allmb_name, "\\p{WHITE_SPACE}", "_")
-
 ```
 
 ## 5 Combine the data
@@ -132,7 +130,6 @@ keep_GIS_myco <- as.character(unlist(c(myco_tsv[1])))
 
 #make the selection in the GIS file
 GIS_myco <- GIS[GIS$allmb_name %in% keep_GIS_myco,]
-
 ```
 
 ### Add the binary trait state to the GIS table
@@ -148,6 +145,8 @@ GIS_myco$mycorrhiza[GIS_myco$allmb_name %in% GIS_myco_1$allmb_name] <- "1"
 #change order of the columns for esthetics
 GIS_myco <- GIS_myco[,c(1,43, 2:42)]
 
+#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as there
+#are not enough occurrences for each plant in the ALLMB tree. 
 ```
 
 
@@ -159,13 +158,11 @@ or a correlation matrix.
 
 ### VIF-analysis
 ```{r}
-# import GIS data 
-
-
-#load sdm package
+#load required package
 library(usdm)
 
-#execute VIF function 
+#fill in the arguments of the function and execute it 
+vif(GIS_myco)
 
 ```
 
@@ -179,11 +176,13 @@ not present anymore, still make sense in terms of biological interpretation.
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
-### Mycorrhiza
 ```{r}
-#define formula components
+#load required package
+library(phylolm)
 
-#construct formula
+#define formula components and run function
+phylostep(formula = , starting.formula = mycorrhiza ~ 1, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
+
 
 ```
 
@@ -195,7 +194,7 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 ### Mycorrhiza
 ```{r}
 #fill in the arguments for the phyloglm function and execute it
-
+phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
 ## 9 Biological interpretation
