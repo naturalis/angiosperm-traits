@@ -26,8 +26,8 @@ tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
 tree <- read.tree(tree_file)
 ```
 
-### Secondary woodiness
-```{r import secondary woodiness}
+### Import derived woodiness data
+```{r import derived woodiness data}
 #import and define trait tables
 woody_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.tsv'), collapse = '')
 woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
@@ -42,20 +42,20 @@ This will be turned into: derived woody (0) and non-woody (1). As this is the ac
 non-woody and derived woodiness. So all the plants with ancestral woodiness (3) as trait, have to be 
 eliminated from the analysis. 
 
-```{r binary woodiness tsv}
+```{r cut out state 2}
 #define new sub-woody, which contains binary trait values (tsv)
 woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
 ```
 
 ## 4 Tidy data
 
-4a. 
+### Trim the tree
 The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
 not in the traits table -> cut these out of the tree. It could be true that the taxa names don't 
 match between the tree file and the trait-table, in that case not the same amount of taxa will still
 be in the tree as there are in the trait table. If that is the case, this has to be fixed!
 
-```{r match tips sec. wood.}
+```{r trim tree}
 #load required packages 
 library(stringi)
 
@@ -67,22 +67,21 @@ tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody_tsv_bi)
 tree_woody <- drop.tip(tree, tips_to_drop_woody)
 ```
 
-4b. 
+### Match the names
 Make the taxa names the same in the table as in the tree. 
-```{r}
+```{r match names}
 #replace the spaces in the taxa names for _ 
 woody_tsv_bi$allmb_name <- stri_replace_all_charclass(woody_tsv_bi$allmb_name, "\\p{WHITE_SPACE}", "_")
 ```
-
 
 ## 5 Combine the data
 
 The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
 
-### Import data
+### Import GIS data
 Import the data and make sure the taxa names are the same in this table as in the tsv file and in the tree file,
 so with _ instead of spaces 
-```{r}
+```{r import GIS data}
 #import GIS data
 GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
 GIS <- read.table(GIS_file, sep = ',', header = TRUE)
@@ -108,9 +107,9 @@ GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
 GIS$allmb_name <- GIS_names
 ```
 
-### Tidy data
+### Tidy GIS data
 Make the right selection of taxa out of the GIS variables table. 
-```{r}
+```{r trim GIS table}
 #define the taxa that should be selected from the GIS file
 keep_GIS_woody <- as.character(unlist(c(woody_tsv_bi[1])))
 
@@ -119,7 +118,7 @@ GIS_woody <- GIS[GIS$allmb_name %in% keep_GIS_woody,]
 ```
 
 ### Add the binary trait state to the GIS table
-```{r}
+```{r add binary state to GIS table}
 #make new tables for both woodiness states separately 
 GIS_woody_0 <- woody_tsv_bi[woody_tsv_bi$woody == "0",]
 GIS_woody_1 <- woody_tsv_bi[woody_tsv_bi$woody == "1",]
@@ -142,40 +141,59 @@ so a correction will have to be done. This can be done using the variance inflat
 or a correlation matrix. 
 
 ### VIF-analysis
-```{r}
+```{r VIF analysis}
 #load required package
 library(usdm)
 
 #fill in the arguments of the function and execute it 
 vif(GIS_woody)
 
+#choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
 ```
-
-### Biological interpretation
-For each of the separate research question, check whether the predictor variables that are still present and
-not present anymore, still make sense in terms of biological interpretation. 
 
 ## 7 Model selection: Define formula and select model 
 
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
-```{r}
+```{r model selection BM}
 #load required package
 library(phylolm)
 
-#define formula components and run function
+#define formula components and run function (forward)
 phylostep(formula = , starting.formula = woody ~ 1, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
 
-
+#define formula components and run function (forward)
+phylostep(formula = , starting.formula = woody ~ 1, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 ```
 
-## 8 Analysis
+```{r model selection OUrandomRoot}
+#load required package
+library(phylolm)
+
+#define formula components and run function (forward)
+phylostep(formula = , starting.formula = woody ~ 1, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "forward", trace = 2)
+
+#define formula components and run function (forward)
+phylostep(formula = , starting.formula = woody ~ 1, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
+```
+
+```{r model selection OUfixedRoot}
+#load required package
+library(phylolm)
+
+#define formula components and run function (forward)
+phylostep(formula = , starting.formula = woody ~ 1, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
+
+#define formula components and run function (forward)
+phylostep(formula = , starting.formula = woody ~ 1, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2)
+```
+## 8 Phylogenetic generalized linear modelling analysis
 
 After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
-```{r}
+```{r phylogenetic generalized linear modelling}
 #fill in the arguments for the phyloglm function and execute it
 phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
@@ -184,6 +202,3 @@ phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log
 
 In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
 With this knowledge, the thesis can be completed. 
-
-
-

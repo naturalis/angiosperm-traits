@@ -31,8 +31,8 @@ tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
 tree <- read.tree(tree_file)
 ```
 
-### Mycorrhiza
-```{r import mycorrhiza}
+### Import mycorrhiza data
+```{r import mycorrhiza data}
 #import and define trait table 
 myco_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco_taxa.tsv'), collapse = '')
 myco_tsv <- read.table(myco_tsv_file, sep = '\t', header = TRUE)
@@ -44,11 +44,10 @@ The data of the dependent characters (the plant traits) have to be recoded. This
 input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
 moment. 
 
-### Mycorrhiza
 For mycorrhiza, there are 4 trait-states: EM, AM, both, neither. This will be turned into: AM (0) and 
 the rest together (1). So in this case nothing will be eliminated from the analysis, just (1)(2)(3) have 
 to be collapsed together. 
-```{r binary mycorrhiza tsv}
+```{r collapse state 1, 2 and 3}
 #create new column
 myco_tsv["myco_state_int"] <- NA
 
@@ -63,14 +62,13 @@ myco_tsv$myco_state_int[myco_tsv$myco_state == "neither"] <- "1"
 
 ## 4 Tidy data
 
-4a. 
+### Trim the tree 
 The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
 not in the traits table ->cut these out of the tree. It could be true that the taxa names don't 
 match between the tree file and the trait-table, in that case not the same amount of taxa will still
 be in the tree as there are in the trait table. If that is the case, this has to be fixed!
 
-### Mycorrhiza 
-```{r match tips myc.}
+```{r trim tree}
 #load required packages and data
 library(stringi)
 
@@ -82,9 +80,9 @@ tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco_tsv_bi)
 tree_myco <- drop.tip(tree, tips_to_drop_myco)
 ```
 
-4b. 
+### Match the names 
 Make the taxa names the same in the table as in the tree. 
-```{r}
+```{r match names}
 #replace the spaces in the taxa names for _ 
 myco_tsv$allmb_name <- stri_replace_all_charclass(myco_tsv$allmb_name, "\\p{WHITE_SPACE}", "_")
 ```
@@ -93,10 +91,10 @@ myco_tsv$allmb_name <- stri_replace_all_charclass(myco_tsv$allmb_name, "\\p{WHIT
 
 The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
 
-### Import data
+### Import GIS data
 Import the data and make sure the taxa names are the same in this table as in the tsv file and in the tree file,
 so with _ instead of spaces 
-```{r}
+```{r import GIS data}
 #import GIS data 
 GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
 GIS <- read.table(GIS_file, sep = ',', header = TRUE)
@@ -122,9 +120,9 @@ GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
 GIS$allmb_name <- GIS_names
 ```
 
-### Tidy data
+### Tidy GIS data
 Make the right selection of taxa out of the GIS variables table.
-```{r}
+```{r trim GIS table}
 #define the taxa that should be selected from the GIS file
 keep_GIS_myco <- as.character(unlist(c(myco_tsv[1]))) 
 
@@ -133,7 +131,7 @@ GIS_myco <- GIS[GIS$allmb_name %in% keep_GIS_myco,]
 ```
 
 ### Add the binary trait state to the GIS table
-```{r}
+```{r add binary state to GIS table}
 #make new tables for both mycorrhiza states separately 
 GIS_myco_0 <- myco_tsv[myco_tsv$myco_state_int == "0",]
 GIS_myco_1 <- myco_tsv[myco_tsv$myco_state_int == "1",]
@@ -149,7 +147,6 @@ GIS_myco <- GIS_myco[,c(1,43, 2:42)]
 #are not enough occurrences for each plant in the ALLMB tree. 
 ```
 
-
 ## 6 Correct for colinearity in the predictor variables
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
@@ -157,42 +154,60 @@ so a correction will have to be done. This can be done using the variance inflat
 or a correlation matrix. 
 
 ### VIF-analysis
-```{r}
+```{r VIF analysis}
 #load required package
 library(usdm)
 
 #fill in the arguments of the function and execute it 
 vif(GIS_myco)
 
+#choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
 ```
-
-### Biological interpretation
-For each of the separate research question, check whether the predictor variables that are still present and
-not present anymore, still make sense in terms of biological interpretation. 
-
 
 ## 7 Model selection: Define formula and select model 
 
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
-```{r}
+```{r model selection BM}
 #load required package
 library(phylolm)
 
-#define formula components and run function
+#define formula components and run function (forward)
 phylostep(formula = , starting.formula = mycorrhiza ~ 1, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
 
-
+#define formula components and run function (both)
+phylostep(formula = , starting.formula = mycorrhiza ~ 1, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
 ```
 
-## 8 Analysis
+```{r model selection OUrandomRoot}
+#load required package
+library(phylolm)
+
+#define formula components and run function (forward)
+phylostep(formula = , starting.formula = mycorrhiza ~ 1, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2)
+
+#define formula components and run function (both)
+phylostep(formula = , starting.formula = mycorrhiza ~ 1, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2)
+```
+
+```{r model selection OUfixedRoot}
+#load required package
+library(phylolm)
+
+#define formula components and run function (forward)
+phylostep(formula = , starting.formula = mycorrhiza ~ 1, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2)
+
+#define formula components and run function (both)
+phylostep(formula = , starting.formula = mycorrhiza ~ 1, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2)
+```
+
+## 8 Phylogenetic generalized linear modelling analysis
 
 After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
-### Mycorrhiza
-```{r}
+```{r phylogenetic generalized linear modelling}
 #fill in the arguments for the phyloglm function and execute it
 phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
@@ -201,5 +216,4 @@ phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = , btol = , log.a
 
 In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
 With this knowledge, the thesis can be completed. 
-
 

@@ -26,20 +26,18 @@ tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
 tree <- read.tree(tree_file)
 ```
 
-
-### Secondary woodiness
-```{r import secondary woodiness}
+### Derived woodiness
+```{r import derived woodiness data}
 #import and define trait tables
 woody_nex_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.nex'), collapse = '')
 woody_nex <- read.nexus(woody_nex_file)
 
 woody_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.tsv'), collapse = '')
 woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
-  
 ```
 
 ### Mycorrhiza
-```{r import mycorrhiza}
+```{r import mycorrhiza data}
 #import and define trait table 
 myco_nex_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco.nex'), collapse = '')
 myco_nex <- read.nexus(myco_nex_file)
@@ -49,11 +47,10 @@ myco_tsv <- read.table(myco_tsv_file, sep = '\t', header = TRUE)
 
 myco_idk_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco.tsv'), collapse = '')
 myco_idk <- read.table(myco_idk_file, sep = '\t', header = TRUE)
-
 ```
 
 ### Domestication 
-```{r import domestication}
+```{r import domestication data}
 #define trait table 
 crops_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/crops.tsv'), collapse = '')
 crops_tsv <- read.table(crops_tsv_file, sep = '\t', header = TRUE)
@@ -65,19 +62,18 @@ The data of the dependent characters (the plant traits) have to be recoded. This
 input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
 moment. 
 
-### Secondary woodiness
-For secondary woodiness, there are 3 trait-states: derived woody (0), non-woody (1), ancestral woody (2). 
+### Derived woodiness
+For Derived woodiness, there are 3 trait-states: derived woody (0), non-woody (1), ancestral woody (2). 
 This will be turned into: derived woody (0) and non-woody (1). As this is the actual shift between 
 non-woody and derived woodiness. So all the plants with ancestral woodiness (3) as trait, have to be 
 eliminated from the analysis. 
-```{r binary woodiness tsv}
+```{r cut out state 2 tsv}
 #define new sub-woody, which contains binary trait values (tsv)
 woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
-
 ```
 
 How to do this in the nexus file (not necessary):
-```{r binary woodiness nex}
+```{r cut out state 2 nex}
 #define the taxathat should not be included (with value 2)
 woody_tsv_2 <- subset(woody_tsv, (woody_tsv$woody == 2)) 
 unwanted_tips_woody <- as.character(unlist(c(woody_tsv_2[1]))) 
@@ -95,12 +91,11 @@ woody_nex_bi <- drop.tip(woody_nex, unwanted_numbers_woody)
 #the root edge is not present anymore in swo_bin, but that is okay. 
 ```
 
-
 ### Mycorrhiza
 For mycorrhiza, there are 4 trait-states: EM, AM, both, neither. This will be turned into: AM (0) and 
 the rest together (1). So in this case nothing will be eliminated from the analysis, just (1)(2)(3) have 
 to be collapsed together. 
-```{r binary mycorrhiza tsv}
+```{r collapse state 1,2,3}
 #create new column
 myco_tsv["myco_state_int"] <- NA
 
@@ -119,14 +114,13 @@ and semi-domesticated (3).
 This will be turned into: progenitor of domesticated and semi-domesticated together (1). This 
 eliminates the species that just exist in their domesticated form, which have already been altered 
 by human selection, so they can't tell us anything about pre-adaptations. 
-```{r}
+```{r cut out state 2}
 #cut out all the plants that have trait state 2 from the tsv file 
 crops_tsv_1_3 <- subset(crops_tsv, (crops_tsv$domestication == 1 | crops_tsv$domestication == 3))
 
 #combine states 1 and 3
 crops_tsv_1_3$domestication_binary[crops_tsv_1_3$domestication == "1"] <- "1"
 crops_tsv_1_3$domestication_binary[crops_tsv_1_3$domestication == "3"] <- "1"
-
 ```
 
 The domestication database is not complete yet, some non-domesticated plants have to be added to 
@@ -135,20 +129,18 @@ pylogeny to the plants already included in the domestication traits table.
 
 ```{r}
 #see Pipeline_crops document for the full code. 
- 
 ```
-
 
 ## 4 Tidy data
 
-4a. 
+### Trim the tree 
 The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
-not in the traits table ->cut these out of the tree. It could be true that the taxa names don't 
+not in the traits table -> cut these out of the tree. It could be true that the taxa names don't 
 match between the tree file and the trait-table, in that case not the same amount of taxa will still
 be in the tree as there are in the trait table. If that is the case, this has to be fixed!
 
-### Secondary woodiness
-```{r match tips sec. wood.}
+#### Derived woodiness
+```{r trim derived woodiness tree}
 #load required package
 library(stringi)
 
@@ -162,8 +154,8 @@ woody_tree <- drop.tip(tree, tips_to_drop_woody)
 #it works! the woody_tree now also contains only 749 tips/taxa.  
 ```
 
-### Mycorrhiza 
-```{r match tips myc.}
+#### Mycorrhiza 
+```{r trim mycorrhiza tree}
 #load required package
 library(stringi)
 
@@ -176,8 +168,8 @@ myco_tree <- drop.tip(tree, tips_to_drop_myco)
 
 ```
 
-### Domestication 
-```{r match tips dom.}
+#### Domestication 
+```{r trim domestication tree}
 #load required package
 library(stringi)
 
@@ -190,9 +182,10 @@ crops_tree <- drop.tip(tree, tips_to_drop_crops)
 
 ```
 
-4b. Make sure the names match 
-### Example for checking the names if they don't match: Secondary woodiness
-```{r matching woody}
+### Make sure the names match 
+
+#### Example for checking the names if they don't match: Secondary woodiness
+```{r match names derived woodiness}
 #make vector of the names that do not match
 keep_tips_woody_tsv_bi
 nomatch_names_woody <- setdiff(keep_tips_woody_tsv_bi, woody_tree$tip.label)
@@ -207,7 +200,6 @@ keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\
 #this worked! now implemented in the code above 
 ```
 
-
 ## 5 Combine the data
 
 The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
@@ -218,7 +210,7 @@ valid, etc.
 ### Import data
 Import the data and make sure the taxa names are the same in this table as in the tsv file and in the tree file,
 so with _ instead of spaces 
-```{r}
+```{r import GIS data}
 #import GIS data
 GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
 GIS <- read.table(GIS_file, sep = ',', header = TRUE)
@@ -246,24 +238,27 @@ GIS$allmb_name <- GIS_names
 
 ### Tidy data
 Make the right selection of taxa out of the GIS variables table. 
-#### Woodiness
-```{r}
+
+#### Derived woodiness
+```{r trim GIS table derived woodiness}
 #define the taxa that should be selected from the GIS file
 keep_GIS_woody <- as.character(unlist(c(woody_tsv_bi[1]))) 
 
 #make the selection in the GIS file
 GIS_woody <- GIS[GIS$allmb_name %in% keep_GIS_woody,]
 ```
+
 #### Mycorrhiza
-```{r}
+```{r trim GIS table mycorrhiza}
 #define the taxa that should be selected from the GIS file
 keep_GIS_myco <- as.character(unlist(c(myco_tsv[1]))) 
 
 #make the selection in the GIS file
 GIS_myco <- GIS[GIS$allmb_name %in% keep_GIS_myco,]
 ```
+
 #### Crops
-```{r}
+```{r trim GIS table domestication}
 #define the taxa that should be selected from the GIS file
 keep_GIS_crops <- as.character(unlist(c(crops_tsv_bi[1]))) 
 
@@ -275,23 +270,22 @@ GIS_crops <- GIS[GIS$allmb_name %in% keep_GIS_crops,]
 
 ### Add the binary trait state to the GIS table
 
-#### Woodiness
-```{r}
+#### Derived woodiness
+```{r add binary state to GIS table derived woodiness}
 #make new tables for both woodiness states separately 
 GIS_woody_0 <- woody_tsv_bi[woody_tsv_bi$woody == "0",]
 GIS_woody_1 <- woody_tsv_bi[woody_tsv_bi$woody == "1",]
 
 #add a column to GIS_woody that contains the binary trait values
 GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_0$allmb_name] <- "0"  
-GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_1$allmb_name] <- "1"  
+GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_1$allmb_name] <- "1"
 
 #change order of the columns for esthetics
 GIS_woody <- GIS_woody[,c(1,43, 2:42)]
-
 ```
 
 #### Mycorrhiza
-```{r}
+```{r add binary state to GIS table mycorrhiza}
 #make new tables for both mycorrhiza states separately 
 GIS_myco_0 <- myco_tsv[myco_tsv$myco_state_int == "0",]
 GIS_myco_1 <- myco_tsv[myco_tsv$myco_state_int == "1",]
@@ -302,11 +296,10 @@ GIS_myco$mycorrhiza[GIS_myco$allmb_name %in% GIS_myco_1$allmb_name] <- "1"
 
 #change order of the columns for esthetics
 GIS_myco <- GIS_myco[,c(1,43, 2:42)]
-
 ```
 
 #### Domestication
-```{r}
+```{r add binary state to GIS table domestication}
 #make new tables for both domestication states separately 
 GIS_crops_1 <- crops_tsv_1_3[crops_tsv_1_3$allmb_name %in% GIS$allmb_name,]
 GIS_crops_0 <- crops_df_state0[crops_df_state0$allmb_name %in% GIS$allmb_name,]
@@ -317,9 +310,7 @@ GIS_crops$domestication[GIS_crops$allmb_name %in% GIS_crops_0$allmb_name] <- "0"
 
 #change order of the columns for esthetics
 GIS_crops <- GIS_crops[,c(1,43, 2:42)]
-
 ```
-
 
 ## 6 Correct for colinearity in the predictor variables
 
@@ -327,96 +318,93 @@ There will probably be some colinearity in the GIS-data. This could lead to inst
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
 or a correlation matrix. 
 
-### VIF-analysis: Woodiness
-```{r}
+### VIF-analysis: Derived woodiness
+```{r VIF analysis derived woodiness}
 #load required package
 library(usdm)
 
 #fill in the arguments of the function and execute it 
 vif(GIS_woody)
+
+#choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
 ```
 
 ### VIF-analysis: Mycorrhiza
-```{r}
+```{r VIF analysis mycorrhiza}
 #load required package
 library(usdm)
 
 #fill in the arguments of the function and execute it 
 vif(GIS_myco)
+
+#choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
 ```
 
 ### VIF-analysis: Domestication 
-```{r}
+```{r VIF analysis domestication}
 #load required package
 library(usdm)
 
 #fill in the arguments of the function and execute it 
 vif(GIS_crops)
 
+#choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
 ```
-
 
 ## 7 Model selection: Define formula and select model 
 
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
-### Secondary woodiness
-```{r}
+### Derived woodiness
+```{r model selection derived woodiness}
 #load required package
 library(phylolm)
 
 #define formula components and run function
 phylostep(formula = , starting.formula = woody ~ 1, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
-
 ```
 
 ### Mycorrhiza
-```{r}
+```{r model selection mycorrhiza}
 #load required package
 library(phylolm)
 
 #define formula components and run function
 phylostep(formula = , starting.formula = mycorrhiza ~ 1, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
-
 ```
 
 ### Domestication
-```{r}
+```{r model selection domestication}
 #load required package
 library(phylolm)
 
 #define formula components and run function
 phylostep(formula = , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
-
 ```
 
-
-## 8 Analysis
+## 8 Phylogenetic generalized linear modelling analysis
 
 After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
-### Secondary woodiness
-```{r}
+### Derived woodiness
+```{r phylogenetic generalized linear modelling derived woodiness}
 #fill in the arguments for the phyloglm function and execute it
 phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
-
 ### Mycorrhiza
-```{r}
+```{r phylogenetic generalized linear modelling mycorrhiza}
 #fill in the arguments for the phyloglm function and execute it
 phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
-
 ### Domestication
-```{r}
+```{r phylogenetic generalized linear modelling domestication}
 #fill in the arguments for the phyloglm function and execute it
 phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
-
 
 ## 9 Biological interpretation
 
