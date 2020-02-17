@@ -127,16 +127,26 @@ tree_crops_temp <- drop.tip(GIS_tree, tips_to_drop_crops)
 
 #make a vector of the taxa names that are still in the tree
 crops_names <- as.character(unlist(c(tree_crops_temp$tip.label)))
+
+#there are only 34 taxa in this tree, as there is not enough information for all the taxa that are in the tsv file
 ```
 
 #### C. Now do the distance matrix calculations
 ```{r distance matrix calculations}
-#make a patristic distance matrix 
+#make a patristic distance matrix, this shows the phylogenetic distances between all the species in the tree
 distances <- cophenetic.phylo(GIS_tree)
 
-#search for a progenitor/semi-domesticated species inside the matrix, select the species in the matrix that has the shortest distance and add it to the vector
+#print the 34 taxa names that all have state 1
 print(crops_names)
-head(sort(distances[,colnames(distances) == crops_names[1]]), n=20) #repeat this for 1-33
+
+#search for a non-domesticated species (state 0) inside the matrix for every printed species (state 1) name above, 
+#sort the results based on the phylogenetic distance, and print the first 20 results
+head(sort(distances[,colnames(distances) == crops_names[1]]), n=20) 
+
+#choose the one that has the shortest phylogenetic distance AND is not domesticated (use internet to make sure) 
+#AND is not in the crops_names list -> add it to a new vector
+#do this for [1] to [34], make sure the other new taxa you select are not already in the new vector.  
+
 #1 Euphorbia_usambarica                     #2 Calycophysum_pedunculatum
 #3 Solena_heterophylla                      #4 Cucumis_myriocarpus
 #5 Coccinia_adoensis                        #6 Coccinia_grandis
@@ -155,19 +165,19 @@ head(sort(distances[,colnames(distances) == crops_names[1]]), n=20) #repeat this
 #30 Eleocharis_acutangula_subsp._breviseta  #31 Raddiella_esenbeckii
 #32 Dienia_ophrydis                         #33 Arum_maculatum
 #34 Calla_palustris
-head(sort(distances[,colnames(distances) == crops_names[33]]), n=20)
+
 
 #define a new vector with the 33 new taxa names 
 allmb_name <- c("Euphorbia_usambarica", "Calycophysum_pedunculatum", "Solena_heterophylla", "Cucumis_myriocarpus", "Coccinia_adoensis", "Coccinia_grandis", "Morus_alba", "Arachis_hypogaea_var._peruviana", "Pistacia_lentiscus", "Ipomoea_batatas", "Heliconia_psittacorum", "Tradescantia_zebrina", "Amischotolype_hispida", "Oenocarpus_bataua", "Festuca_arundinacea_subsp._orientalis", "Pogonarthria_squarrosa", "Setaria_glauca", "Digitaria_violascens", "Hordeum_vulgare_subsp._vulgare", "Aegilops_cylindrica", "Aegilops_crassa", "Elymus_elongatus", "Microlaena_stipoides", "Dioscorea_communis", "Tacca_chantrieri", "Freycinetia_banksii", "Evodianthus_funifer", "Schoenoplectus_pungens_var._badius", "Helictotrichon_desertorum_subsp._basalticum", "Eleocharis_acutangula_subsp._breviseta", "Raddiella_esenbeckii", "Dienia_ophrydis", "Arum_maculatum", "Calla_palustris")
 
-#create a new dataframe and add columns corresponding with crops_tsv_1_3
+#create a new dataframe for the state 0 taxa, and add columns that correspond with the ones in crops_tsv_1_3
 crops_df_state0 <- data.frame(allmb_name)
 crops_df_state0$gbif_species_key <- "NA"
 crops_df_state0$domestication <- "0"
 crops_df_state0$progenitor_of <- "NA"
 crops_df_state0$domestication_binary <- "0"
 
-#combine the two dataframes into one new dataframe 
+#combine the two dataframes into one new complete dataframe 
 crops_tsv_bi <- rbind(crops_tsv_1_3, crops_df_state0)  
 ```
 
@@ -187,19 +197,18 @@ print(row.names(nth(head(sort(distances[,colnames(distances) == crops_names[2]])
 The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
 
 ### Tidy data
-Make the right selection of taxa out of the GIS variables table. 
+Make the right selection of taxa out of the GIS variables table and the tree. 
 ```{r trim the GIS table}
-#define the final tree for domestication
-keep_tips_crops_tsv_bi <- as.character(unlist(c(crops_tsv_bi[1]))) 
-keep_tips_crops_tsv_bi <- stri_replace_all_charclass(keep_tips_crops_tsv_bi, "\\p{WHITE_SPACE}", "_")
-tips_to_drop_crops <- setdiff(tree$tip.label, keep_tips_crops_tsv_bi)
-tree_crops <- drop.tip(tree, tips_to_drop_crops)
-
-#define the taxa that should be selected from the GIS file
+#select the taxa that should be kept in the GIS file
 keep_GIS_crops <- as.character(unlist(c(crops_tsv_bi[1]))) 
-
-#make the selection in the GIS file
+#define the final GIS file for domestication
 GIS_crops <- GIS[GIS$allmb_name %in% keep_GIS_crops,]
+
+#select the names that have to be kept in the tree
+keep_tips_crops <- as.character(unlist(c(GIS_crops[1]))) 
+#define the final tree for domestication
+tips_to_drop_crops <- setdiff(tree$tip.label, keep_tips_crops)
+tree_crops <- drop.tip(tree, tips_to_drop_crops)
 ```
 
 ### Add the binary trait state to the GIS table
@@ -231,7 +240,7 @@ or a correlation matrix.
 library(usdm)
 
 #fill in the arguments of the function and execute it 
-vif(GIS_crops)
+vif(GIS_crops[,c(3:43)])
 
 #choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
 ```
@@ -246,10 +255,10 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 library(phylolm)
 
 #define formula components and run function (forward)
-phylostep(formula = , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = domestication ~ , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
-phylostep(formula = , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
+phylostep(formula = domestication ~ , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
 ```
 
 ```{r model selection OUrandomRoot}

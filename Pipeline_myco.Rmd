@@ -72,12 +72,12 @@ be in the tree as there are in the trait table. If that is the case, this has to
 #load required packages and data
 library(stringi)
 
-#define the final tree for myc
+#define the temporary tree for mycorrhiza
 keep_tips_myco_tsv_bi <- as.character(unlist(c(myco_tsv[1]))) 
 keep_tips_myco_tsv_bi <- stri_replace_all_charclass(keep_tips_myco_tsv_bi, "\\p{WHITE_SPACE}", "_")
 
 tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco_tsv_bi)
-tree_myco <- drop.tip(tree, tips_to_drop_myco)
+tree_myco_temp <- drop.tip(tree, tips_to_drop_myco)
 ```
 
 ### Match the names 
@@ -120,14 +120,19 @@ GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
 GIS$allmb_name <- GIS_names
 ```
 
-### Tidy GIS data
-Make the right selection of taxa out of the GIS variables table.
+### Tidy data
+Make the right selection of taxa out of the GIS variables table and the tree
 ```{r trim GIS table}
-#define the taxa that should be selected from the GIS file
+#select the taxa that should be kept in the GIS file
 keep_GIS_myco <- as.character(unlist(c(myco_tsv[1]))) 
-
-#make the selection in the GIS file
+#define the final GIS file for mycorrhiza
 GIS_myco <- GIS[GIS$allmb_name %in% keep_GIS_myco,]
+
+#select the names that have to be kept in the tree
+keep_tips_myco <- as.character(unlist(c(GIS_myco[1]))) 
+#define the final tree for mycorrhiza
+tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco)
+tree_myco <- drop.tip(tree, tips_to_drop_myco)
 ```
 
 ### Add the binary trait state to the GIS table
@@ -159,7 +164,7 @@ or a correlation matrix.
 library(usdm)
 
 #fill in the arguments of the function and execute it 
-vif(GIS_myco)
+vif(GIS_myco[,c(3:43)])
 
 #choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
 ```

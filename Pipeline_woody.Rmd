@@ -59,12 +59,12 @@ be in the tree as there are in the trait table. If that is the case, this has to
 #load required packages 
 library(stringi)
 
-#define the taxa names for the final tree for woodiness
+#define the taxa names for the temporary tree for woodiness
 keep_tips_woody_tsv_bi <- as.character(unlist(c(woody_tsv_bi[1]))) 
 keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\p{WHITE_SPACE}", "_")
 
 tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody_tsv_bi)
-tree_woody <- drop.tip(tree, tips_to_drop_woody)
+tree_woody_temp <- drop.tip(tree, tips_to_drop_woody)
 ```
 
 ### Match the names
@@ -107,14 +107,19 @@ GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
 GIS$allmb_name <- GIS_names
 ```
 
-### Tidy GIS data
-Make the right selection of taxa out of the GIS variables table. 
+### Tidy data
+Make the right selection of taxa out of the GIS variables table and the tree. 
 ```{r trim GIS table}
-#define the taxa that should be selected from the GIS file
+#select the taxa that should be kept in the GIS file
 keep_GIS_woody <- as.character(unlist(c(woody_tsv_bi[1])))
-
-#make the selection in the GIS file
+#define the final GIS file for woodiness
 GIS_woody <- GIS[GIS$allmb_name %in% keep_GIS_woody,]
+
+#select the names that have to be kept in the tree
+keep_tips_woody <- as.character(unlist(c(GIS_woody[1]))) 
+#define the final tree for mycorrhiza
+tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody)
+tree_woody <- drop.tip(tree, tips_to_drop_woody)
 ```
 
 ### Add the binary trait state to the GIS table
@@ -130,8 +135,8 @@ GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_1$allmb_name] <- "1"
 #change order of the columns for esthetics
 GIS_woody <- GIS_woody[,c(1,43, 2:42)]
 
-#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as there
-#are not enough occurrences for each plant in the ALLMB tree. 
+#there are less plants in this GIS file than in the tsv file, this makes sense as there
+#are not enough occurrences for each plant in the ALLMB tree, so not enough GIS data. 
 ```
 
 ## 6 Correct for colinearity in the predictor variables
@@ -146,7 +151,7 @@ or a correlation matrix.
 library(usdm)
 
 #fill in the arguments of the function and execute it 
-vif(GIS_woody)
+vif(GIS_woody[,c(3:43)])
 
 #choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
 ```
