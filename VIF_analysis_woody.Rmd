@@ -36,11 +36,17 @@ variable_overview <- variable_overview[1:52,1:2]
 ## Hypothesis
 
 Following the hypothesis about derived woodiness, the following variables will most probably be important for the analysis (and thus best be not deleted): 
-1. climaticMoistureIndex = Metric of relative wetness and aridity
-2. 
-3. 
+1. Wetness/aridity related variables: climaticMoistureIndex, aridityIndexThornthwaite, embergerQ 
+2. Drought related variables: PETColdestQuarter, PETDriestQuarter, PETWarmestQuarter, PETWettestQuarter.  
+3. Precipitation related variables: BIO12, BIO16&BIO17, BIO18&BIO19. 
+4. growingDegDays0 = Sum of months with temperatures greater than 0 degrees
 
 ## Consecutive rounds of the VIF analysis 
+
+Do consecutive rounds of the VIF analysis, while leaving out one variable each round. Guidelines:
+1. In the end, the VIF value has to be lower than 10 for each variable, so variables have to be deleted until this is the case. 
+2. Preferably delete the one with the highest VIF value each round, this will speed up the decrease of all the VIF values, but:  
+3. Make sure that it makes sense biologically and makes sense in the context of the specific trait. Especially tread lightly around the variables we selected previously. 
 
 ### Round one
 ```{r}

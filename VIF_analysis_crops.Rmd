@@ -39,10 +39,18 @@ Following the hypothesis about domestication, the following variables will most 
 1. PETseasonality = Monthly variability in potential evapotranspiration
 2. BIO2 = Mean Diurnal Range (Mean of monthly (max temp - min temp))
 3. BIO4 = Temperature Seasonality (standard deviation *100)
-4. BIO7 = Temperature Annual Range (BIO5-BIO6)
-5. BIO15 = Precipitation Seasonality (Coefficient of Variation)
+4. BIO15 = Precipitation Seasonality (Coefficient of Variation)
+5. BIO5&BIO6 = Max Temperature of Warmest month, and Min Temperature of Coldest Month
+    OR: maxTempColdestMonth & minTempWarmestMonth
+    OR: BIO7 = Temperature Annual Range (BIO5-BIO6)
+    OR: BIO3 (if possible)
 
 ## Consecutive rounds of the VIF analysis 
+
+Do consecutive rounds of the VIF analysis, while leaving out one variable each round. Guidelines:
+1. In the end, the VIF value has to be lower than 10 for each variable, so variables have to be deleted until this is the case. 
+2. Preferably delete the one with the highest VIF value each round, this will speed up the decrease of all the VIF values, but:  
+3. Make sure that it makes sense biologically and makes sense in the context of the specific trait. Especially tread lightly around the variables we selected previously.
 
 ### Round one
 ```{r}
