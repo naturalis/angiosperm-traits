@@ -1,0 +1,69 @@
+---
+title: "VIF_analysis_woody"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# VIF-analysis of the woodiness dataset
+
+Each of the three traits has a GIS table with different values for each variable. These variables come from 4 different datasets. Within and inbetween these datasets is a lot of correlation, which we want to eliminate as this can cause bias in our model. It depends on the trait which of these variables are the most important, or will give us the most information. This means that although the same pipeline is followed for this section, the outcomes will differ because of biological reasoning. 
+
+## General code
+
+The general code for the VIF analysis is quite easy, but it will be changed every step, because everytime a new value will be left out. 
+```{r}
+#load required package
+library(usdm)
+
+#general code for VIF analysis
+vif(GIS_woody[,c(3:43)])
+```
+
+## Variables
+
+To have an overview of the variables and more explanation about what they mean, it's best to load a file that contains that information.
+```{r}
+#load variable overview
+project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
+variable_file <- paste(c(project_root, 'GIS/Variables_overview.md'), collapse = '')
+variable_overview <- read.delim(variable_file)
+variable_overview <- variable_overview[1:52,1:2]
+```
+
+## Hypothesis
+
+Following the hypothesis about derived woodiness, the following variables will most probably be important for the analysis (and thus best be not deleted): 
+1. climaticMoistureIndex = Metric of relative wetness and aridity
+2. 
+3. 
+
+## Consecutive rounds of the VIF analysis 
+
+### Round one
+```{r}
+#all variables
+vif(GIS_woody[,c(3:43)])
+```
+
+
+### Round two
+```{r}
+#excluding: 
+vif(GIS_woody[,c(3:43)])
+```
+
+
+### Round three
+```{r}
+#excluding:
+vif(GIS_woody[,c(3:43)]) 
+```
+
+
+
+
+
+
