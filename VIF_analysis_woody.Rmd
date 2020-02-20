@@ -48,6 +48,17 @@ Do consecutive rounds of the VIF analysis, while leaving out one variable each r
 2. Preferably delete the one with the highest VIF value each round, this will speed up the decrease of all the VIF values, but:  
 3. Make sure that it makes sense biologically and makes sense in the context of the specific trait. Especially tread lightly around the variables we selected previously. 
 
+### VIF-analysis purely based on highest VIF value
+```{r}
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 38, 39, 42, 43)])
+
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), 
+#BIO16 (40), annualPET (6), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), 
+#PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), 
+
+#result is 3 left of the variables we wanted. 
+```
+
 ### Round one
 ```{r}
 #all variables

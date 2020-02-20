@@ -318,6 +318,39 @@ There will probably be some colinearity in the GIS-data. This could lead to inst
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
 or a correlation matrix. 
 
+### VIF-analysis purely based on highest VIF value: Woodiness
+```{r}
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 38, 39, 42, 43)])
+
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), 
+#BIO16 (40), annualPET (6), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), 
+#PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), 
+
+#result is 3 left of the variables we wanted. 
+```
+
+### VIF-analysis purely based on highest VIF value: Mycorrhiza
+```{r}
+vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
+
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), 
+#PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), 
+#PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18)
+
+#result is 5 left of the variables we wanted
+```
+
+### VIF-analysis purely based on highest VIF value: Domestication
+```{r}
+vif(GIS_crops[,c(3:5, 14, 17, 18, 22:24, 26, 38, 39)])
+
+#excluded: BIO7 (31), BIO11(35), continentality (9),BIO4 (28), BIO1 (25), maxTempColdest (13), growingDegDays0 (11), BIO10 (34), annualPET (6), BIO17 (41),
+#PETColdestQuarter (16), BIO12 (36), thermicityIndex (21), growingDegDays5 (12), BIO6 (30), BIO16 (40), BIO5 (29), PETWettestQuarter (20), climaticMoistureIndex (8), 
+#BIO9 (33), embergerQ (10), BIO3 (27), #aridityIndexThornthwaite (7), BIO8 (32), BIO18 (42), PETWarmestQuarter (19), BIO19 (43), BIO13 (37), monthCountByTemp10 (15)
+
+#result is 4 left of the variables we wanted. 
+```
+
 ### VIF-analysis: Derived woodiness
 ```{r VIF analysis derived woodiness}
 #load required package

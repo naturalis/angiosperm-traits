@@ -52,6 +52,17 @@ Do consecutive rounds of the VIF analysis, while leaving out one variable each r
 2. Preferably delete the one with the highest VIF value each round, this will speed up the decrease of all the VIF values, but:  
 3. Make sure that it makes sense biologically and makes sense in the context of the specific trait. Especially tread lightly around the variables we selected previously.
 
+### VIF-analysis purely based on highest VIF value
+```{r}
+vif(GIS_crops[,c(3:5, 14, 17, 18, 22:24, 26, 38, 39)])
+
+#excluded: BIO7 (31), BIO11(35), continentality (9),BIO4 (28), BIO1 (25), maxTempColdest (13), growingDegDays0 (11), BIO10 (34), annualPET (6), BIO17 (41),
+#PETColdestQuarter (16), BIO12 (36), thermicityIndex (21), growingDegDays5 (12), BIO6 (30), BIO16 (40), BIO5 (29), PETWettestQuarter (20), climaticMoistureIndex (8), 
+#BIO9 (33), embergerQ (10), BIO3 (27), #aridityIndexThornthwaite (7), BIO8 (32), BIO18 (42), PETWarmestQuarter (19), BIO19 (43), BIO13 (37), monthCountByTemp10 (15)
+
+#result is 4 left of the variables we wanted. 
+```
+
 ### Round one
 ```{r}
 #all variables
