@@ -48,11 +48,11 @@ eliminates the species that just exist in their domesticated form, which have al
 by human selection, so they can't tell us anything about pre-adaptations. 
 ```{r cut out state 2}
 #cut out all the plants that have trait state 2 from the tsv file 
-crops_tsv_1_3 <- subset(crops_tsv, (crops_tsv$domestication == 1 | crops_tsv$domestication == 3))
+crops_1_3 <- subset(crops_tsv, (crops_tsv$domestication == 1 | crops_tsv$domestication == 3))
 
 #combine states 1 and 3
-crops_tsv_1_3$domestication_binary[crops_tsv_1_3$domestication == "1"] <- "1"
-crops_tsv_1_3$domestication_binary[crops_tsv_1_3$domestication == "3"] <- "1"
+crops_1_3$domestication_binary[crops_1_3$domestication == "1"] <- "1"
+crops_1_3$domestication_binary[crops_1_3$domestication == "3"] <- "1"
 ```
 
 ### Add state 0 
@@ -92,8 +92,8 @@ tips_to_drop_GIS <- setdiff(tree$tip.label, GIS_names)
 GIS_tree <- drop.tip(tree, tips_to_drop_GIS)
 
 #are there still names that do not match?
-nomatch_tree_GIS <- setdiff(GIS_names, GIS_tree$tip.label)
-print(nomatch_tree_GIS)
+nomatch_GIS_tree <- setdiff(GIS_names, GIS_tree$tip.label)
+print(nomatch_GIS_tree)
 
 #yes there is one name that is in the GIS table but not in the GIS tree: "Zea_mays_subsp._parviglumis"
 #this is a wild subspecies of Zea mays, so it has the same distances to the other species as Zea mays does. 
@@ -105,13 +105,13 @@ GIS$allmb_name <- GIS_names
 #check if the names match now
 tips_to_drop_GIS <- setdiff(tree$tip.label, GIS_names)
 GIS_tree <- drop.tip(tree, tips_to_drop_GIS)
-nomatch_tree_GIS <- setdiff(GIS_names, GIS_tree$tip.label)
-print(nomatch_tree_GIS)
+nomatch_GIS_tree <- setdiff(GIS_names, GIS_tree$tip.label)
+print(nomatch_GIS_tree)
 
 #all names match!
 
 #now change the name in the crops_tsv_1_3 file as well, so that the selection later on goes well
-crops_tsv_1_3$allmb_name[crops_tsv_1_3$allmb_name == "Zea_mays_subsp._parviglumis"] <- "Zea_mays"
+crops_1_3$allmb_name[crops_1_3$allmb_name == "Zea_mays_subsp._parviglumis"] <- "Zea_mays"
 ```
 
 #### B. Tidy data
@@ -121,8 +121,8 @@ match between the tree file and the trait-table, in that case not the same amoun
 be in the tree as there are in the trait table. If that is the case, this has to be fixed!
 ```{r trim tree}
 #define the temporary tree for domestication out of the GIS tree
-keep_tips_crops_tsv_bi <- as.character(unlist(c(crops_tsv_1_3[1]))) 
-tips_to_drop_crops <- setdiff(GIS_tree$tip.label, keep_tips_crops_tsv_bi)
+keep_tips_crops_1_3 <- as.character(unlist(c(crops_1_3[1]))) 
+tips_to_drop_crops <- setdiff(GIS_tree$tip.label, keep_tips_crops_1_3)
 tree_crops_temp <- drop.tip(GIS_tree, tips_to_drop_crops)
 
 #make a vector of the taxa names that are still in the tree
@@ -171,14 +171,14 @@ head(sort(distances[,colnames(distances) == crops_names[1]]), n=20)
 allmb_name <- c("Euphorbia_usambarica", "Calycophysum_pedunculatum", "Solena_heterophylla", "Cucumis_myriocarpus", "Coccinia_adoensis", "Coccinia_grandis", "Morus_alba", "Arachis_hypogaea_var._peruviana", "Pistacia_lentiscus", "Ipomoea_batatas", "Heliconia_psittacorum", "Tradescantia_zebrina", "Amischotolype_hispida", "Oenocarpus_bataua", "Festuca_arundinacea_subsp._orientalis", "Pogonarthria_squarrosa", "Setaria_glauca", "Digitaria_violascens", "Hordeum_vulgare_subsp._vulgare", "Aegilops_cylindrica", "Aegilops_crassa", "Elymus_elongatus", "Microlaena_stipoides", "Dioscorea_communis", "Tacca_chantrieri", "Freycinetia_banksii", "Evodianthus_funifer", "Schoenoplectus_pungens_var._badius", "Helictotrichon_desertorum_subsp._basalticum", "Eleocharis_acutangula_subsp._breviseta", "Raddiella_esenbeckii", "Dienia_ophrydis", "Arum_maculatum", "Calla_palustris")
 
 #create a new dataframe for the state 0 taxa, and add columns that correspond with the ones in crops_tsv_1_3
-crops_df_state0 <- data.frame(allmb_name)
-crops_df_state0$gbif_species_key <- "NA"
-crops_df_state0$domestication <- "0"
-crops_df_state0$progenitor_of <- "NA"
-crops_df_state0$domestication_binary <- "0"
+crops_state0 <- data.frame(allmb_name)
+crops_state0$gbif_species_key <- "NA"
+crops_state0$domestication <- "0"
+crops_state0$progenitor_of <- "NA"
+crops_state0$domestication_binary <- "0"
 
 #combine the two dataframes into one new complete dataframe 
-crops_tsv_bi <- rbind(crops_tsv_1_3, crops_df_state0)  
+crops_bi <- rbind(crops_1_3, crops_state0)  
 ```
 
 ```{r distance matrix in code}
@@ -200,7 +200,7 @@ The trait states, the selected subset of taxa names, and the GIS information all
 Make the right selection of taxa out of the GIS variables table and the tree. 
 ```{r trim the GIS table}
 #select the taxa that should be kept in the GIS file
-keep_GIS_crops <- as.character(unlist(c(crops_tsv_bi[1]))) 
+keep_GIS_crops <- as.character(unlist(c(crops_bi[1]))) 
 #define the final GIS file for domestication
 GIS_crops <- GIS[GIS$allmb_name %in% keep_GIS_crops,]
 
@@ -214,8 +214,8 @@ tree_crops <- drop.tip(tree, tips_to_drop_crops)
 ### Add the binary trait state to the GIS table
 ```{r add binary state to GIS table}
 #make new tables for both domestication states separately 
-GIS_crops_1 <- crops_tsv_1_3[crops_tsv_1_3$allmb_name %in% GIS$allmb_name,]
-GIS_crops_0 <- crops_df_state0[crops_df_state0$allmb_name %in% GIS$allmb_name,]
+GIS_crops_1 <- crops_1_3[crops_1_3$allmb_name %in% GIS$allmb_name,]
+GIS_crops_0 <- crops_state0[crops_state0$allmb_name %in% GIS$allmb_name,]
 
 #add column to GIS_crops and add domestication state
 GIS_crops$domestication[GIS_crops$allmb_name %in% GIS_crops_1$allmb_name] <- "1"
