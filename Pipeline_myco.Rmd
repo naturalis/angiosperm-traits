@@ -166,7 +166,8 @@ library(usdm)
 #fill in the arguments of the function and execute it 
 vif(GIS_myco[,c(3:43)])
 
-#choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
+#choose the variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, results in:
+
 ```
 
 ## 7 Model selection: Define formula and select model 

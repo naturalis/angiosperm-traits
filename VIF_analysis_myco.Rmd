@@ -19,7 +19,7 @@ The general code for the VIF analysis is quite easy, but it will be changed ever
 library(usdm)
 
 #general code for VIF analysis
-vif(GIS_woody[,c(3:43)])
+vif(GIS_myco[,c(3:43)])
 ```
 
 ## Variables
@@ -36,10 +36,9 @@ variable_overview <- variable_overview[1:52,1:2]
 ## Hypothesis
 
 Following the hypothesis about mycorrhiza, the following variables will most probably be important for the analysis (and thus best be not deleted): 
-1. Moist related variables: climaticMoistureIndex, embergerQ 
+1. Moist related variables: climaticMoistureIndex, embergerQ, any PET/rain variable
 2. Soil related variables: Bulk density, Clay percentage, pH CaCL, Organic carbon 
 3. Temperature related variables: continentality, BIO8-11, BIO5&BIO6 OR maxTempColdestMonth & minTempWarmestMonth, thermInd
-
 
 ## Consecutive rounds of the VIF analysis 
 
@@ -62,21 +61,261 @@ vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
 ### Round one
 ```{r}
 #all variables
-vif(GIS_woody[,c(3:43)])
+vif(GIS_myco[,c(3:43)])
 ```
-
+BIO5, BIO6 and BIO7 all are infinite. 
+  BIO5 = Max Temperature of Warmest Month
+  BIO6 = Min Temperature of Coldest Month
+  BIO7 = Temperature Annual Range (BIO5-BIO6)
+BIO7 is a combination of BIO5 and BIO6, which explains the correlated VIF value. Best step would be to exclude BIO7 from the analysis.  
 
 ### Round two
 ```{r}
-#excluding: 
-vif(GIS_woody[,c(3:43)])
+#excluding: BIO7 (31)
+vif(GIS_myco[,c(3:30, 32:43)])
 ```
-
+BIO11 has the highest VIF value.
+  BIO11 = Mean Temperature of Coldest Quarter
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
 
 ### Round three
 ```{r}
-#excluding:
-vif(GIS_woody[,c(3:43)]) 
+#excluding: BIO7 (31), BIO11 (35)
+vif(GIS_myco[,c(3:30, 32:34, 36:43)])
 ```
+continentality has the highest VIF value.
+  continentality = Average temp. of warmest and coldest month
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round four
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9)
+vif(GIS_myco[,c(3:8, 10:30, 32:34, 36:43)])
+```
+BIO10 has the highest VIF value. 
+  BIO10 = Mean Temperature of Warmest Quarter.
+It is okay to leave this variable out (correlates with BIO11), if there are still other temperature variables left in the end.
+
+### Round five
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34)
+vif(GIS_myco[,c(3:8, 10:30, 32, 33, 36:43)])
+```
+maxTempColdestMonth has the highest vIF value.
+  maxTempColdestMonth = Maximum temp. of the coldest month
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round six
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13)
+vif(GIS_myco[,c(3:8, 10:12, 14:30, 32, 33, 36:43)])
+```
+BIO6 has the highest VIF value.
+  BIO6 = Min Temperature of Coldest Month
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round seven
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6
+vif(GIS_myco[,c(3:8, 10:12, 14:29, 32, 33, 36:43)])
+```
+BIO1 has the highest VIF value.
+  BIO1 = Annual Mean Temperature
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round eight
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25)
+vif(GIS_myco[,c(3:8, 10:12, 14:24, 26:29, 32, 33, 36:43)])
+```
+annualPET has the highest VIF value.
+  annualPET = Annual potential evapotranspiration
+It is okay to leave this variable out, if there are still other precipitation variables left in the end.
+
+### Round nine
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6)
+vif(GIS_myco[,c(3:5, 7, 8, 10:12, 14:24, 26:29, 32, 33, 36:43)])
+```
+growingDegDays0 has the highest VIF value.
+  growingDegDays0 = Sum of months with temperatures greater than 0 degrees
+It is okay to leave this variable out, is not important for this analysis.
+
+### Round ten
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 12, 14:24, 26:29, 32, 33, 36:43)])
+```
+PETColdestQuarter has the highest VIF value.
+  PETColdestQuarter = Mean monthly PET of coldest quarter
+It is okay to leave this variable out, if there are still other precipitation-related variables left in the end.
+
+### Round eleven
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 12, 14, 15, 17:24, 26:29, 32, 33, 36:43)])
+```
+thermicityIndex has the highest VIF value.
+  thermInd = Compensated thermicity index
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round twelve
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26:29, 32, 33, 36:43)])
+```
+BIO13 has the highest VIF value.
+  BIO13 = Precipitation of Wettest Month
+It is okay to leave this variable out, if there are still other precipitation variables left in the end.
+
+### Round thirteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26:29, 32, 33, 36, 38:43)])
+```
+BIO17 has the highest VIF value.
+  BIO17 = Precipitation of Driest Quarter
+It is okay to leave this variable out, if there are still other precipitation variables left in the end.
+
+### Round fourteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26:29, 32, 33, 36, 38:40, 42, 43)])
+```
+BIO5 has the highest VIF value
+  BIO5 = Max Temperature of Warmest Month
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round fifteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26:28, 32, 33, 36, 38:40, 42, 43)])
+```
+BIO9 has the highest VIF value.
+  BIO9 = Mean Temperature of Driest Quarter
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round sixteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26:28, 32, 36, 38:40, 42, 43)])
+```
+BIO12 has the highest VIF value.
+  BIO12 = Annual Precipitation
+It is okay to leave this variable out, if there are still other precipitation variables left in the end.
+
+### Round seventeen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26:28, 32, 38:40, 42, 43)])
+```
+BIO3 has the highest VIF value.
+  BIO3 = Isothermality (BIO2/BIO7) (* 100)
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round eightteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26, 28, 32, 38:40, 42, 43)])
+```
+growingDegDays5 has the highest VIF value.
+  growingDegDays5 = Sum of months with temperatures greater than 5 degrees
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round nineteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 14, 15, 17:20, 22:24, 26, 28, 32, 38:40, 42, 43)])
+```
+BIO8 has the highest VIF value.
+  BIO8 = Mean Temperature of Wettest Quarter
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round twenty
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 14, 15, 17:20, 22:24, 26, 28, 38:40, 42, 43)])
+```
+PETWarmestQuarter has the highest VIF value.
+  PETWarmestQuarter = Mean monthly PET of warmest quarter
+It is okay to leave this variable out, if there are still other precipitation-related variables left in the end.
+
+### Round twenty-one
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19) 
+vif(GIS_myco[,c(3:5, 7, 8, 10, 14, 15, 17, 18, 20, 22:24, 26, 28, 38:40, 42, 43)])
+```
+BIO16 has the highest VIF value
+  BIO16 = Precipitation of Wettest Quarter
+It is okay to leave this variable out, if there are still other precipitation variables left in the end.
+
+### Round twenty-two
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 14, 15, 17, 18, 20, 22:24, 26, 28, 38, 39, 42, 43)])
+```
+monthCountByTemp10 has the highest VIF value.
+  monthCountByTemp10 = Sum of months with temperatures greater than 10 degrees
+It is okay to leave this variable out, if there are still other temperature variables left in the end.
+
+### Round twenty-three
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15)
+vif(GIS_myco[,c(3:5, 7, 8, 10, 14, 17, 18, 20, 22:24, 26, 28, 38, 39, 42, 43)])
+```
+embergerQ has the highest VIF value. Followed by climaticMoistureIndex. 
+  embergerQ = Emberger’s pluviothermic quotient 
+    Moist and temperature combined (?)
+  climaticMoistureIndex = Metric of relative wetness and aridity
+This variable is quite important, when looking at the hypothesis. So we'll delete climaticMoistureIndex.
+
+### Round twenty-four
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), climaticMoistureIndex (8)
+vif(GIS_myco[,c(3:5, 7, 10, 14, 17, 18, 20, 22:24, 26, 28, 38, 39, 42, 43)])
+```
+embergerQ has the highest VIF value. Followed by PETDriestQuarter
+  embergerQ = Emberger’s pluviothermic quotient
+  PETDriestQuarter = Mean monthly PET of driest quarter
+embergerQ has a lot of information, when looking at the hypothesis. So delete PETDriestQuarter
+
+### Round twenty-five
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), climaticMoistureIndex (8), PETDriestQuarter (17)
+vif(GIS_myco[,c(3:5, 7, 10, 14, 18, 20, 22:24, 26, 28, 38, 39, 42, 43)])
+```
+embergerQ has the highest VIF value. Followed by BIO14
+  embergerQ = Emberger’s pluviothermic quotient
+  BIO14 = Precipitation of Driest Month
+embergerQ has a lot of information, when looking at the hypothesis. So delete BIO14 (as long as there are still precipitation related variables in the end)
+
+### Round twenty-six
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), climaticMoistureIndex (8), PETDriestQuarter (17), BIO14 (38)
+vif(GIS_myco[,c(3:5, 7, 10, 14, 18, 20, 22:24, 26, 28, 39, 42, 43)])
+```
+embergerQ has the highest VIF value. Followed by PETseasonality
+  embergerQ = Emberger’s pluviothermic quotient
+  PETseasonality = Monthly variability in potential evapotranspiration
+embergerQ has a lot of information, when looking at the hypothesis. So delete PETseasonality (as long as there are still precipitation related variables in the end). 
+
+### Round twenty-seven
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), climaticMoistureIndex (8), PETDriestQuarter (17), BIO14 (38), PETseasonality (18)
+vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42, 43)])
+```
+embergerQ has the highest VIF value, followed by BIO19
+  embergerQ = Emberger’s pluviothermic quotient
+  BIO19 = Precipitation of Coldest Quarter
+In my opinion, embergerQ is important for the model, so I'll keep that variable and delete BIO19.
+
+### Round twenty-seven
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), climaticMoistureIndex (8), PETDriestQuarter (17), BIO14 (38), PETseasonality (18), BIO19 (43)
+vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42)])
+```
+Result is just VIF values of below 10. 
+
+
 
 
