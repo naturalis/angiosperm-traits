@@ -322,8 +322,13 @@ vif(GIS_woody[,c(3:5, 8, 14, 17, 18, 20, 22:24, 39, 43)])
 ```
 
 ### Add back BIO6 (30) 
+This increases the VIF value of PETseasonality and BIO6 has a high VIF value as well. But it is not necessary to include this in the analysis, we have three other PET variables. But if we really want BIO6 in the analysis, we will have to delete: PETseasonality (18) and ClimaticMoistureIndex (8)
 ```{r}
-#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdestMonth (13), PETColdestQuarter (16), BIO16 (40), annualPET (6), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), growingDegDays5 (12), PETWarmestQuarter (19), BIO8 (32), BIO13 (37), BIO3 (27), BIO9 (33), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26)
-vif(GIS_woody[,c(3:5, 8, 14, 15, 17, 18, 20, 22:24, 30, 38, 39, 42, 43)]) 
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdestMonth (13), PETColdestQuarter (16), BIO16 (40), annualPET (6), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), growingDegDays5 (12), PETWarmestQuarter (19), BIO8 (32), BIO13 (37), BIO3 (27), BIO9 (33), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETseasonality (18) and ClimaticMoistureIndex (8)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 20, 22:24, 30, 38, 39, 42, 43)]) 
 ```
-This increases the VIF value of PETseasonality and BIO6 has a high VIF value as well. But it is not necessary to h=include this in the analysis, we have three other PET variables.  
+Or, if we want to keep ClimaticMoistureIndex: PETseasonality (18), BIO18 (42), monthCountByTemp10 (15), and BIO14 (38)
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdestMonth (13), PETColdestQuarter (16), BIO16 (40), annualPET (6), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), growingDegDays5 (12), PETWarmestQuarter (19), BIO8 (32), BIO13 (37), BIO3 (27), BIO9 (33), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETseasonality (18), BIO18 (42), monthCountByTemp10 (15), and BIO14 (38)
+vif(GIS_woody[,c(3:5, 8, 14, 17, 20, 22:24, 30, 39, 43)]) 
+```

@@ -68,19 +68,42 @@ vif(GIS_crops[,c(3:5, 14, 17, 18, 22:24, 26, 38, 39)])
 #all variables
 vif(GIS_woody[,c(3:43)])
 ```
-
+BIO5, BIO6 and BIO7 all are infinite. 
+  BIO5 = Max Temperature of Warmest Month
+  BIO6 = Min Temperature of Coldest Month
+  BIO7 = Temperature Annual Range (BIO5-BIO6)
+BIO7 is a combination of BIO5 and BIO6, which explains the correlated VIF value. Best step would be to exclude BIO7 from the analysis, or delete both BOIO5 and BIO6. If I delete BIO7, I want to make sure I keep both BIO5 and BIO6
 
 ### Round two
 ```{r}
-#excluding: 
-vif(GIS_woody[,c(3:43)])
+#excluding: BIO7 (column 31)
+vif(GIS_woody[,c(3:30, 32:43)])
 ```
-
+BIO11 has the highest value. 
+  BIO11 = Mean Temperature of Coldest Quarter
+It is okay to delete this variable, is not about the extremes/oscillations. 
 
 ### Round three
 ```{r}
-#excluding:
-vif(GIS_woody[,c(3:43)]) 
+#excluding: BIO7 (31), BIO11 (35)
+vif(GIS_woody[,c(3:30, 32:34, 36:43)]) 
 ```
+Continentality has the highest VIF value.
+  continentality = Average temp. of warmest and coldest month
+It is okay to delete this variable, is not about the extremes/oscillations.
 
+### Round four
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9)
+vif(GIS_woody[,c(3:8, 10:30, 32:34, 36:43)]) 
+```
+BIO10 has the highest VIF value
+  BIO10 = Mean Temperature of Warmest Quarter
+It is okay to delete this variable, is not about the extremes/oscillations.
+  
+### Round five
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34)
+vif(GIS_woody[,c(3:8, 10:30, 32, 33, 36:43)]) 
+```
 

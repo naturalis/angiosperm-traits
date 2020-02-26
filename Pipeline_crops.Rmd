@@ -123,7 +123,7 @@ be in the tree as there are in the trait table. If that is the case, this has to
 #define the temporary tree for domestication out of the GIS tree
 keep_tips_crops_1_3 <- as.character(unlist(c(crops_1_3[1]))) 
 tips_to_drop_crops <- setdiff(GIS_tree$tip.label, keep_tips_crops_1_3)
-tree_crops_temp <- drop.tip(GIS_tree, tips_to_drop_crops)
+tree_crops_tsv <- drop.tip(GIS_tree, tips_to_drop_crops)
 
 #make a vector of the taxa names that are still in the tree
 crops_names <- as.character(unlist(c(tree_crops_temp$tip.label)))
@@ -230,7 +230,7 @@ GIS_crops <- GIS_crops[,c(1,43, 2:42)]
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
-or a correlation matrix. 
+or a correlation matrix. See the VIF_analysis_crops file for details of the decision making process.
 
 ### VIF-analysis
 ```{r VIF analysis}

@@ -316,6 +316,13 @@ vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42)])
 ```
 Result is just VIF values of below 10. 
 
+## Other options
 
+### Keep BIO19 
+Keeping BIO19 means we have to delete embergerQ to keep all the VIF values below 1, results in: 
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), climaticMoistureIndex (8), PETDriestQuarter (17), BIO14 (38), PETseasonality (18), BIO19 (43)
+vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
+```
 
 

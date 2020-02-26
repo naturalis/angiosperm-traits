@@ -64,7 +64,7 @@ keep_tips_woody_tsv_bi <- as.character(unlist(c(woody_tsv_bi[1])))
 keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\p{WHITE_SPACE}", "_")
 
 tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody_tsv_bi)
-tree_woody_temp <- drop.tip(tree, tips_to_drop_woody)
+tree_woody_tsv <- drop.tip(tree, tips_to_drop_woody)
 ```
 
 ### Match the names
@@ -143,7 +143,7 @@ GIS_woody <- GIS_woody[,c(1,43, 2:42)]
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
-or a correlation matrix. 
+or a correlation matrix. See the VIF_analysis_woody file for details of the decision making process.
 
 ### VIF-analysis
 ```{r VIF analysis}
@@ -153,7 +153,18 @@ library(usdm)
 #fill in the arguments of the function and execute it 
 vif(GIS_woody[,c(3:43)])
 
-#choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
+#choose variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
+# 1. Without ClimaticMoistureIndex: 
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 38, 39, 42, 43)])
+
+# 2. With ClimaticMoistureIndex:
+vif(GIS_woody[,c(3:5, 8, 14, 17, 18, 20, 22:24, 39, 43)])
+
+# 3. With BIO6, without ClimaticMoistureIndex:
+vif(GIS_woody[,c(3:5, 14, 15, 17, 20, 22:24, 30, 38, 39, 42, 43)]) 
+
+# 4. With BIO6, with ClimaticMoistureIndex:
+vif(GIS_woody[,c(3:5, 8, 14, 17, 20, 22:24, 30, 39, 43)]) 
 ```
 
 ## 7 Model selection: Define formula and select model 

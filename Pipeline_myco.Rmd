@@ -64,7 +64,7 @@ myco_tsv$myco_state_int[myco_tsv$myco_state == "neither"] <- "1"
 
 ### Trim the tree 
 The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
-not in the traits table ->cut these out of the tree. It could be true that the taxa names don't 
+not in the traits table -> cut these out of the tree. It could be true that the taxa names don't 
 match between the tree file and the trait-table, in that case not the same amount of taxa will still
 be in the tree as there are in the trait table. If that is the case, this has to be fixed!
 
@@ -77,7 +77,7 @@ keep_tips_myco_tsv_bi <- as.character(unlist(c(myco_tsv[1])))
 keep_tips_myco_tsv_bi <- stri_replace_all_charclass(keep_tips_myco_tsv_bi, "\\p{WHITE_SPACE}", "_")
 
 tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco_tsv_bi)
-tree_myco_temp <- drop.tip(tree, tips_to_drop_myco)
+tree_myco_tsv <- drop.tip(tree, tips_to_drop_myco)
 ```
 
 ### Match the names 
@@ -121,7 +121,7 @@ GIS$allmb_name <- GIS_names
 ```
 
 ### Tidy data
-Make the right selection of taxa out of the GIS variables table and the tree
+Make the right selection of taxa out of the GIS variables table and the tree. 
 ```{r trim GIS table}
 #select the taxa that should be kept in the GIS file
 keep_GIS_myco <- as.character(unlist(c(myco_tsv[1]))) 
@@ -156,7 +156,7 @@ GIS_myco <- GIS_myco[,c(1,43, 2:42)]
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
-or a correlation matrix. 
+or a correlation matrix. See the VIF_analysis_myco file for details of the decision making process.
 
 ### VIF-analysis
 ```{r VIF analysis}
@@ -167,7 +167,11 @@ library(usdm)
 vif(GIS_myco[,c(3:43)])
 
 #choose the variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, results in:
+# 1. Without embergerQ
+vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
 
+# 2. With embergerQ
+vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42)])
 ```
 
 ## 7 Model selection: Define formula and select model 
