@@ -1,0 +1,108 @@
+---
+title: "Model_selection_myco"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Model selection mycorrhiza 
+
+The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
+GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
+
+## Results of VIF-analysis
+```{r VIF analysis}
+#load required package
+library(usdm)
+
+#fill in the arguments of the function and execute it 
+vif(GIS_myco[,c(3:43)])
+
+#choose the variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, results in:
+# 1. Without embergerQ
+vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
+
+# 2. With embergerQ
+vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42)])
+```
+
+## Define formulas
+
+```{r define formula}
+# 0. Starting formula
+myco_starting_formula <- 
+  
+# 1. Without embergerQ
+myco_formula_1 <- 
+
+# 2. With embergerQ
+myco_formula_2 <- 
+```
+
+## Model selection with BM
+
+```{r model selection BM}
+#load required package
+library(phylolm)
+
+#define formula components and run function (forward)
+## 1
+phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
+## 2
+phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
+
+#define formula components and run function (both)
+## 1 
+phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
+## 2
+phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
+```
+
+The forward model with BM has the following model as the best model, with an AIC of...
+  mycorrhiza ~
+The both model with BM has the following model as the best model, with an AIC of ...
+  mycorrhiza ~
+
+## Model selection OUrandomRoot
+
+```{r model selection OUrandomRoot}
+#define formula components and run function (forward)
+## 1
+phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2)
+## 2
+phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2)
+
+#define formula components and run function (both)
+## 1
+phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2)
+## 2
+phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2)
+```
+
+The forward model with OUrandomRoot has the following model as the best model, with an AIC of...
+  mycorrhiza ~
+The both model with OUrandomRoot has the following model as the best model, with an AIC of ...
+  mycorrhiza ~
+
+## Model selection with OUfixedRoot
+
+```{r model selection OUfixedRoot}
+#define formula components and run function (forward)
+## 1
+phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2)
+## 2
+phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2)
+
+#define formula components and run function (both)
+## 1
+phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2)
+## 2
+phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2)
+```
+
+The forward model with OUfixedRoot has the following model as the best model, with an AIC of...
+  mycorrhiza ~
+The both model with OUfixedRoot has the following model as the best model, with an AIC of ...
+  mycorrhiza ~

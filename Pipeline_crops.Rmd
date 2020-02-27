@@ -240,7 +240,11 @@ library(usdm)
 #fill in the arguments of the function and execute it 
 vif(GIS_crops[,c(3:43)])
 
-#choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology 
+#choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
+# 1. 
+
+# 2. 
+
 ```
 
 ## 7 Model selection: Define formula and select model 
@@ -248,38 +252,60 @@ vif(GIS_crops[,c(3:43)])
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
+### Define formulas
+```{r}
+# 0. Starting formula
+
+# 1. 
+
+# 2. 
+
+```
+
+### Model selection with BM
 ```{r model selection BM}
 #load required package
 library(phylolm)
 
-#define formula components and run function (forward)
-phylostep(formula = domestication ~ , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
+#define formula components and run function (forward), for formula 1 and 2
+phylostep(formula = crops_formula_1 , starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
 
-#define formula components and run function (both)
-phylostep(formula = domestication ~ , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
+#define formula components and run function (both), for formula 1 and 2 
+phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
 ```
 
+The forward model with BM has the following model as the best model, with an AIC of...
+  domestication ~
+The both model with BM has the following model as the best model, with an AIC of ...
+  domestication ~
+
+### Model selection with OUrandomRoot
 ```{r model selection OUrandomRoot}
-#load required package
-library(phylolm)
+#define formula components and run function (forward), for formula 1 and 2 
+phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
 
-#define formula components and run function (forward)
-phylostep(formula = , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
-
-#define formula components and run function (both)
-phylostep(formula = , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
+#define formula components and run function (both), for formula 1 and 2 
+phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
 ```
 
+The forward model with OUrandomRoot has the following model as the best model, with an AIC of...
+  domestication ~
+The both model with OUrandomRoot has the following model as the best model, with an AIC of ...
+  domestication ~
+
+### Model selection with OUfixedRoot
 ```{r model selection OUfixedRoot}
-#load required package
-library(phylolm)
+#define formula components and run function (forward), for formula 1 and 2 
+phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
 
-#define formula components and run function (forward)
-phylostep(formula = , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
-
-#define formula components and run function (both)
-phylostep(formula = , starting.formula = domestication ~ 1, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
+#define formula components and run function (both), for formula 1 and 2 
+phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
 ```
+
+The forward model with OUfixedRoot has the following model as the best model, with an AIC of...
+  domestication ~
+The both model with OUfixedRoot has the following model as the best model, with an AIC of ...
+  domestication ~
 
 ## 8 Phylogenetic generalized linear modelling analysis
 
