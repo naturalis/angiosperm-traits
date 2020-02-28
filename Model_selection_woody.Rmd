@@ -28,6 +28,22 @@ vif(GIS_woody[,c(3:5, 14, 15, 17, 20, 22:24, 30, 38, 39, 42, 43)])
 vif(GIS_woody[,c(3:5, 8, 14, 17, 20, 22:24, 30, 39, 43)]) 
 ```
 
+## Change data to match the wanted data format
+
+There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
+the row names have to match the tip.lables of the tree, and secondly the trait value (0/1) has to be
+seen as a numeric value. 
+```{r}
+#make allmb_name column into the row names of this table
+rownames(GIS_woody) <- GIS_woody[,1]
+GIS_woody[,1] <- NULL
+
+#make sure the values in the 'woody' column are seen as numeric values
+GIS_woody$woody <- as.numeric(GIS_woody$woody)
+#check whether it worked
+is.numeric(GIS_woody$woody)
+```
+
 ## Define formulas
 
 ```{r define formula}
@@ -35,25 +51,21 @@ vif(GIS_woody[,c(3:5, 8, 14, 17, 20, 22:24, 30, 39, 43)])
 woody_starting_formula <- woody ~ 1 
 
 # 1. Without ClimaticMoistureIndex: 
-woody_formula_1 <- GIS_woody$woody ~ GIS_woody$Aspect + GIS_woody$BulkDensity + GIS_woody$ClayPercentage + GIS_woody$minTempWarmest + GIS_woody$monthCountByTemp10 + GIS_woody$PETDriestQuarter + GIS_woody$PETseasonality + GIS_woody$PETWettestQuarter + GIS_woody$OrganicCarbon + GIS_woody$PhCaCL + GIS_woody$Slope + GIS_woody$bio14 + GIS_woody$bio15 + GIS_woody$bio18 + GIS_woody$bio19
-
-
-'woody' ~ GIS_woody[c('Aspect' + 'BulkDensity' + 'ClayPercentage' + 'minTempWarmest' + 'monthCountByTemp10' + 'PETDriestQuarter' + 'PETseasonality' + 'PETWettestQuarter' + 'OrganicCarbon' + 'PhCaCl' + 'Slope' + 'BIO14' + 'BIO15' + 'BIO18' + 'BIO19'),]
+woody_formula_1 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
 
 # 2. With ClimaticMoistureIndex:
-woody_formula_2 <- 'woody' ~ 'Aspect' + 'BulkDensity' + 'ClayPercentage' + 'ClimaticMoistureIndex' +'minTempWarmest' + 'PETDriestQuarter' + 'PETseasonality' + 'PETWettestQuarter' + 'OrganicCarbon' + 'PhCaCl' + 'Slope' + 'BIO15' + 'BIO19'
+woody_formula_2 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
 
 # 3. With BIO6, without ClimaticMoistureIndex:
-woody_formula_3 <- 'woody' ~ 'Aspect' + 'BulkDensity' + 'ClayPercentage' + 'minTempWarmest' + 'monthCountByTemp10' + 'PETDriestQuarter' + 'PETWettestQuarter' + 'OrganicCarbon' + 'PhCaCl' + 'Slope' + 'BIO6' + 'BIO14' + 'BIO15' + 'BIO18' + 'BIO19'
+woody_formula_3 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio14 + bio15 + bio18 + bio19
 
 # 4. With BIO6, with ClimaticMoistureIndex:
-woody_formula_4 <- 'woody' ~ 'Aspect' + 'BulkDensity' + 'ClayPercentage' + 'ClimaticMoistureIndex' + 'minTempWarmest' + 'PETDriestQuarter' + 'PETWettestQuarter' + 'OrganicCarbon' + 'PhCaCl' + 'Slope' + 'BIO6' + 'BIO15' + 'BIO19'
-
+woody_formula_4 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
 ```
 
 ## Model selection with BM 
 
-BM stands for ...
+BM stands for Brownian motion, 
 
 ```{r model selection BM}
 #load required package
@@ -63,21 +75,21 @@ library(phylolm)
 ##1
 phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
 ##2
-phylostep(formula = , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_2, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
 ##3
-phylostep(formula = , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_3, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
 ##4
-phylostep(formula = , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_4, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ##1
-phylostep(formula = , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 ##2
-phylostep(formula = , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+phylostep(formula = woody_formula_2, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 ##3
-phylostep(formula = , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+phylostep(formula = woody_formula_3, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 ##4
-phylostep(formula = , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+phylostep(formula = woody_formula_4, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 
 ```
 
@@ -149,3 +161,8 @@ The forward model with OUfixedRoot has the following model as the best model, wi
 The both model with OUfixedRoot has the following model as the best model, with an AIC of ...
   woody ~
 
+## Conclusion
+The best model can be made with the following combination:
+Formula: 
+Model: 
+Direction: 

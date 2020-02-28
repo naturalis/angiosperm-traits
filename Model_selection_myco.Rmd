@@ -28,21 +28,34 @@ vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
 vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42)])
 ```
 
-## Define formulas
+## Change data to match the wanted data format
+There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
+the row names have to match the tip.lables of the tree, and secondly the trait value (0/1) has to be
+seen as a numeric value. 
+```{r}
+#make allmb_name column into the row names of this table
+rownames(GIS_myco) <- GIS_myco[,1]
+GIS_myco[,1] <- NULL
 
+#make sure the values in the 'woody' column are seen as numeric values
+GIS_myco$mycorrhiza <- as.numeric(GIS_myco$mycorrhiza)
+#check whether it worked
+is.numeric(GIS_myco$mycorrhiza)
+```
+
+## Define formulas
 ```{r define formula}
 # 0. Starting formula
-myco_starting_formula <- 
+myco_starting_formula <- mycorrhiza ~ 1
   
 # 1. Without embergerQ
-myco_formula_1 <- 
+myco_formula_1 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 + bio19
 
 # 2. With embergerQ
-myco_formula_2 <- 
+myco_formula_2 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 
 ```
 
 ## Model selection with BM
-
 ```{r model selection BM}
 #load required package
 library(phylolm)
@@ -106,3 +119,10 @@ The forward model with OUfixedRoot has the following model as the best model, wi
   mycorrhiza ~
 The both model with OUfixedRoot has the following model as the best model, with an AIC of ...
   mycorrhiza ~
+
+## Conclusion
+The best model can be made with the following combination:
+Formula: 
+Model: 
+Direction: 
+

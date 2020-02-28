@@ -21,18 +21,33 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 
 ```
 
+## Change data to match the wanted data format
+
+There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
+the row names have to match the tip.lables of the tree, and secondly the trait value (0/1) has to be
+seen as a numeric value. 
+```{r}
+#make allmb_name column into the row names of this table
+rownames(GIS_crops) <- GIS_crops[,1]
+GIS_crops[,1] <- NULL
+
+#make sure the values in the 'woody' column are seen as numeric values
+GIS_crops$domestication <- as.numeric(GIS_crops$domestication)
+#check whether it worked
+is.numeric(GIS_crops$domestication)
+```
+
 ## Define formulas
 ```{r}
 # 0. Starting formula
-crops_starting_formula <- 
+crops_starting_formula <- domestication ~ 1 
 
 # 1. 
-crops_formula_1 <- 
+crops_formula_1 <- domestication ~ 
 
 # 2. 
-crops_formula_2 <- 
+crops_formula_2 <- domestication ~ 
 ```
-
 
 ## Model selection with BM
 
@@ -99,3 +114,9 @@ The forward model with OUfixedRoot has the following model as the best model, wi
   domestication ~
 The both model with OUfixedRoot has the following model as the best model, with an AIC of ...
   domestication ~
+
+## Conclusion
+The best model can be made with the following combination:
+Formula: 
+Model: 
+Direction: 

@@ -177,70 +177,22 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 # 0. Define starting formula
 woody_starting_formula <- woody ~ 1 
 
-# 1. Without ClimaticMoistureIndex: 
-woody_formula_1 <- GIS_woody$woody ~ GIS_woody$Aspect + GIS_woody$BulkDensity + GIS_woody$ClayPercentage + GIS_woody$minTempWarmest + GIS_woody$monthCountByTemp10 + GIS_woody$PETDriestQuarter + GIS_woody$PETseasonality + GIS_woody$PETWettestQuarter + GIS_woody$OrganicCarbon + GIS_woody$PhCaCL + GIS_woody$Slope + GIS_woody$bio14 + GIS_woody$bio15 + GIS_woody$bio18 + GIS_woody$bio19
-
-
-'woody' ~ GIS_woody[c('Aspect' + 'BulkDensity' + 'ClayPercentage' + 'minTempWarmest' + 'monthCountByTemp10' + 'PETDriestQuarter' + 'PETseasonality' + 'PETWettestQuarter' + 'OrganicCarbon' + 'PhCaCl' + 'Slope' + 'BIO14' + 'BIO15' + 'BIO18' + 'BIO19'),]
-
-# 2. With ClimaticMoistureIndex:
-woody_formula_2 <- 'woody' ~ 'Aspect' + 'BulkDensity' + 'ClayPercentage' + 'ClimaticMoistureIndex' +'minTempWarmest' + 'PETDriestQuarter' + 'PETseasonality' + 'PETWettestQuarter' + 'OrganicCarbon' + 'PhCaCl' + 'Slope' + 'BIO15' + 'BIO19'
-
-# 3. With BIO6, without ClimaticMoistureIndex:
-woody_formula_3 <- 'woody' ~ 'Aspect' + 'BulkDensity' + 'ClayPercentage' + 'minTempWarmest' + 'monthCountByTemp10' + 'PETDriestQuarter' + 'PETWettestQuarter' + 'OrganicCarbon' + 'PhCaCl' + 'Slope' + 'BIO6' + 'BIO14' + 'BIO15' + 'BIO18' + 'BIO19'
-
-# 4. With BIO6, with ClimaticMoistureIndex:
-woody_formula_4 <- 'woody' ~ 'Aspect' + 'BulkDensity' + 'ClayPercentage' + 'ClimaticMoistureIndex' + 'minTempWarmest' + 'PETDriestQuarter' + 'PETWettestQuarter' + 'OrganicCarbon' + 'PhCaCl' + 'Slope' + 'BIO6' + 'BIO15' + 'BIO19'
+# 1. Best formula
 
 ```
 
-### Model selection with BM
+### Model selection 
+What gives us the best result (in terms of the AIC value): 
+- Model: BM, OUrandomRoot, or OUfixedRoot
+- Direction: forward or both 
+For full script and outcomes of the selection process, see "Model_selection_woody"
 ```{r model selection BM}
 #load required package
 library(phylolm)
 
-#define formula components and run function (forward), for formulas 1, 2, 3, and 4
-##1
-phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
-
-#define formula components and run function (both), for formulas 1, 2, 3, and 4
-##1
-phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
-
+#define function components and run function 
+phylostep(formula = ??? , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "???", direction = "???", trace = 2)
 ```
-
-The forward model with BM has the following model as the best model, with an AIC of...
-  woody ~
-The both model with BM has the following model as the best model, with an AIC of ...
-  woody ~
-
-### Model selection with OUrandomRoot
-```{r model selection OUrandomRoot}
-#define formula components and run function (forward), for formulas 1, 2, 3, and 4
-phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "forward", trace = 2)
-
-#define formula components and run function (both), for formulas 1, 2, 3, and 4
-phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
-```
-
-The forward model with OUrandomRoot has the following model as the best model, with an AIC of...
-  woody ~
-The both model with OUrandomRoot has the following model as the best model, with an AIC of ...
-  woody ~
-
-### Model selection with OUfixedRoot
-```{r model selection OUfixedRoot}
-#define formula components and run function (forward), for formulas 1, 2, 3, and 4
-phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
-
-#define formula components and run function (both), for formulas 1, 2, 3, and 4
-phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2)
-```
-
-The forward model with OUfixedRoot has the following model as the best model, with an AIC of...
-  woody ~
-The both model with OUfixedRoot has the following model as the best model, with an AIC of ...
-  woody ~
 
 ## 8 Phylogenetic generalized linear modelling analysis
 
