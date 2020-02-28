@@ -1,0 +1,110 @@
+---
+title: "Phylostep Notes/try-outs"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Phylostep Notes, problems and possible solutions 
+
+## Define possible formulas
+
+```{r define formula}
+woody <- GIS_woody$woody
+taxa = sort(tree_woody$tip.label)
+
+# 0. Define starting formula
+woody_starting_formula <- woody ~ 1 
+
+# 1. Without ClimaticMoistureIndex: 
+# ... 
+woody_formula_1 <- GIS_woody$woody ~ GIS_woody$Aspect + GIS_woody$BulkDensity + GIS_woody$ClayPercentage + GIS_woody$minTempWarmest + GIS_woody$monthCountByTemp10 + GIS_woody$PETDriestQuarter + GIS_woody$PETseasonality + GIS_woody$PETWettestQuarter + GIS_woody$OrganicCarbon + GIS_woody$PhCaCL + GIS_woody$Slope + GIS_woody$bio14 + GIS_woody$bio15 + GIS_woody$bio18 + GIS_woody$bio19
+
+#mf works, but: non-numeric argument to binary operator
+woody_formula_1 <- woody~Aspect+BulkDensity+ClayPercentage+minTempWarmest+monthCountByTemp10+PETDriestQuarter+PETseasonality+PETWettestQuarter+OrganicCarbon+PhCaCL+Slope+bio14+bio15+bio18+bio19
+
+# ...
+woody_formula_1 <- woody~Aspect[taxa]+BulkDensity[taxa]+ClayPercentage[taxa]+minTempWarmest[taxa]+monthCountByTemp10[taxa]+PETDriestQuarter[taxa]+PETseasonality[taxa]+PETWettestQuarter[taxa]+OrganicCarbon[taxa]+PhCaCL[taxa]+Slope[taxa]+bio14[taxa]+bio15[taxa]+bio18[taxa]+bio19[taxa]
+
+#mf does not work, number of rows in the data does not match the number of tips in the tree
+woody_formula_1 <- woody[taxa]~Aspect[taxa]+BulkDensity[taxa]+ClayPercentage[taxa]+minTempWarmest[taxa]+monthCountByTemp10[taxa]+PETDriestQuarter[taxa]+PETseasonality[taxa]+PETWettestQuarter[taxa]+OrganicCarbon[taxa]+PhCaCL[taxa]+Slope[taxa]+bio14[taxa]+bio15[taxa]+bio18[taxa]+bio19[taxa]
+
+#mf does not work, and wrong: invalid term in model formula 
+woody_formula_1 <- 'woody' ~ GIS_woody[c('Aspect' + 'BulkDensity' + 'ClayPercentage' + 'minTempWarmest' + 'monthCountByTemp10' + 'PETDriestQuarter' + 'PETseasonality' + 'PETWettestQuarter' + 'OrganicCarbon' + 'PhCaCL' + 'Slope' + 'BIO14' + 'BIO15' + 'BIO18' + 'BIO19'),]
+
+#mf does not work, and number of rows in the data does not match the number of tips in the tree
+woody_formula_1 <- woody[taxa]~Aspect+BulkDensity+ClayPercentage+minTempWarmest+monthCountByTemp10+PETDriestQuarter+PETseasonality+PETWettestQuarter+OrganicCarbon+PhCaCL+Slope+bio14+bio15+bio18+bio19
+
+```
+
+## Phylostep with with BM 
+```{r model selection BM}
+#load required package
+library(phylolm)
+
+#execute function
+phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
+```
+
+What phylostep does: 
+```{r}
+#in their code is: 
+mf = model.frame(formula=formula,data=data)
+if (nrow(mf)!=length(phy$tip.label))
+    stop("number of rows in the data does not match the number of tips in the tree.")
+
+#specific for our data: 
+mf <- model.frame(formula = woody_formula_1, data = GIS_woody)
+```
+
+What I have now:
+```{r}
+#The best function is:
+woody_formula_1 <- woody~Aspect+BulkDensity+ClayPercentage+minTempWarmest+monthCountByTemp10+PETDriestQuarter+PETseasonality+PETWettestQuarter+OrganicCarbon+PhCaCL+Slope+bio14+bio15+bio18+bio19
+
+#This works with the mf: gives 677 obs. of 16 variables (this excludes the taxa names and keeps the rest)
+mf <- model.frame(formula = woody_formula_1, data = GIS_woody)
+
+#but this does not work with the phylostep function, gives these warnings:
+  #1. Error: non-numeric argument to binary operator
+#I think this is due to the + sign in between the column names, but this should not be a problem right?
+
+  #2. warning message: data names do not match with the tip labels
+#this is what the phylostep code does: 
+data.names = rownames(mf)
+  order = match(data.names, phy$tip.label)
+  if (sum(is.na(order))>0) {
+   warning("data names do not match with the tip labels.\n")} 
+rownames(mf) #this yields the tip.label numbers, instead of the taxa names, because the allmb taxa names are not included in the mf. 
+#so this means I have to include the taxa names in the formula somehow?
+```
+
+Solution to problem 1:
+I realised I just had to make the allmb names into the row names of the dataframe.
+```{r}
+rownames(GIS_woody) <- GIS_woody[,1]
+GIS_woody[,1] <- NULL
+
+#now the mf contains the taxa names as row names
+#and the "data names do not match with the tip labels" warning is gone.
+#but I still have the error: non-numeric argument to binary operator
+```
+
+Solution to problem 2:
+This error means that there are columns in the data frame that are not seen by R as numeric values. 
+```{r}
+is.numeric(GIS_woody$woody)
+#	[1] FALSE
+
+#Made this numeric:
+	GIS_woody$woody <- as.numeric(GIS_woody$woody)
+	is.numeric(GIS_woody$woody)
+#	[1] TRUE
+	
+#tried the analysis again --> works! So this is the right solution
+```
+
+
+
