@@ -63,14 +63,20 @@ library(phylolm)
 #define formula components and run function (forward)
 ## 1
 phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
+  # mycorrhiza ~ 1 + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 + bio19
+
 ## 2
 phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
+  # mycorrhiza ~ 1 + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + PETWettestQuarter + Slope + bio2 + bio4 + bio15
 
 #define formula components and run function (both)
 ## 1 
 phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
+  # mycorrhiza ~ 1 + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 + bio19
+
 ## 2
 phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
+  # mycorrhiza ~ 1 + ClayPercentage + aridityIndexThornthwaite + embergerQ + PETWettestQuarter + Slope + bio2 + bio4 + bio15
 ```
 
 The forward model with BM has the following model as the best model, with an AIC of...
@@ -84,14 +90,20 @@ The both model with BM has the following model as the best model, with an AIC of
 #define formula components and run function (forward)
 ## 1
 phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2)
+  #  mycorrhiza ~ 1 + BulkDensity + minTempWarmest + PETWettestQuarter + PhCaCL + bio2 + bio4 + bio15 + bio19
+
 ## 2
 phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2)
+  # mycorrhiza ~ 1 + BulkDensity + embergerQ + minTempWarmest + PhCaCL + Slope + bio2 + bio15
 
 #define formula components and run function (both)
 ## 1
 phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2)
+  # mycorrhiza ~ 1 + BulkDensity + minTempWarmest + PETWettestQuarter + PhCaCL + bio2 + bio4 + bio15 + bio19
+
 ## 2
 phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2)
+  # mycorrhiza ~ 1 + BulkDensity + embergerQ + minTempWarmest + PhCaCL + Slope + bio2 + bio15
 ```
 
 The forward model with OUrandomRoot has the following model as the best model, with an AIC of...
@@ -105,14 +117,20 @@ The both model with OUrandomRoot has the following model as the best model, with
 #define formula components and run function (forward)
 ## 1
 phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2)
+  # mycorrhiza ~ 1 + BulkDensity + minTempWarmest + PETWettestQuarter + PhCaCL + bio2 + bio4 + bio15 + bio19
+
 ## 2
 phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2)
+  # mycorrhiza ~ 1 + BulkDensity + embergerQ + minTempWarmest + PhCaCL + Slope + bio2 + bio15
 
 #define formula components and run function (both)
 ## 1
 phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2)
+  # mycorrhiza ~ 1 + BulkDensity + minTempWarmest + PETWettestQuarter + PhCaCL + bio2 + bio4 + bio15 + bio19
+
 ## 2
 phylostep(formula = myco_formula_2, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2)
+  # mycorrhiza ~ 1 + BulkDensity + embergerQ + minTempWarmest + PhCaCL + Slope + bio2 + bio15
 ```
 
 The forward model with OUfixedRoot has the following model as the best model, with an AIC of...
