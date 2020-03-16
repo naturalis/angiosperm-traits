@@ -19,7 +19,7 @@ The general code for the VIF analysis is quite easy, but it will be changed ever
 library(usdm)
 
 #general code for VIF analysis
-vif(GIS_woody[,c(3:43)])
+vif(GIS_crops[,c(3:43)])
 ```
 
 ## Variables
@@ -52,16 +52,13 @@ Do consecutive rounds of the VIF analysis, while leaving out one variable each r
 2. Preferably delete the one with the highest VIF value each round, this will speed up the decrease of all the VIF values, but:  
 3. Make sure that it makes sense biologically and makes sense in the context of the specific trait. Especially tread lightly around the variables we selected previously.
 
-### VIF-analysis purely based on highest VIF value
+## VIF-analysis purely based on highest VIF value
 ```{r}
-vif(GIS_crops[,c(3:5, 14, 17, 18, 22:24, 26, 38, 39)])
-
-#excluded: BIO7 (31), BIO11(35), continentality (9),BIO4 (28), BIO1 (25), maxTempColdest (13), growingDegDays0 (11), BIO10 (34), annualPET (6), BIO17 (41),
-#PETColdestQuarter (16), BIO12 (36), thermicityIndex (21), growingDegDays5 (12), BIO6 (30), BIO16 (40), BIO5 (29), PETWettestQuarter (20), climaticMoistureIndex (8), 
-#BIO9 (33), embergerQ (10), BIO3 (27), #aridityIndexThornthwaite (7), BIO8 (32), BIO18 (42), PETWarmestQuarter (19), BIO19 (43), BIO13 (37), monthCountByTemp10 (15)
-
-#result is 4 left of the variables we wanted. 
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), BIO15 (39), PETWarmestQuarter (19)
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 37, 38, 43)]) 
 ```
+
+## VIF analysis combined with biological interpretation
 
 ### Round one
 ```{r}
@@ -77,7 +74,7 @@ BIO7 is a combination of BIO5 and BIO6, which explains the correlated VIF value.
 ### Round two
 ```{r}
 #excluding: BIO7 (column 31)
-vif(GIS_woody[,c(3:30, 32:43)])
+vif(GIS_crops[,c(3:30, 32:43)])
 ```
 BIO11 has the highest value. 
   BIO11 = Mean Temperature of Coldest Quarter
@@ -86,7 +83,7 @@ It is okay to delete this variable, is not about the extremes/oscillations.
 ### Round three
 ```{r}
 #excluding: BIO7 (31), BIO11 (35)
-vif(GIS_woody[,c(3:30, 32:34, 36:43)]) 
+vif(GIS_crops[,c(3:30, 32:34, 36:43)]) 
 ```
 Continentality has the highest VIF value.
   continentality = Average temp. of warmest and coldest month
@@ -95,15 +92,309 @@ It is okay to delete this variable, is not about the extremes/oscillations.
 ### Round four
 ```{r}
 #excluding: BIO7 (31), BIO11 (35), continentality (9)
-vif(GIS_woody[,c(3:8, 10:30, 32:34, 36:43)]) 
+vif(GIS_crops[,c(3:8, 10:30, 32:34, 36:43)]) 
 ```
-BIO10 has the highest VIF value
-  BIO10 = Mean Temperature of Warmest Quarter
+BIO1 has the highest VIF value
+  BIO1 = Annual Mean Temperature
 It is okay to delete this variable, is not about the extremes/oscillations.
   
 ### Round five
 ```{r}
-#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34)
-vif(GIS_woody[,c(3:8, 10:30, 32, 33, 36:43)]) 
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25)
+vif(GIS_crops[,c(3:8, 10:24, 26:30, 32:34, 36:43)]) 
+```
+BIO4 has the highest VIF value
+   BIO4 = Temperature Seasonality (standard deviation *100)
+BIO4 is a variable that could be important. We'll leave it out for now, but try to add it back later. 
+
+### Round six
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28)
+vif(GIS_crops[,c(3:8, 10:24, 26, 27, 29, 30, 32:34, 36:43)]) 
+```
+BIO10 has the highest VIF value
+   BIO10 = Mean Temperature of Warmest Quarter
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round seven
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34)
+vif(GIS_crops[,c(3:8, 10:24, 26, 27, 29, 30, 32, 33, 36:43)]) 
+```
+annualPET has the highest VIF value
+   annualPET Annual potential evapotranspiration
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round eight
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6)
+vif(GIS_crops[,c(3:5, 7, 8, 10:24, 26, 27, 29, 30, 32, 33, 36:43)]) 
+```
+growingDegDays0 has the highest VIF value
+   growingDegDays0 = Sum of months with temperatures greater than 0 degrees
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round nine
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12:24, 26, 27, 29, 30, 32, 33, 36:43)]) 
+```
+maxTempColdestMonth has the highest VIF value
+   maxTempColdestMonth = Maximum temp. of the coldest month
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round ten
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12, 14:24, 26, 27, 29, 30, 32, 33, 36:43)]) 
+```
+thermicityIndex has the highest VIF value
+   thermicityIndex = Compensated thermicity index
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round eleven
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12, 14:20, 22:24, 26, 27, 29, 30, 32, 33, 36:43)]) 
+```
+PETColdestQuarter has the highest VIF value
+   PETColdestQuarter = Mean monthly PET of coldest quarter
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round twelve
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26, 27, 29, 30, 32, 33, 36:43)]) 
+```
+BIO17 has the highest VIF value
+   BIO17 = Precipitation of Driest Quarter
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round thirteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26, 27, 29, 30, 32, 33, 36:40, 42, 43)]) 
+```
+BIO12 has the highest VIF value
+  BIO12 = Annual Precipitation
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round fourteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26, 27, 29, 30, 32, 33, 37:40, 42, 43)]) 
+```
+BIO8 has the highest VIF value
+  BIO8 = Mean Temperature of Wettest Quarter
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round fifteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26, 27, 29, 30, 33, 37:40, 42, 43)]) 
+```
+BIO6 has the highest VIF value
+  BIO6 = Min Temperature of Coldest Month
+It is okay to delete this variable, it is not the most important temperature variable, and BIO2 is still included.
+
+### Round sixteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26, 27, 29, 33, 37:40, 42, 43)]) 
+```
+BIO5 has the highest VIF value
+  BIO5 = Max Temperature of Warmest Month
+It is okay to delete this variable, it is not the most important temperature variable, and BIO2 is still included.
+
+### Round seventeen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26, 27, 33, 37:40, 42, 43)]) 
+```
+BIO16 has the highest VIF value
+  BIO16 = Precipitation of Wettest Quarter
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round eightteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 12, 14, 15, 17:20, 22:24, 26, 27, 33, 37:39, 42, 43)]) 
+```
+growingDegDays5 has the highest VIF value
+  growingDegDays5 = Sum of months with temperatures greater than 5 degrees
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round nineteen
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12)
+vif(GIS_crops[,c(3:5, 7, 8, 10, 14, 15, 17:20, 22:24, 26, 27, 33, 37:39, 42, 43)]) 
+```
+climaticMoistureIndex  has the highest VIF value
+  climaticMoistureIndex = Metric of relative wetness and aridity
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round twenty
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8)
+vif(GIS_crops[,c(3:5, 7, 10, 14, 15, 17:20, 22:24, 26, 27, 33, 37:39, 42, 43)]) 
+```
+BIO3 has the highest VIF value
+  BIO3 = Isothermality (BIO2/BIO7) (* 100)
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round twenty-one
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27)
+vif(GIS_crops[,c(3:5, 7, 10, 14, 15, 17:20, 22:24, 26, 33, 37:39, 42, 43)]) 
+```
+BIO9 has the highest VIF value
+  BIO9 Mean Temperature of Driest Quarter
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round twenty-two
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33)
+vif(GIS_crops[,c(3:5, 7, 10, 14, 15, 17:20, 22:24, 26, 37:39, 42, 43)]) 
+```
+embergerQ has the highest VIF value
+  embergerQ Emberger’s pluviothermic quotient 
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round twenty-three
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10)
+vif(GIS_crops[,c(3:5, 7, 14, 15, 17:20, 22:24, 26, 37:39, 42, 43)]) 
+```
+BIO18 has the highest VIF value
+  BIO18 Precipitation of Warmest Quarter
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round twenty-four
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42)
+vif(GIS_crops[,c(3:5, 7, 14, 15, 17:20, 22:24, 26, 37:39, 43)]) 
+```
+aridityIndexThornthwaite has the highest VIF value
+  aridityIndexThornthwaite = Thornthwaite aridity index
+It is okay to delete this variable, is not about the extremes/oscillations.
+
+### Round twenty-five
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7)
+vif(GIS_crops[,c(3:5, 14, 15, 17:20, 22:24, 26, 37:39, 43)]) 
+```
+BIO2 has the highest VIF value
+  BIO2 = Mean Diurnal Range (Mean of monthly (max temp - min temp))
+BIO2 is a variable that could be important. We'll leave it out for now, but try to add it back later. 
+
+### Round twenty-six
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26)
+vif(GIS_crops[,c(3:5, 14, 15, 17:20, 22:24, 37:39, 43)]) 
+```
+PETseasonality and monthCountByTemp10 have the highest VIF values
+  PETseasonality = Monthly variability in potential evapotranspiration
+  monthCountByTemp10 = Sum of months with temperatures greater than 10 degrees
+PETseasonality could be important for this research question, as it implies oscillations. monthCountByTemp10 is less important. 
+
+### Round twenty-seven
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), monthCountByTemp10 (15)
+vif(GIS_crops[,c(3:5, 14, 17:20, 22:24, 37:39, 43)]) 
+```
+PETseasonality and PETDriestQuarter have the highest VIF values
+  PETseasonality = Monthly variability in potential evapotranspiration
+  PETDriestQuarter = Mean monthly PET of driest quarter
+PETseasonality could be important for this research question, as it implies oscillations. PETDriestQuarter is less important. 
+
+### Round twenty-eight
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), monthCountByTemp10 (15), PETDriestQuarter (17)
+vif(GIS_crops[,c(3:5, 14, 18:20, 22:24, 37:39, 43)]) 
+```
+PETseasonality, BIO13 and BIO15 have the highest VIF values
+  PETseasonality = Monthly variability in potential evapotranspiration
+  BIO13 = Precipitation of Wettest Month
+  BIO15 = Precipitation Seasonality (Coefficient of Variation)
+PETseasonality and BIO15 could be important for this research question, as they imply oscillations. BIO13 is less important. 
+
+### Round twenty-nine
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), monthCountByTemp10 (15), PETDriestQuarter (17), BIO13 (37)
+vif(GIS_crops[,c(3:5, 14, 18:20, 22:24, 38, 39, 43)]) 
+```
+PETWarmestQuarter and BIO15 have the highest VIF values
+  PETWarmestQuarter = Mean monthly PET of warmest quarter
+  BIO15 = Precipitation Seasonality (Coefficient of Variation)
+BIO15 could be important for this research question, as it implies oscillations. PETWarmestQuarter is less important. 
+
+### Round thirty: With PETseasonality
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), monthCountByTemp10 (15), PETDriestQuarter (17), BIO13 (37), PETWarmestQuarter (19)
+vif(GIS_crops[,c(3:5, 14, 18, 20, 22:24, 38, 39, 43)]) 
+```
+All VIF values are now beneath 10.  
+
+## VIF analysis, other combinations:
+
+### With BIO4 (and BIO15)
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), PETWarmestQuarter (19), BIO13 (37), PETDriestQuarter (17), BIO14 (38)
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 28, 39, 43)]) 
+```
+
+### With BIO2
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), PETseasonality (18), monthCountByTemp10 (15), PETWarmestQuarter (19)
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 37, 38, 43)]) 
+```
+
+### With BIO15
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), PETWarmestQuarter (19), BIO19 (43), BIO14 (38)
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 37, 39)]) 
+```
+
+### With BIO2 and PET seasonality
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), monthCountByTemp10 (15), PETDriestQuarter (17), BIO13 (37), PETWarmestQuarter (19), BIO15 (39)
+vif(GIS_crops[,c(3:5, 14, 18, 20, 22:24, 26, 38, 43)]) 
+```
+
+### With BIO4 and PET seasonality
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), monthCountByTemp10 (15), PETDriestQuarter (17), BIO13 (37), PETWarmestQuarter (19), BIO14 (38), BIO15 (39), PhCaCL (23), minTempWarmest (14), BulkDensity (4)
+vif(GIS_crops[,c(3, 5, 18, 20, 22, 24, 28, 43)]) 
+```
+
+### With BIO2 and BIO4 
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), PETseasonality (18), monthCountByTemp10 (15), BIO15 (39), PETWarmestQuarter (19), PETDriestQuarter (17), BIO13 (37)
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 26, 28, 38, 43)]) 
+```
+
+### With BIO2 and BIO15
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), PETseasonality (18), monthCountByTemp10 (15), PETWarmestQuarter (19), BIO19 (43), BIO13 (37), BIO14 (38)
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 39)]) 
+```
+
+### With BIO2, BIO4, and BIO15 
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), PETseasonality (18), monthCountByTemp10 (15), PETWarmestQuarter (19), PETDriestQuarter (17), BIO13 (37), BIO14 (38)
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 26, 28, 39, 43)]) 
+```
+
+### With BIO2, BIO4 and PETseasonality
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), monthCountByTemp10 (15), PETDriestQuarter (17), BIO13 (37), PETWarmestQuarter (19), BIO15 (39), PETWettestQuarter (20), BIO14 (38), PhCaCL (23), minTempWarmest (14), BulkDensity (4), BIO19 (43), ClayPercentage (5), OrganicCarbon (22), Slope (24), Aspect (3)
+vif(GIS_crops[,c(18, 26, 28)]) 
+```
+NOT POSSIBLE!! 
+
+### With BIO2, BIO4 and BIO15 
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), PETseasonality (18), monthCountByTemp10 (15), PETWarmestQuarter (19), PETDriestQuarter (17), BIO13 (37), BIO14 (38)
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 26, 28, 39, 43)]) 
 ```
 

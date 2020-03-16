@@ -14,11 +14,32 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 
 ## Results of VIF-analysis
 ```{r}
-# 1. 
+# 1. Solely based on lowest VIF value
+vif(GIS_crops[,c(3:5, 14, 17, 18, 22:24, 26, 38, 39)])
 
+# 2. With PETseasonality
+vif(GIS_crops[,c(3:5, 14, 18, 20, 22:24, 38, 39, 43)]) 
 
-# 2. 
+# 3. With BIO2 
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 37, 38, 43)]) 
 
+# 4. With BIO4 
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 28, 39, 43)]) 
+
+# 5. With BIO15
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 37, 39)]) 
+
+# 6. With PETseasonality and BIO2
+vif(GIS_crops[,c(3:5, 14, 18, 20, 22:24, 26, 38, 43)]) 
+
+# 7. With PETseasonality and BIO4
+vif(GIS_crops[,c(3, 5, 18, 20, 22, 24, 28, 43)]) 
+
+# 8. With BIO15 and BIO2 
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 39)]) 
+
+# 9. With BIO15 and BIO4 = same as with just BIO4
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 28, 39, 43)]) 
 ```
 
 ## Change data to match the wanted data format
@@ -42,11 +63,32 @@ is.numeric(GIS_crops$domestication)
 # 0. Starting formula
 crops_starting_formula <- domestication ~ 1 
 
-# 1. 
+# 1. With PETseasonality
 crops_formula_1 <- domestication ~ 
 
-# 2. 
+# 2. With BIO2
 crops_formula_2 <- domestication ~ 
+
+# 3. With BIO4
+crops_formula_3 <- domestication ~ 
+
+# 4. BIO15
+crops_formula_4 <- domestication ~ 
+
+# 5. With PETseasonality and BIO2
+crops_formula_5 <- domestication ~ 
+
+# 6. With PETseasonality and BIO4
+crops_formula_6 <- domestication ~ 
+
+# 7. With Bio15 and BIO2
+crops_formula_7 <- domestication ~ 
+
+# 8. With BIO15 and BIO4
+crops_formula_8 <- domestication ~ 
+
+# 9. Solely based on highest VIF value
+crops_formula_9 <- domestication ~ 
 ```
 
 ## Model selection with BM
