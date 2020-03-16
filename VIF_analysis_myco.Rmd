@@ -49,11 +49,8 @@ Do consecutive rounds of the VIF analysis, while leaving out one variable each r
 
 ### VIF-analysis purely based on highest VIF value
 ```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18)
 vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
-
-#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), 
-#PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), 
-#PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18)
 
 #result is 5 left of the variables we wanted
 ```
@@ -309,20 +306,60 @@ embergerQ has the highest VIF value, followed by BIO19
   BIO19 = Precipitation of Coldest Quarter
 In my opinion, embergerQ is important for the model, so I'll keep that variable and delete BIO19.
 
-### Round twenty-seven
+### Round twenty-eight: With embergerQ
 ```{r}
 #excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), climaticMoistureIndex (8), PETDriestQuarter (17), BIO14 (38), PETseasonality (18), BIO19 (43)
 vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42)])
 ```
-Result is just VIF values of below 10. 
+Result is only VIF values of below 10. 
 
 ## Other options
 
-### Keep BIO19 
-Keeping BIO19 means we have to delete embergerQ to keep all the VIF values below 1, results in: 
+### With climaticMoistureIndex
 ```{r}
-#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), climaticMoistureIndex (8), PETDriestQuarter (17), BIO14 (38), PETseasonality (18), BIO19 (43)
-vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), BIO14 (38), PETseasonality (18), aridityIndexThornthwaite (7), BIO18 (42)
+vif(GIS_myco[,c(3:5, 8, 14, 20, 22:24, 26, 28, 39, 43)])
 ```
 
+### With continentality
+```{r}
+#excluded: BIO7 (31), BIO11(35), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), BIO4 (28)
+vif(GIS_myco[,c(3:5, 7, 9, 14, 20, 22:24, 26, 39, 42, 43)])
+```
+
+### With thermicityIndex
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), BIO4 (28), minTempWarmest (14), aridityIndexThornthwaite (7)
+vif(GIS_myco[,c(3:5, 20, 21, 22:24, 26, 39, 42, 43)])
+```
+
+### With BIO8 and BIO9 
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO12 (36), BIO3 (27), growingDegDays5 (12), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), minTempWarmest (14), PETWettestQuarter (20), BIO4 (28)
+vif(GIS_myco[,c(3:5, 7, 22:24, 26, 32, 33, 39, 42, 43)])
+```
+
+### With BIO8, BIO9, and EmbergerQ
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO12 (36), BIO3 (27), growingDegDays5 (12), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), minTempWarmest (14), PETWettestQuarter (20), BIO4 (28), aridityIndexThornthwaite (7), BIO19 (43)
+vif(GIS_myco[,c(3:5, 10, 22:24, 26, 32, 33, 39, 42)])
+```
+
+### With BIO8, BIO9, and climaticMoistureIndex
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO12 (36), BIO3 (27), growingDegDays5 (12), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), BIO14 (38), PETseasonality (18), minTempWarmest (14), PETWettestQuarter (20), BIO4 (28), aridityIndexThornthwaite (7), BIO18 (42), BIO2 (26)
+vif(GIS_myco[,c(3:5, 8, 22:24, 32, 33, 39, 43)])
+```
+
+### With embergerQ and thermicityIndex
+```{r}
+#excluding: BIO7 (31), BIO11 (35), continentality (9), BIO10 (34), maxTempColdestMonth (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), climaticMoistureIndex (8), PETDriestQuarter (17), BIO14 (38), PETseasonality (18), BIO19 (43), BIO4 (28), minTempWarmest (14), aridityIndexThornthwaite (7), PETWettestQuarter (20), OrganicCarbon (22), ClayPercentage (5)
+vif(GIS_myco[,c(3, 4, 10, 21, 23, 24, 26, 39, 42)])
+```
+
+### With climaticMoistureIndex and thermicityIndex
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), BIO14 (38), PETseasonality (18), aridityIndexThornthwaite (7), BIO18 (42), BIO4 (28), minTempWarmest (14)
+vif(GIS_myco[,c(3:5, 8, 20, 21, 22:24, 26, 39, 43)])
+```
 
