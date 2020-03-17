@@ -154,8 +154,11 @@ phylostep(formula = woody_formula_3, starting.formula = woody_starting_formula, 
 
 ##4
 phylostep(formula = woody_formula_4, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
-  # woody ~ 1 + ClayPercentage + climaticMoistureIndex + PETDriestQuarter + PETWettestQuarter + Slope + bio6 + bio19
-  # AIC(k=2): 1652.66052221238
+  # woody ~ 1 + BulkDensity + growingDegDays0 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio19
+  # AIC(k=2): 1672.34703467837
+
+##Other formulas
+phylostep(formula = woody_formula_12, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ##1
@@ -175,8 +178,11 @@ phylostep(formula = woody_formula_3, starting.formula = woody_starting_formula, 
 
 ##4
 phylostep(formula = woody_formula_4, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
-  # woody ~ 1 + ClayPercentage + climaticMoistureIndex + PETDriestQuarter + PETWettestQuarter + Slope + bio6 + bio19
-  # AIC(k=2): 1652.66052221238
+  # woody ~ 1 + BulkDensity + growingDegDays0 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio19
+  # AIC(k=2): 1672.34703467837
+
+## other formulas 
+phylostep(formula = woody_formula_12, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 
 ```
 
@@ -212,27 +218,20 @@ phylostep(formula = woody_formula_4, starting.formula = woody_starting_formula, 
   # woody ~ 1 + climaticMoistureIndex + PETDriestQuarter + PETWettestQuarter + Slope + bio6
   # AIC(k=2): 882.506556683052
 
+## other formulas
+phylostep(formula = woody_formula_12, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "forward", trace = 2)
+
+#-----------------------------------#
+
 #define formula components and run function (both)
 ## 1
 phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
-  # woody ~ 1 + BulkDensity + minTempWarmest + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio19
+  # wwoody ~ 1 + BulkDensity + minTempWarmest + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio19
   # AIC(k=2): 863.408359010372
 
-## 2
-phylostep(formula = woody_formula_2, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
-  # woody ~ 1 + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + Slope
-  # AIC(k=2): 893.479538952285
-
-## 3
-phylostep(formula = woody_formula_3, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
-  # woody ~ 1 + BulkDensity + minTempWarmest + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio19
-  # AIC(k=2): 863.408359010372
-
-## 4
-phylostep(formula = woody_formula_4, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
-  # woody ~ 1 + climaticMoistureIndex + PETDriestQuarter + PETWettestQuarter + Slope + bio6
-  # AIC(k=2): 882.506556683052
-
+## other formulas
+phylostep(formula = woody_formula_12, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
+ 
 ```
 
 The forward model with OUrandomRoot has the best model with formula 1, with an AIC of 863.408359010372
@@ -251,21 +250,9 @@ OUfixedRoot stands for Ornstein-Uhlenbeck with a fixed root.
 phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
   # woody ~ 1 + BulkDensity + minTempWarmest + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio19
   # AIC(k=2): 863.408359010372
-  
-## 2
-phylostep(formula = woody_formula_2, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
-  # woody ~ 1 + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + Slope
-  # AIC(k=2): 893.479538952285
 
-## 3
-phylostep(formula = woody_formula_3, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
-  # woody ~ 1 + BulkDensity + minTempWarmest + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio14 + bio19
-  # AIC(k=2): 863.968744050452
-
-## 4
-phylostep(formula = woody_formula_4, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
-  # woody ~ 1 + climaticMoistureIndex + PETDriestQuarter + PETWettestQuarter + Slope + bio6
-  # AIC(k=2): 882.506556683052
+## other formulas
+phylostep(formula = woody_formula_12, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1
@@ -273,20 +260,9 @@ phylostep(formula = woody_formula_1, starting.formula = woody_starting_formula, 
   # woody ~ 1 + BulkDensity + minTempWarmest + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio19
   # AIC(k=2): 863.408359010372
 
-## 2
-phylostep(formula = woody_formula_2, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2)
-  # woody ~ 1 + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + Slope
-  # AIC(k=2): 893.479538952285
-
-## 3
-phylostep(formula = woody_formula_3, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2)
-  # woody ~ 1 + BulkDensity + minTempWarmest + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio19
-  # AIC(k=2): 863.408359010372
-
-## 4
-phylostep(formula = woody_formula_4, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2)
-  # woody ~ 1 + climaticMoistureIndex + PETDriestQuarter + PETWettestQuarter + Slope + bio6
-  # AIC(k=2): 882.506556683052
+## other formulas 
+phylostep(formula = woody_formula_12, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2)
+  
 ```
 
 The forward model with OUfixedRoot has the best model with formula 1, with an AIC of 863.408359010372
