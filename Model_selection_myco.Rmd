@@ -21,43 +21,36 @@ library(usdm)
 vif(GIS_myco[,c(3:43)])
 
 #choose the variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, results in:
-# 1. Without embergerQ
+
+# 1. Solely based on highest VIF value
 vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
 
 # 2. With embergerQ
 vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42)])
 
-########## New selection: 
-
-# 1 = 2. With embergerQ
-vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42)])
-
-# 2. With climaticMoistureIndex
+# 3. With climaticMoistureIndex
 vif(GIS_myco[,c(3:5, 8, 14, 20, 22:24, 26, 28, 39, 43)])
 
-# 3. With continentality
+# 4. With continentality
 vif(GIS_myco[,c(3:5, 7, 9, 14, 20, 22:24, 26, 39, 42, 43)])
 
-# 4. With thermicityIndex
+# 5. With thermicityIndex
 vif(GIS_myco[,c(3:5, 20, 21, 22:24, 26, 39, 42, 43)])
 
-# 5. With BIO8 and BIO9 
+# 6. With BIO8 and BIO9 
 vif(GIS_myco[,c(3:5, 7, 22:24, 26, 32, 33, 39, 42, 43)])
 
-# 6. With BIO8, BIO9, and EmbergerQ
+# 7. With BIO8, BIO9, and EmbergerQ
 vif(GIS_myco[,c(3:5, 10, 22:24, 26, 32, 33, 39, 42)])
 
-# 7. With BIO8, BIO9, and climaticMoistureIndex
+# 8. With BIO8, BIO9, and climaticMoistureIndex
 vif(GIS_myco[,c(3:5, 8, 22:24, 32, 33, 39, 43)])
 
-# 8. With embergerQ and thermicityIndex
+# 9. With embergerQ and thermicityIndex
 vif(GIS_myco[,c(3, 4, 10, 21, 23, 24, 26, 39, 42)])
 
-# 9. With climaticMoistureIndex and thermicityIndex
+# 10. With climaticMoistureIndex and thermicityIndex
 vif(GIS_myco[,c(3:5, 8, 20, 21, 22:24, 26, 39, 43)])
-
-# 10 = 1. Solely based on highest VIF value
-vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
 
 ```
 
@@ -81,11 +74,36 @@ is.numeric(GIS_myco$mycorrhiza)
 # 0. Starting formula
 myco_starting_formula <- mycorrhiza ~ 1
   
-# 1. Without embergerQ
+# 1. Solely based on highest VIF value
 myco_formula_1 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 + bio19
 
 # 2. With embergerQ
 myco_formula_2 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 
+
+# 3. With climaticMoistureIndex
+myco_formula_3 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio19
+
+# 4. With continentality
+myco_formula_4 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18 + bio19
+
+# 5. With thermicityIndex
+myco_formula_5 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18 + bio19
+
+# 6. With BIO8 and BIO9 
+myco_formula_6 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + OrganicCarbon + PhCaCL + Slope + bio2 + bio8 + bio9 + bio15 + bio18 + bio19
+
+# 7. With BIO8, BIO9, and EmbergerQ
+myco_formula_7 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + embergerQ + OrganicCarbon + PhCaCL + Slope + bio2 + bio8 + bio9 + bio15 + bio18
+
+# 8. With BIO8, BIO9, and climaticMoistureIndex
+myco_formula_8 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio8 + bio9 + bio15 + bio19
+
+# 9. With embergerQ and thermicityIndex
+myco_formula_9 <- mycorrhiza ~ Aspect + BulkDensity + embergerQ + thermicityIndex + PhCaCL + Slope + bio2 + bio15 + bio18
+
+# 10. With climaticMoistureIndex and thermicityIndex
+myco_formula_10 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio19
+
 ```
 
 ## Model selection with BM

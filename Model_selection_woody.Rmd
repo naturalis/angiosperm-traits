@@ -90,41 +90,42 @@ is.numeric(GIS_woody$woody)
 # 0. Define starting formula
 woody_starting_formula <- woody ~ 1 
 
-# 1. With ClimaticMoistureIndex:
+# 1. Solely based on highest VIF value 
+woody_formula_1 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+
+# 2. With ClimaticMoistureIndex:
 woody_formula_2 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
 
-# 2. With BIO6
+# 3. With BIO6
 woody_formula_3 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio14 + bio15 + bio18 + bio19
 
-# 3. With growingDegDays0
-vif(GIS_woody[,c(3:5, 11, 17, 18, 20, 22:24, 39, 42, 43)])
+# 4. With growingDegDays0
+woody_formula_4 <- woody ~ Aspect + BulkDensity + ClayPercentage + growingDegDays0 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio18 + bio19
 
-# 4. With aridityIndexThornthwaite
-vif(GIS_woody[,c(3:5, 7, 14, 15, 17, 18, 20, 22:24, 39, 43)])
+# 5. With aridityIndexThornthwaite
+woody_formula_5 <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
 
-# 5. With embergerQ
-vif(GIS_woody[,c(3:5, 10, 14, 15, 17, 20, 22:24, 39, 43)])
+# 6. With embergerQ
+woody_formula_6 <- woody ~ Aspect + BulkDensity + ClayPercentage +embergerQ + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
 
-# 6. With BIO6, with ClimaticMoistureIndex:
-woody_formula_4 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
+# 7. With BIO6, with ClimaticMoistureIndex:
+woody_formula_7 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
 
-# 7. With BIO6 and aridityIndexThornthwaite
-vif(GIS_woody[,c(3:5, 7, 14, 17, 20, 22:24, 30, 39, 43)]) 
+# 8. With BIO6 and aridityIndexThornthwaite
+woody_formula_8 <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
 
-# 8. With BIO6 and embergerQ
-vif(GIS_woody[,c(3:5, 10, 14, 15, 17, 20, 22:24, 30, 39, 43)])
+# 9. With BIO6 and embergerQ
+woody_formula_9 <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
 
-# 9. With growingDegDays0 and ClimaticMoistureIndex
-vif(GIS_woody[,c(3:5, 8, 11, 17, 18, 20, 22:24, 39, 43)])
+# 10. With growingDegDays0 and ClimaticMoistureIndex
+woody_formula_10 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + growingDegDays0 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
 
-# 10. With growingDegDays0 and aridityIndexThornthwaite
-vif(GIS_woody[,c(3:5, 7, 11, 14, 20, 22:24, 39, 43)])
+# 11. With growingDegDays0 and aridityIndexThornthwaite
+woody_formula_11 <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + growingDegDays0 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
 
-# 11. With growingDegDays0 and embergerQ
-vif(GIS_woody[,c(3:5, 10, 11, 17, 20, 22:24, 39, 43)])
+# 12. With growingDegDays0 and embergerQ
+woody_formula_12 <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ + growingDegDays0 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
 
-# 12. Solely based on highest VIF value 
-vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 38, 39, 42, 43)])
 ```
 
 ## Model selection with BM 
