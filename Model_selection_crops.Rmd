@@ -98,14 +98,20 @@ library(phylolm)
 #define formula components and run function (forward)
 ## 1
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
-## 2
-phylostep(formula = crops_formula_2, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
+  # domestication ~ 1 + Aspect + ClayPercentage + PhCaCL + Slope
+  # AIC(k=2): 94.383384041981
+
+## other formulas
+phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
-## 2
-phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
+  # domestication ~ 1 + Aspect + ClayPercentage + PhCaCL + Slope
+  # AIC(k=2): 94.383384041981
+
+## other formulas
+phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
 ```
 
 The forward model with BM has the following model as the best model, with an AIC of... and a LogLik of ...
@@ -119,14 +125,16 @@ The both model with BM has the following model as the best model, with an AIC of
 #define formula components and run function (forward)
 ## 1
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
-## 2
-phylostep(formula = crops_formula_2, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
+
+## other formulas
+phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
-## 2
-phylostep(formula = crops_formula_2, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
+
+## other formulas
+phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
 ```
 
 The forward model with OUrandomRoot has the following model as the best model, with an AIC of... and a LogLik of ...
@@ -140,14 +148,16 @@ The both model with OUrandomRoot has the following model as the best model, with
 #define formula components and run function (forward)
 ## 1
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
-## 2
-phylostep(formula = crops_formula_2, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
+
+## other formulas
+phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
-## 2
-phylostep(formula = crops_formula_2, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
+
+## other formulas
+phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
 ```
 
 The forward model with OUfixedRoot has the following model as the best model, with an AIC of... and a LogLik of ...
