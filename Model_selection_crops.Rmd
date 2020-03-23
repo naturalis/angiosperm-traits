@@ -42,6 +42,82 @@ vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 39)])
 vif(GIS_crops[,c(3:5, 14, 20, 22:24, 28, 39, 43)]) 
 ```
 
+Extra formulas:
+```{r}
+# 10. With annualPET (6)
+vif(GIS_crops[,c(3:5, 6, 14, 20, 22:24, 37, 38, 43)]) 
+
+# 11. With aridityIndexThornthwaite 
+vif(GIS_crops[,c(3:5, 7, 14, 20, 22:24, 37, 43)]) 
+
+# 12. With climaticMoistureIndex 
+vif(GIS_crops[,c(3:5, 8, 14, 17, 20, 22:24, 38, 43)]) 
+
+# 13. With continentality
+vif(GIS_crops[,c(3:5, 9, 14, 20, 22:24, 37, 38, 43)]) 
+
+# 14. With embergerQ 
+vif(GIS_crops[,c(3:5, 10, 14, 17, 20, 22:24)]) 
+
+# 15. With growingDegDays0 
+vif(GIS_crops[,c(3:5, 11, 14, 20, 22:24, 38, 43)]) 
+
+# 16. With maxTempColdestMonth 
+vif(GIS_crops[,c(3:5, 13, 14, 20, 22:24, 37, 38, 43)]) 
+
+# 17. With PETColdestQuarter 
+vif(GIS_crops[,c(3:5, 14, 16, 20, 22:24, 37, 38, 43)]) 
+
+# 18. With PETWarmestQuarter 
+vif(GIS_crops[,c(3, 5, 14, 17, 19, 20, 22:24, 38)]) 
+
+# 19. With thermicityIndex
+vif(GIS_crops[,c(3:5, 14, 20, 21, 22:24, 38, 43)]) 
+
+# 20. With bio1
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 25, 38, 43)]) 
+
+# 21. With bio3 
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 27, 37, 38, 43)]) 
+
+# 22. With bio5 
+vif(GIS_crops[,c(3:5, 17, 20, 22:24, 29, 37, 38, 43)]) 
+
+# 23. With bio6
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 30, 37, 38, 43)]) 
+
+# 24. With bio7 
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 31, 38, 43)]) 
+
+# 25. With bio8 
+vif(GIS_crops[,c(3:5, 14, 17, 22:24, 32, 37, 38, 43)]) 
+
+# 26. With bio9 
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 33, 37, 38, 43)]) 
+
+# 27. With bio10 
+vif(GIS_crops[,c(3:5, 17, 20, 22:24, 34, 37, 38, 43)]) 
+
+# 28. With bio11
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 35, 37, 38, 43)]) 
+
+# 29. With bio12 
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 36, 43)]) 
+
+# 30. With bio16 
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 38, 40, 43)]) 
+
+# 31. With bio17
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 37, 41)]) 
+
+# 32. With bio18 
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 38, 42)]) 
+
+# 33. With things 
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 26, 28, 39, 40, 43)]) 
+
+```
+
 ## Change data to match the wanted data format
 
 There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
@@ -86,6 +162,81 @@ crops_formula_7 <- domestication ~ Aspect + ClayPercentage + PETseasonality + PE
 
 # 8. With Bio15 and BIO2
 crops_formula_8 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 
+```
+
+Extra formulas:
+```{r}
+# 9. With annualPET (6)
+crops_formula_9 <- domestication ~ Aspect + BulkDensity + ClayPercentage + annualPET + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 10. With aridityIndexThornthwaite 
+crops_formula_10 <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
+
+# 11. With climaticMoistureIndex 
+crops_formula_11 <- domestication ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+
+# 12. With continentality
+crops_formula_12 <- domestication ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 13. With embergerQ 
+crops_formula_13 <- domestication ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope
+
+# 14. With growingDegDays0 
+crops_formula_14 <- domestication ~ Aspect + BulkDensity + ClayPercentage + growingDegDays0 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+
+# 15. With maxTempColdestMonth 
+crops_formula_15 <- domestication ~ Aspect + BulkDensity + ClayPercentage + maxTempColdest + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 16. With PETColdestQuarter 
+crops_formula_16 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETColdestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 17. With PETWarmestQuarter 
+crops_formula_17 <- domestication ~ Aspect + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14
+
+# 18. With thermicityIndex
+crops_formula_18 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+
+# 19. With bio1
+crops_formula_19 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio1 + bio14 + bio19
+
+# 20. With bio3 
+crops_formula_20 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio3 + bio13 + bio14 + bio19
+
+# 21. With bio5 
+crops_formula_21 <- domestication ~ Aspect + BulkDensity + ClayPercentage + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5 + bio13 + bio14 + bio19
+
+# 22. With bio6
+crops_formula_22 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6  + bio13 + bio14 + bio19
+
+# 23. With bio7 
+crops_formula_23 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio7 + bio14 + bio19
+
+# 24. With bio8 
+crops_formula_24 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio8 + bio13 + bio14 + bio19
+
+# 25. With bio9 
+crops_formula_25 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio9 + bio13 + bio14 + bio19
+
+# 26. With bio10 
+crops_formula_26 <- domestication ~ Aspect + BulkDensity + ClayPercentage + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio10 + bio13  + bio14 + bio19
+
+# 27. With bio11
+crops_formula_27 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio11  + bio13 + bio14 + bio19
+
+# 28. With bio12 
+crops_formula_28 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio12 + bio19
+
+# 29. With bio16 
+crops_formula_29 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio16 + bio19
+
+# 30. With bio17
+crops_formula_30 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio17
+
+# 31. With bio18 
+crops_formula_31 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio18
+
+# 32. With things 
+crops_formula_32 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio16 + bio19
 
 ```
 
@@ -102,7 +253,7 @@ phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, 
   # AIC(k=2): 94.383384041981
 
 ## other formulas
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = crops_formula_32, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1
@@ -111,7 +262,7 @@ phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, 
   # AIC(k=2): 94.383384041981
 
 ## other formulas
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
+phylostep(formula = crops_formula_32, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
 ```
 
 The forward model with BM has the following model as the best model, with an AIC of... and a LogLik of ...
@@ -127,14 +278,14 @@ The both model with BM has the following model as the best model, with an AIC of
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
 
 ## other formulas
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
+phylostep(formula = crops_formula_32, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
 
 ## other formulas
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
+phylostep(formula = crops_formula_10, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
 ```
 
 The forward model with OUrandomRoot has the following model as the best model, with an AIC of... and a LogLik of ...
@@ -150,14 +301,14 @@ The both model with OUrandomRoot has the following model as the best model, with
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
 
 ## other formulas
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
+phylostep(formula = crops_formula_32, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1
 phylostep(formula = crops_formula_1, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
 
 ## other formulas
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
+phylostep(formula = crops_formula_10, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
 ```
 
 The forward model with OUfixedRoot has the following model as the best model, with an AIC of... and a LogLik of ...
