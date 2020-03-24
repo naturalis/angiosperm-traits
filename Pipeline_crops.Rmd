@@ -179,17 +179,6 @@ crops_state0$domestication_binary <- "0"
 crops_bi <- rbind(crops_1_3, crops_state0)  
 ```
 
-```{r distance matrix in code}
-#Trying to do it in code:
-library(dplyr)
-distances_2 <- head(sort(distances[,colnames(distances) == crops_names[2]]))
-
-nth(head(sort(distances[,colnames(distances) == crops_names[2]])), 2)
-
-print(row.names(nth(head(sort(distances[,colnames(distances) == crops_names[2]])), 2)))
-
-```
-
 ## 5 Combine the data
 
 The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 

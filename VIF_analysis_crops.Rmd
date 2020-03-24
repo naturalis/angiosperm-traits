@@ -492,28 +492,31 @@ vif(GIS_crops[,c(3:5, 14, 20, 22:24, 30, 37, 38, 43)])
 vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 31, 38, 43)]) 
 ```
 
-### bio8
+### bio8 HIER WAS IK, NAAR BOVEN TOE GAAN
 ```{r}
 #excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), BIO15 (39), PETWarmestQuarter (19), PETWettestQuarter (20)
-vif(GIS_crops[,c(3:5, 14, 17, 22:24, 32, 37, 38, 43)]) 
+vif(GIS_crops[,c(3:5, 14, 17, 22:24, 32, 37, 38, 43, 6)]) 
 ```
 
 ### bio9
 ```{r}
 #excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), BIO15 (39), PETWarmestQuarter (19), PETDriestQuarter (17)
-vif(GIS_crops[,c(3:5, 14, 20, 22:24, 33, 37, 38, 43)]) 
+vif(GIS_crops[,c(3:5, 14, 20, 22:24, 26, 33, 37, 38, 43)]) 
+#added 26
 ```
 
 ### bio10
 ```{r}
 #excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), BIO15 (39), PETWarmestQuarter (19), minTempWarmest (14)
-vif(GIS_crops[,c(3:5, 17, 20, 22:24, 34, 37, 38, 43)]) 
+vif(GIS_crops[,c(3:5, 17, 20, 22:24, 26, 34, 37, 38, 43)]) 
+#added 26
 ```
 
 ### bio11
 ```{r}
 #excluding: BIO7 (31), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), BIO15 (39), PETWarmestQuarter (19), PETDriestQuarter (17)
-vif(GIS_crops[,c(3:5, 14, 20, 22:24, 35, 37, 38, 43)]) 
+vif(GIS_crops[,c(3:5, 14, 19, 20, 22:24, 35, 37, 38, 43)]) 
+#added 19
 ```
 
 ### bio12
@@ -525,19 +528,22 @@ vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 36, 43)])
 ### bio16
 ```{r}
 #excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), BIO15 (39), PETWarmestQuarter (19), bio13 (37)
-vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 38, 40, 43)]) 
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 38, 40, 43)]) 
+#added 26
 ```
 
 ### bio17
 ```{r}
 #excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), BIO18 (42), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), BIO15 (39), PETWarmestQuarter (19), bio14 (38), bio19 (43)
-vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 37, 41)]) 
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 37, 41)]) 
+#added 26
 ```
 
 ### bio18
 ```{r}
 #excluding: BIO7 (31), BIO11 (35), continentality (9), BIO1 (25), BIO4 (28), BIO10 (34), annualPET (6), growingDegDays0 (11), maxTempColdestMonth (13), thermicityIndex (21), PETColdestQuarter (16), BIO17 (41), BIO12 (36), BIO8 (32), BIO6 (30), BIO5 (29), BIO16 (40), growingDegDays5 (12), climaticMoistureIndex (8), BIO3 (27), BIO9 (33), embergerQ (10), aridityIndexThornthwaite (7), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15), BIO15 (39), PETWarmestQuarter (19), bio19 (43), bio13 (37)
-vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 38, 42)]) 
+vif(GIS_crops[,c(3:5, 14, 17, 18, 20, 22:24, 38, 42)]) 
+#added 18
 ```
 
 ### With things
