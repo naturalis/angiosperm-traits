@@ -93,13 +93,16 @@ myco_formula_5 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + PETWettes
 myco_formula_6 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + OrganicCarbon + PhCaCL + Slope + bio2 + bio8 + bio9 + bio15 + bio18 + bio19
 
 # 7. With BIO8, BIO9, and EmbergerQ
-myco_formula_7 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + embergerQ + OrganicCarbon + PhCaCL + Slope + bio2 + bio8 + bio9 + bio14 + bio15 + bio18
+myco_formula_7a <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + embergerQ + OrganicCarbon + PhCaCL + Slope + bio2 + bio8 + bio9 + bio15 + bio17 + bio18
+myco_formula_7b <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + embergerQ + OrganicCarbon + PhCaCL + Slope + bio2 + bio8 + bio9 + bio14 + bio15 + bio18
 
 # 8. With BIO8, BIO9, and climaticMoistureIndex
-myco_formula_8 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio15 + bio17 + bio19
+myco_formula_8a <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio8 + bio9 + bio14 + bio15 + bio19
+myco_formula_8b <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio15 + bio17 + bio19
 
 # 9. With embergerQ and thermicityIndex
-myco_formula_9 <- mycorrhiza ~ Aspect + BulkDensity + embergerQ + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio17 + bio18
+myco_formula_9a <- mycorrhiza ~ Aspect + BulkDensity + embergerQ + thermicityIndex + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18
+myco_formula_9b <- mycorrhiza ~ Aspect + BulkDensity + embergerQ + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio17 + bio18
 
 # 10. With climaticMoistureIndex and thermicityIndex
 myco_formula_10 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio19
@@ -187,7 +190,7 @@ phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, da
   # mycorrhiza ~ 1 + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 + bio19
 
 ## other formulas
-phylostep(formula = myco_formula_9, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = myco_formula_9b, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1 
@@ -196,14 +199,9 @@ phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, da
   # AIC(k=2): 2472.33792047599
 
 ## other formulas
-phylostep(formula = myco_formula_9, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
+phylostep(formula = myco_formula_9b, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
   
 ```
-
-The forward model with BM has the following model as the best model, with an AIC of...
-  mycorrhiza ~
-The both model with BM has the following model as the best model, with an AIC of ...
-  mycorrhiza ~
 
 ## Model selection OUrandomRoot
 
@@ -215,7 +213,7 @@ phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, da
   # AIC(k=2): 1497.98125594055
 
 ## other formulas
-phylostep(formula = myco_formula_9, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2)
+phylostep(formula = myco_formula_9b, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1
@@ -224,14 +222,9 @@ phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, da
   # AIC(k=2): 1497.98125594055
 
 ## other formulas
-phylostep(formula = myco_formula_9, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2)
+phylostep(formula = myco_formula_9a, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2)
   
 ```
-
-The forward model with OUrandomRoot has the following model as the best model, with an AIC of...
-  mycorrhiza ~
-The both model with OUrandomRoot has the following model as the best model, with an AIC of ...
-  mycorrhiza ~
 
 ## Model selection with OUfixedRoot
 
@@ -243,7 +236,7 @@ phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, da
   # AIC(k=2): 1497.98125594055
 
 ## other formulas
-phylostep(formula = myco_formula_9, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2)
+phylostep(formula = myco_formula_9b, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
 ## 1
@@ -252,14 +245,9 @@ phylostep(formula = myco_formula_1, starting.formula = myco_starting_formula, da
   # AIC(k=2): 1497.98125594055
 
 ## other formulas
-phylostep(formula = myco_formula_9, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2)
+phylostep(formula = myco_formula_9a, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2)
  
 ```
-
-The forward model with OUfixedRoot has the following model as the best model, with an AIC of...
-  mycorrhiza ~
-The both model with OUfixedRoot has the following model as the best model, with an AIC of ...
-  mycorrhiza ~
 
 ## Conclusion
 The best model can be made with the following combination:
