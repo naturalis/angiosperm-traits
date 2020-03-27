@@ -115,6 +115,12 @@ myco_formula_31 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + minTempW
 # 32. With things
 myco_formula_32 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + embergerQ + OrganicCarbon + PhCaCL + Slope + bio2 + bio6 + bio8 + bio15 + bio19
 
+# 33. bio8
+myco_formula_33 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio8 + bio18 + bio19
+
+# 34. bio9
+myco_formula_34 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio9 + bio18 + bio19
+
 ```
 
 
@@ -124,10 +130,10 @@ myco_formula_32 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + emberger
 library(phylolm)
 
 #define formula components and run function (forward)
-phylostep(formula = myco_formula_19, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = myco_formula_34, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
  
 #define formula components and run function (both)
-phylostep(formula = myco_formula_19, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
+phylostep(formula = myco_formula_34, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
   
 ```
 
@@ -135,10 +141,10 @@ phylostep(formula = myco_formula_19, starting.formula = myco_starting_formula, d
 
 ```{r model selection OUrandomRoot}
 #define formula components and run function (forward)
-phylostep(formula = myco_formula_19, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2)
+phylostep(formula = myco_formula_34, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2)
  
 #define formula components and run function (both)
-phylostep(formula = myco_formula_19, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2)
+phylostep(formula = myco_formula_34, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2)
 
 ```
 
@@ -146,12 +152,9 @@ phylostep(formula = myco_formula_19, starting.formula = myco_starting_formula, d
 
 ```{r model selection OUfixedRoot}
 #define formula components and run function (forward)
-phylostep(formula = myco_formula_19, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2)
+phylostep(formula = myco_formula_34, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2)
  
 #define formula components and run function (both)
-phylostep(formula = myco_formula_19, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2)
+phylostep(formula = myco_formula_34, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2)
 
 ```
-
-
-
