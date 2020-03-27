@@ -272,6 +272,21 @@ crops_starting_formula <- domestication ~ 1
 
 ```
 
+### Change data to match the wanted data format
+There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
+the row names have to match the tip.lables of the tree, and secondly the trait value (0/1) has to be
+seen as a numeric value. 
+```{r}
+#make allmb_name column into the row names of this table
+rownames(GIS_crops) <- GIS_crops[,1]
+GIS_crops[,1] <- NULL
+
+#make sure the values in the 'woody' column are seen as numeric values
+GIS_crops$domestication <- as.numeric(GIS_crops$domestication)
+#check whether it worked
+is.numeric(GIS_crops$domestication)
+```
+
 ### Model selection 
 What gives us the best result (in terms of the AIC value): 
 - Model: BM, OUrandomRoot, or OUfixedRoot
