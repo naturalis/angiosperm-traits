@@ -143,6 +143,16 @@ crops_formula_32 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minT
 # 33. With BIO2, BIO4 and BIO15
 crops_formula_33 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio16 + bio19
 
+# 34. With growingDegDays5
+crops_formula_34a <- domestication ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + growingDegDays5 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+crops_formula_34b <- domestication ~ Aspect + BulkDensity + ClayPercentage + growingDegDays5 + minTempWarmest + PETWarmestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+crops_formula_34c <- domestication ~ Aspect + BulkDensity + ClayPercentage + growingDegDays5 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio19
+
+# 35. With monthCountByTemp10
+crops_formula_35 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 36. PETWettestQuarter
+crops_formula_36 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio13 + bio14 + bio19
 ```
 
 # Model selection with BM
@@ -152,10 +162,10 @@ crops_formula_33 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minT
 library(phylolm)
 
 #define formula components and run function (forward)
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
   
 #define formula components and run function (both)
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
+phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
   
 ```
 
@@ -163,10 +173,10 @@ phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, 
 
 ```{r model selection OUrandomRoot}
 #define formula components and run function (forward)
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
+phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
+phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
 
 ```
 
@@ -174,10 +184,10 @@ phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, 
 
 ```{r model selection OUfixedRoot}
 #define formula components and run function (forward)
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
+phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
-phylostep(formula = crops_formula_13a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
+phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
 ```
 
 

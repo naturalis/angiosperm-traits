@@ -116,6 +116,17 @@ vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 38, 42)])
 # 33. With things 
 vif(GIS_crops[,c(3:5, 14, 20, 22:24, 26, 28, 39, 40, 43)]) 
 
+# 34. With growingDegDays5
+vif(GIS_crops[,c(3:5, 8, 12, 14, 20, 22:24, 38, 43)]) 
+vif(GIS_crops[,c(3:5, 12, 14, 19, 20, 22:24, 38, 43)]) 
+vif(GIS_crops[,c(3:5, 12, 14, 20, 22:24, 26, 38, 43)]) 
+
+# 35. With monthCountByTemp10
+vif(GIS_crops[,c(3:5, 14, 15, 19, 20, 22:24, 37, 38, 43)]) 
+
+# 36. PETWettestQuarter
+vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 37, 38, 43)]) 
+
 ```
 
 ## Change data to match the wanted data format
@@ -237,6 +248,7 @@ crops_formula_31 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minT
 
 # 32. With things 
 crops_formula_32 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio16 + bio19
+
 
 ```
 
