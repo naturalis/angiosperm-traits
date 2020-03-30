@@ -418,9 +418,153 @@ vif(GIS_woody[,c(3:5, 10, 11, 17, 20, 22:24, 29, 39, 43)])
 
 ## Second selection
 
-###
+### 13. With things
 ```{r}
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 38, 39, 42, 43)])
+```
 
+### 14. With annualPET
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETWettestQuarter (20)
+vif(GIS_woody[,c(3:6, 14, 15, 17, 18, 22:24, 38, 39, 42, 43)])
+```
+
+### 15. With continentality
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETWettestQuarter (20), PETseasonality (18)
+vif(GIS_woody[,c(3:6, 9, 14, 15, 17, 22:24, 38, 39, 42, 43)])
+vif(GIS_woody[,c(3:5, 9, 14, 15, 16, 17, 22:24, 38, 39, 42, 43)])
+vif(GIS_woody[,c(3:5, 9, 14, 15, 17, 19, 22:24, 38, 39, 42, 43)])
+vif(GIS_woody[,c(3:5, 9, 14, 15, 17, 20, 22:24, 38, 39, 42, 43)])
+vif(GIS_woody[,c(3:5, 9, 14, 15, 17, 22:24, 26, 38, 39, 42, 43)])
+vif(GIS_woody[,c(3:5, 9, 14, 15, 17, 22:24, 27, 38, 39, 42, 43)])
+vif(GIS_woody[,c(3:5, 9, 14, 15, 17, 22:24, 32, 38, 39, 42, 43)])
+#added 6, 16, 19, 20, 26, 27, 32
+```
+
+### 16. With growingDegDays0
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), monthCountByTemp10 (15), bio14 (38), minTempWarmest (14)
+vif(GIS_woody[,c(3:5, 11, 17, 18, 20, 22:24, 39, 42, 43)])
+```
+
+### 17. With maxTempColdest
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), monthCountByTemp10 (15), PETseasonality (18)
+vif(GIS_woody[,c(3:5, 13, 14, 17, 20, 22:24, 38, 39, 42, 43)])
+#added 38
+```
+
+### 18. With PETColdestQuarter
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15)
+vif(GIS_woody[,c(3:5, 14, 16, 17, 20, 22:24, 38, 39, 42, 43)])
+#added 38
+```
+
+### 19. With PETWarmestQuarter
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETWettestQuarter (20)
+vif(GIS_woody[,c(3:5, 14, 15, 17:19, 22:24, 38, 39, 42, 43)])
+```
+
+### 20. With thermicityIndex
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), monthCountByTemp10 (15), PETseasonality (18)
+vif(GIS_woody[,c(3:5, 14, 17, 20:24, 38, 39, 42, 43)])
+#added 38
+```
+
+### 21. With bio1
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), monthCountByTemp10 (15), bio14 (38), minTempWarmest (14)
+vif(GIS_woody[,c(3:5, 17, 18, 20, 22:24, 25, 38, 39, 42, 43)])
+#added 38
+```
+
+### 22. With bio2
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETWettestQuarter (20)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 22:24, 26, 38, 39, 42, 43)])
+```
+
+### 23. With bio3
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETseasonality (18)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 20, 22:24, 27, 38, 39, 42, 43)])
+```
+
+### 24. With bio4
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), 
+#BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), 
+#PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETseasonality (18)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 20, 22:24, 28, 38, 39, 42, 43)])
+```
+
+### With bio5
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), minTempWarmest (14), bio14 (38), PETseasonality (18)
+vif(GIS_woody[,c(3:5, 15, 17, 20, 22:24, 26, 29, 38, 39, 42, 43)])
+vif(GIS_woody[,c(3:5, 15, 17, 20, 22:24, 29, 30, 39, 42, 43)])
+#added 26, 30, 38
+```
+
+### With bio7
+```{r}
+#excluded: BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETseasonality (18)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 20, 22:24, 31, 38, 39, 42, 43)])
+```
+
+### With bio8 
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETWettestQuarter (20)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 22:24, 32, 38, 39, 42, 43)])
+```
+
+### With bio9
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETDriestQuarter (17)
+vif(GIS_woody[,c(3:5, 14, 15, 18, 20, 22:24, 33, 38, 39, 42, 43)])
+```
+
+### With bio10
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), minTempWarmest (14)
+vif(GIS_woody[,c(3:5, 15, 17, 18, 20, 22:24, 34, 38, 39, 42, 43)])
+```
+
+### With bio11
+```{r}
+#excluded: BIO7 (31), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), PETseasonality (18), monthCountByTemp10 (15)
+vif(GIS_woody[,c(3:5, 14, 17, 20, 22:24, 35, 38, 39, 42, 43)])
+#added 38
+```
+
+### With bio12
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), bio18 (42), bio14 (38)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 36, 39, 43)])
+```
+
+### With bio13
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), bio18 (42)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 37:39, 43)])
+```
+
+### With bio16
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), bio18 (42)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 38:40, 43)])
+```
+
+### With bio17
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), bio14 (38), bio18 (42)
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 37, 39, 41, 43)])
+vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 39, 40, 41, 43)])
+#added 37, 40
 ```
 
 
