@@ -69,7 +69,7 @@ woody_formula_12e <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ +
 
 # Second set of model formulas 
 ```{r}
-# 13. With a lot
+# 13. With things
 woody_formula_13 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
 
 # 14. With annualPET
@@ -85,7 +85,7 @@ woody_formula_15f <- woody ~ Aspect + BulkDensity + ClayPercentage + continental
 woody_formula_15g <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio8 + bio14 + bio15 + bio18 + bio19
 
 # 16. With growingDegDays0
-woody_formula_16 <- woody ~ Aspect + BulkDensity + ClayPercentage + growingDegDays0 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio18 + bio19
+woody_formula_16 <- woody ~ Aspect + BulkDensity + ClayPercentage + growingDegDays5 + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio18 + bio19
 
 # 17. With maxTempColdest
 woody_formula_17 <- woody ~ Aspect + BulkDensity + ClayPercentage + maxTempColdest + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
@@ -155,10 +155,10 @@ BM stands for Brownian motion.
 library(phylolm)
 
 #define formula components and run function (forward)
-phylostep(formula = woody_formula_12e, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
  
 #define formula components and run function (both)
-phylostep(formula = woody_formula_12e, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 
 ```
 
@@ -168,10 +168,10 @@ OUrandomRoot stands for Ornstein-Uhlenbeck with a random root.
 
 ```{r model selection OUrandomRoot}
 #define formula components and run function (forward)
-phylostep(formula = woody_formula_12e, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "forward", trace = 2)
 
 #define formula components and run function (both)
-phylostep(formula = woody_formula_12e, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
+phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
   
 ```
 
@@ -181,11 +181,9 @@ OUfixedRoot stands for Ornstein-Uhlenbeck with a fixed root.
 
 ```{r model selection OUfixedRoot}
 #define formula components and run function (forward)
-phylostep(formula = woody_formula_12e, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
  
 #define formula components and run function (both)
-phylostep(formula = woody_formula_12e, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2)
+phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2)
 
 ```
-
-

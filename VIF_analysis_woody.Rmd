@@ -442,10 +442,10 @@ vif(GIS_woody[,c(3:5, 9, 14, 15, 17, 22:24, 32, 38, 39, 42, 43)])
 #added 6, 16, 19, 20, 26, 27, 32
 ```
 
-### 16. With growingDegDays0
+### 16. With growingDegDays5
 ```{r}
-#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), growingDegDays5 (12), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), monthCountByTemp10 (15), bio14 (38), minTempWarmest (14)
-vif(GIS_woody[,c(3:5, 11, 17, 18, 20, 22:24, 39, 42, 43)])
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), BIO4 (28), BIO1 (25), growingDegDays0 (11), maxTempColdest (13), PETColdestQuarter (16), BIO16 (40), annualPET (6), BIO12 (36), BIO17 (41), thermicityIndex (21), BIO5 (29), BIO6 (30), climaticMoistureIndex (8), PETWarmestQuarter (19), BIO8 (32), BIO3 (27), BIO9 (33), BIO13 (37), aridityIndexThornthwaite (7), embergerQ (10), BIO2 (26), monthCountByTemp10 (15), bio14 (38), PETseasonality (18)
+vif(GIS_woody[,c(3:5, 12, 14, 17, 20, 22:24, 39, 42, 43)])
 ```
 
 ### 17. With maxTempColdest
