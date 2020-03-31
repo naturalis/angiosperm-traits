@@ -353,6 +353,8 @@ vif(GIS_myco[,c(3:5, 10, 22:24, 26, 32, 33, 38, 39, 42)])
 vif(GIS_myco[,c(3:5, 8, 22:24, 32, 33, 38, 39, 43)])
 vif(GIS_myco[,c(3:5, 8, 22:24, 27, 32, 33, 39, 41, 43)])
 #added 27, 38, 41
+vif(GIS_myco[,c(3:5, 8, 22:24, 27, 32, 33, 38, 39, 43)])
+#added a third option 
 ```
 
 ### With embergerQ and thermicityIndex
@@ -361,6 +363,8 @@ vif(GIS_myco[,c(3:5, 8, 22:24, 27, 32, 33, 39, 41, 43)])
 vif(GIS_myco[,c(3, 4, 10, 21, 23, 24, 26, 38, 39, 42)])
 vif(GIS_myco[,c(3, 4, 10, 20:24, 26, 39, 41, 42)])
 #added 20, 22, 38, 41
+vif(GIS_myco[,c(3, 4, 10, 20:24, 26, 38, 39, 42)])
+#added a third option
 ```
 
 ### With climaticMoistureIndex and thermicityIndex
@@ -369,7 +373,7 @@ vif(GIS_myco[,c(3, 4, 10, 20:24, 26, 39, 41, 42)])
 vif(GIS_myco[,c(3:5, 8, 20:24, 26, 39, 43)])
 ```
 
-## Try it again, different approach
+## Second selection
 
 ### annualPET
 ```{r}
@@ -521,4 +525,136 @@ vif(GIS_myco[,c(3:5, 14, 20, 22:24, 26, 28, 37, 39, 41, 43)])
 ```{r}
 vif(GIS_myco[,c(3:5, 10, 22:24, 26, 30, 32, 39, 43)])
 ```
+
+## Extra combinaties
+
+### With bio3 and embergerQ
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), bio4 (28), bio19 (43), aridityIndexThornthwaite (7), minTempWarmest (14), PETWettestQuarter (20), BulkDensity (4), bio2 (26)
+vif(GIS_myco[,c(3, 5, 7, 10, 14, 17, 22:24, 27, 39, 42)])
+vif(GIS_myco[,c(3, 5, 10, 18, 20, 22:24, 27, 39, 42)])
+vif(GIS_myco[,c(3, 5, 10, 19, 22:24, 27, 39, 42)])
+vif(GIS_myco[,c(3, 5, 10, 22:24, 27, 29, 33, 38, 39, 42)])
+vif(GIS_myco[,c(3, 5, 10, 22:24, 27, 31, 39, 42)])
+vif(GIS_myco[,c(3, 5, 10, 20, 22:24, 27, 34, 39, 42)])
+#added 7, 14, 17, 18, 19, 20, 29, 31, 32, 33, 34, 38
+vif(GIS_myco[,c(3, 5, 7, 14, 18, 20, 22:24, 27, 39, 42)])
+vif(GIS_myco[,c(3, 5, 10, 14, 18, 22:24, 27, 31, 39, 42)])
+```
+
+### With bio5 and embergerQ
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), minTempWarmest (14), bio19 (43)
+vif(GIS_myco[,c(3:5, 7, 10, 20, 22:24, 26, 28, 29, 39, 42)])
+```
+
+### With bio7 and embergerQ
+```{r}
+#excluded: BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), bio4 (28), bio19 (43)
+vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 31, 39, 42)])
+```
+
+### With bio10 and embergerQ
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), minTempWarmest (14), bio19 (43)
+vif(GIS_myco[,c(3:5, 7, 10, 20, 22:24, 26, 28, 34, 39, 42)])
+```
+
+### With bio17 and embergerQ
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), aridityIndexThornthwaite (7), bio19 (43)
+vif(GIS_myco[,c(3:5, 10, 14, 20, 22:24, 26, 28, 39, 41, 42)])
+```
+
+### With bio3 and bio5
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO9 (33), BIO12 (36), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), minTempWarmest (14), bio4 (28)
+vif(GIS_myco[,c(3:5, 7, 20, 22:24, 26, 27, 29, 39, 42, 43)])
+```
+
+### With bio3 and bio6
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), bio4 (28), minTempWarmest (14), aridityIndexThornthwaite (7), PETWettestQuarter (20), BulkDensity (4), bio2 (26)
+vif(GIS_myco[,c(3:5, 7, 18, 22:24, 27, 30, 39, 42, 43)])
+#added 4, 7, 18, 19, 38
+vif(GIS_myco[,c(3:5, 19, 22:24, 27, 30, 38, 39, 42, 43)])
+vif(GIS_myco[,c(3:5, 7, 19, 22:24, 27, 30, 39, 42, 43)])
+vif(GIS_myco[,c(3:5, 18, 22:24, 27, 30, 38, 39, 42, 43)])
+```
+
+### With bio3 and bio7
+```{r}
+#excluded: BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), bio4 (28), PETWettestQuarter (20), aridityIndexThornthwaite (7), minTempWarmest (14), bio2 (26)
+vif(GIS_myco[,c(3:5, 7, 14, 18, 22:24, 27, 31, 39, 42, 43)])
+vif(GIS_myco[,c(3:5, 14, 17, 22:24, 27, 31, 38, 39, 42, 43)])
+vif(GIS_myco[,c(3:5, 7, 22:24, 27, 29, 31, 39, 42, 43)])
+vif(GIS_myco[,c(3:5, 22:24, 27, 31, 33, 38, 39, 42, 43)])
+vif(GIS_myco[,c(3:5, 7, 18, 22:24, 27, 31, 34, 39, 42, 43)])
+#added 7, 14, 17, 18, 29, 33, 34, 38
+vif(GIS_myco[,c(3:5, 7, 17, 22:24, 27, 31, 39, 42, 43)])
+vif(GIS_myco[,c(3:5, 18, 22:24, 27, 29, 31, 38, 39, 42, 43)])
+```
+
+### With bio3 and bio10
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), minTempWarmest (14), bio4 (28)
+vif(GIS_myco[,c(3:5, 7, 20, 22:24, 26, 27, 34, 39, 42, 43)])
+```
+
+### With bio3 and bio17
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO5 (29), BIO9 (33), BIO12 (36), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), bio4 (28), aridityIndexThornthwaite (7), bio15 (39)
+vif(GIS_myco[,c(3:5, 14, 20, 22:24, 26, 27, 41, 42, 43)])
+```
+
+### With bio5 and bio10
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), minTempWarmest (14), bio2 (26), aridityIndexThornthwaite (7), bio18 (42), BulkDensity (4), bio4 (28), PETWettestQuarter (20), PhCaCL (23), ClayPercentage (5), bio15 (39), OrganicCarbon (22), Slope (24), bio19 (43), Aspect (3)
+vif(GIS_myco[,c(29, 34)])
+```
+NOT POSSIBLE 
+
+### With bio5 and bio17
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), minTempWarmest (14), aridityIndexThornthwaite (7), bio18 (42)
+vif(GIS_myco[,c(3:5, 20, 22:24, 26, 28, 29, 39, 41, 43)])
+```
+
+### With bio6 and bio10
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), maxTempColdest (13), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), bio4 (28), minTempWarmest (14), aridityIndexThornthwaite (7), PETWettestQuarter (20), BulkDensity (4), PhCaCL (23)
+vif(GIS_myco[,c(3:5, 7, 20, 22, 24, 26, 30, 34, 39, 42, 43)])
+vif(GIS_myco[,c(3:5, 20, 22, 24, 26, 30, 34, 38, 39, 42, 43)])
+#added 4, 7, 20, 38
+```
+
+### With bio6 and bio17
+```{r}
+#excluded: BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), bio4 (28), minTempWarmest (14), aridityIndexThornthwaite (7), PETWettestQuarter (20), BulkDensity (4), PhCaCL (23), bio2 (26), bio15 (39), ClayPercentage (5), OrganicCarbon (22)
+vif(GIS_myco[,c(3, 4, 24, 30, 31, 42, 43)])
+vif(GIS_myco[,c(3, 10, 24, 30, 31, 38, 42, 43)])
+vif(GIS_myco[,c(3, 10, 24, 30, 31, 41, 42, 43)])
+#added 4, 10, 38, 41
+```
+
+### With bio7 and bio10
+```{r}
+#excluded: BIO11(35), continentality (9), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO17 (41), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), bio4 (28), minTempWarmest (14)
+vif(GIS_myco[,c(3:5, 7, 20, 22:24, 26, 31, 34, 39, 42, 43)])
+```
+
+### With bio7 and bio17
+```{r}
+#excluded: BIO11(35), continentality (9), BIO10 (34), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), bio4 (28), aridityIndexThornthwaite (7), bio18 (42)
+vif(GIS_myco[,c(3:5, 14, 20, 22:24, 26, 31, 37, 39, 41, 43)])
+#added 37
+```
+
+### With bio10 and bio17
+```{r}
+#excluded: BIO7 (31), BIO11(35), continentality (9), maxTempColdest (13), BIO6 (30), BIO1 (25), annualPET (6), growingDegDays0 (11), PETColdestQuarter (16), thermicityIndex (21), BIO13 (37), BIO5 (29), BIO9 (33), BIO12 (36), BIO3 (27), growingDegDays5 (12), BIO8 (32), PETWarmestQuarter (19), BIO16 (40), monthCountByTemp10 (15), embergerQ (10), PETDriestQuarter (17), climaticMoistureIndex (8), BIO14 (38), PETseasonality (18), minTempWarmest (14), aridityIndexThornthwaite (7), bio18 (42)
+vif(GIS_myco[,c(3:5, 20, 22:24, 26, 28, 34, 37, 39, 41, 43)])
+#added 37
+```
+
 
