@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1 Import data
 
-First the traits table and the original tree have to be read into R in the right format to be able to use them. 
+First the traits table and the original phylogeny (tree) have to be read into R in the right format to be able to use them. 
 
 ### The project root and the main tree
 ```{r define data root and import tree}
@@ -38,12 +38,11 @@ myco_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco_taxa.tsv
 myco_tsv <- read.table(myco_tsv_file, sep = '\t', header = TRUE)
 ```
 
-## 3 Recode dependent variables to binary form
+## 2 Recode dependent variables to binary form
 
 The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
-input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
-moment. 
-
+input is prefered for this analysis due to technical reasons. BUt at the moment, the three plant traits 
+all have 3 or 4 states.
 For mycorrhiza, there are 4 trait-states: EM, AM, both, neither. This will be turned into: AM (0) and 
 the rest together (1). So in this case nothing will be eliminated from the analysis, just (1)(2)(3) have 
 to be collapsed together. 
@@ -57,25 +56,25 @@ myco_tsv$myco_state_int[myco_tsv$myco_state == "ecto"] <- "1"
 myco_tsv$myco_state_int[myco_tsv$myco_state == "both"] <- "1"
 myco_tsv$myco_state_int[myco_tsv$myco_state == "neither"] <- "1"
 
-#now myco_tsv_bi contains an added column with binary state values
+#now myco_tsv contains an added column with binary state values
 ```
 
-## 4 Tidy data
+## 3 Tidy data
 
 ### Trim the tree 
 The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
 not in the traits table -> cut these out of the tree. It could be true that the taxa names don't 
-match between the tree file and the trait-table, in that case not the same amount of taxa will still
-be in the tree as there are in the trait table. If that is the case, this has to be fixed!
+match between the tree file and the trait-table, in that case the names have to be fixed!
 
 ```{r trim tree}
 #load required packages and data
 library(stringi)
 
-#define the temporary tree for mycorrhiza
+#make sure the names are the same in the tree and the tsv file
 keep_tips_myco_tsv_bi <- as.character(unlist(c(myco_tsv[1]))) 
 keep_tips_myco_tsv_bi <- stri_replace_all_charclass(keep_tips_myco_tsv_bi, "\\p{WHITE_SPACE}", "_")
 
+#define the temporary tree for mycorrhiza
 tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco_tsv_bi)
 tree_myco_tsv <- drop.tip(tree, tips_to_drop_myco)
 ```
@@ -83,17 +82,17 @@ tree_myco_tsv <- drop.tip(tree, tips_to_drop_myco)
 ### Match the names 
 Make the taxa names the same in the table as in the tree. 
 ```{r match names}
-#replace the spaces in the taxa names for _ 
+#replace the whitespaces in the taxa names with '_' 
 myco_tsv$allmb_name <- stri_replace_all_charclass(myco_tsv$allmb_name, "\\p{WHITE_SPACE}", "_")
 ```
 
-## 5 Combine the data
+## 4 Combine the data
 
 The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
 
 ### Import GIS data
 Import the data and make sure the taxa names are the same in this table as in the tsv file and in the tree file,
-so with _ instead of spaces 
+so with _ between the words instead of whitespaces. 
 ```{r import GIS data}
 #import GIS data 
 GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
@@ -103,9 +102,9 @@ GIS <- read.table(GIS_file, sep = ',', header = TRUE)
 GIS_names <- as.character(unlist(c(GIS[1])))
 GIS_names <- gsub('  ', '. ', GIS_names)
 GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
-
 #there is a discrepancy with several names that should have a - instead of a _ in some places. 
-#So we have to change those specific GIS names:
+
+#change those specific GIS names:
 GIS_names[GIS_names == "Acaena_novae_zelandiae"] <- "Acaena_novae-zelandiae"
 GIS_names[GIS_names == "Impatiens_noli_tangere"] <- "Impatiens_noli-tangere"  
 GIS_names[GIS_names == "Myrrhidendron_donnell_smithii" ] <- "Myrrhidendron_donnell-smithii" 
@@ -117,6 +116,8 @@ GIS_names[GIS_names == "Apera_spica_venti"] <- "Apera_spica-venti"
 GIS_names[GIS_names == "Arctostaphylos_uva_ursi"] <- "Arctostaphylos_uva-ursi"
 GIS_names[GIS_names == "Blitum_bonus_henricus"] <- "Blitum_bonus-henricus"
 GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
+
+#put the changed names back into the GIS table
 GIS$allmb_name <- GIS_names
 ```
 
@@ -148,11 +149,10 @@ GIS_myco$mycorrhiza[GIS_myco$allmb_name %in% GIS_myco_1$allmb_name] <- "1"
 #change order of the columns for esthetics
 GIS_myco <- GIS_myco[,c(1,43, 2:42)]
 
-#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as there
-#are not enough occurrences for each plant in the ALLMB tree. 
+#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as it could be the case that there are not enough occurrences for each plant in the ALLMB tree, and thus not enough GIS data. 
 ```
 
-## 6 Correct for colinearity in the predictor variables
+## 5 Correct for colinearity in the predictor variables
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
@@ -167,7 +167,6 @@ library(usdm)
 vif(GIS_myco[,c(3:43)])
 
 #choose the variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, results in:
-
 # 1. Solely based on highest VIF value
 vif(GIS_myco[,c(3:5, 7, 14, 20, 22:24, 26, 28, 39, 42, 43)])
 
@@ -181,7 +180,7 @@ vif(GIS_myco[,c(3:5, 8, 14, 20, 22:24, 26, 28, 39, 43)])
 vif(GIS_myco[,c(3:5, 7, 9, 14, 20, 22:24, 26, 39, 42, 43)])
 
 # 5. With thermicityIndex
-vif(GIS_myco[,c(3:5, 20, 21, 22:24, 26, 39, 42, 43)])
+vif(GIS_myco[,c(3:5, 20:24, 26, 39, 42, 43)])
 
 # 6. With BIO8 and BIO9 
 vif(GIS_myco[,c(3:5, 7, 22:24, 26, 32, 33, 39, 42, 43)])
@@ -197,30 +196,54 @@ vif(GIS_myco[,c(3, 4, 10, 21, 23, 24, 26, 39, 42)])
 
 # 10. With climaticMoistureIndex and thermicityIndex
 vif(GIS_myco[,c(3:5, 8, 20, 21, 22:24, 26, 39, 43)])
-
 ```
 
-## 7 Model selection: Define formula and select model 
+## 6 Model selection: Define formula and select model 
 
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
-### Define formulas
+### Define input formulas
+Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
 ```{r define formula}
 # 0. Define starting formula
 myco_starting_formula <- mycorrhiza ~ 1 
+  
+# 1. Solely based on highest VIF value
+myco_formula_1 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 + bio19
 
-# 1. Best formula
+# 2. With embergerQ
+myco_formula_2 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 
 
+# 3. With climaticMoistureIndex
+myco_formula_3 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio19
+
+# 4. With continentality
+myco_formula_4 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18 + bio19
+
+# 5. With thermicityIndex
+myco_formula_5 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
+
+# 6. With BIO8 and BIO9 
+myco_formula_6 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + OrganicCarbon + PhCaCL + Slope + bio2 + bio8 + bio9 + bio15 + bio18 + bio19
+
+# 7. With BIO8, BIO9, and EmbergerQ
+myco_formula_7a <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + embergerQ + OrganicCarbon + PhCaCL + Slope + bio2 + bio8 + bio9 + bio15 + bio17 + bio18
+myco_formula_7b <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + embergerQ + OrganicCarbon + PhCaCL + Slope + bio2 + bio8 + bio9 + bio14 + bio15 + bio18
+
+# 8. With BIO8, BIO9, and climaticMoistureIndex
+myco_formula_8a <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio8 + bio9 + bio14 + bio15 + bio19
+myco_formula_8b <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio15 + bio17 + bio19
+
+# 9. With embergerQ and thermicityIndex
+myco_formula_9a <- mycorrhiza ~ Aspect + BulkDensity + embergerQ + thermicityIndex + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18
+myco_formula_9b <- mycorrhiza ~ Aspect + BulkDensity + embergerQ + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio17 + bio18
+
+# 10. With climaticMoistureIndex and thermicityIndex
+myco_formula_10 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio19
 ```
 
-### Model selection 
-What gives us the best result (in terms of the AIC value): 
-- Model: BM, OUrandomRoot, or OUfixedRoot
-- Direction: forward or both 
-For full script and outcomes of the selection process, see "Model_selection_myco"
-
-Change data to match the wanted data format
+### Change data to match the wanted data format
 There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
 the row names have to match the tip.lables of the tree, and secondly the trait value (0/1) has to be
 seen as a numeric value. 
@@ -235,14 +258,43 @@ GIS_myco$mycorrhiza <- as.numeric(GIS_myco$mycorrhiza)
 is.numeric(GIS_myco$mycorrhiza)
 ```
 
-Perform model selection
+### Perform model selection
 ```{r model selection BM}
 #load required package
 library(phylolm)
 
-#define function components and run function 
+#define function components and run function, while changing:
+  # - formula: all input formulas 
+  # - model: BM, OUrandomRoot, or OUfixedRoot
+  # - direction: forward or both
 phylostep(formula = ??? , starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "???", direction = "???", trace = 2)
 ```
+
+What gives us the best result (in terms of the AIC value)?  
+- Formula: which input formula 
+- Model: BM, OUrandomRoot, or OUfixedRoot
+- Direction: forward or both 
+- Model: what is the best model you get 
+For full script and outcomes of the model selection, see "Model_selection_myco" and "Model selection - Combined results". 
+
+## 7 Model evaluation
+
+To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
+```{r}
+#install and load required package 
+install.packages("performance")
+library("performance")
+
+model <- glm(model = , data = )
+check_model(model)
+```
+
+1. Check for multicolinearity
+2. Non-normality of residuals and outliers
+3. Non-normality of residuals
+4. Homoscedasticity (linear relationship)
+5. Homogeneity of variance (scale-location)
+6. Check for influential observations
 
 ## 8 Phylogenetic generalized linear modelling analysis
 

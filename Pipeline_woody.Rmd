@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1 Import data
 
-First the traits table and the original tree have to be read into R in the right format to be able to use them. 
+First the traits table and the original phylogeny (tree) have to be read into R in the right format to be able to use them. 
 
 ### The project root and the main tree
 ```{r define data root and import tree}
@@ -33,36 +33,37 @@ woody_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.tsv'),
 woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
 ```
 
-## 3 Recode dependent variables to binary form
+## 2 Recode dependent variables to binary form
 
 The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
-input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
-moment. For secondary woodiness, there are 3 trait-states: derived woody (0), non-woody (1), ancestral woody (2). 
-This will be turned into: derived woody (0) and non-woody (1). As this is the actual shift between 
-non-woody and derived woodiness. So all the plants with ancestral woodiness (3) as trait, have to be 
-eliminated from the analysis. 
+input is prefered for this analysis due to technical reasons. BUt at the moment, the three plant traits 
+all have 3 or 4 states For secondary woodiness, there are 3 trait-states: derived woody (0), non-woody (1), 
+ancestral woody (2). 
+This will be turned into: derived woody (0) and non-woody (1). Because we want to know more about this 
+precise shift between non-woody and derived woodiness. So all the plants with ancestral woodiness (3) as 
+trait, have to be eliminated from the analysis. 
 
 ```{r cut out state 2}
 #define new sub-woody, which contains binary trait values (tsv)
 woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
 ```
 
-## 4 Tidy data
+## 3 Tidy data
 
 ### Trim the tree
 The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
-not in the traits table -> cut these out of the tree. It could be true that the taxa names don't 
-match between the tree file and the trait-table, in that case not the same amount of taxa will still
-be in the tree as there are in the trait table. If that is the case, this has to be fixed!
+not in the traits table, these have to be cut out of the tree. It could be true that the taxa names don't 
+match between the tree file and the trait-table, in that case the names have to be fixed!
 
 ```{r trim tree}
 #load required packages 
 library(stringi)
 
-#define the taxa names for the temporary tree for woodiness
+#make sure the names are the same in the tree and the tsv file
 keep_tips_woody_tsv_bi <- as.character(unlist(c(woody_tsv_bi[1]))) 
 keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\p{WHITE_SPACE}", "_")
 
+#define the temporary tree for woodiness
 tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody_tsv_bi)
 tree_woody_tsv <- drop.tip(tree, tips_to_drop_woody)
 ```
@@ -70,17 +71,17 @@ tree_woody_tsv <- drop.tip(tree, tips_to_drop_woody)
 ### Match the names
 Make the taxa names the same in the table as in the tree. 
 ```{r match names}
-#replace the spaces in the taxa names for _ 
+#replace the spaces in the taxa names with '_' 
 woody_tsv_bi$allmb_name <- stri_replace_all_charclass(woody_tsv_bi$allmb_name, "\\p{WHITE_SPACE}", "_")
 ```
 
-## 5 Combine the data
+## 4 Combine the data
 
 The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
 
 ### Import GIS data
 Import the data and make sure the taxa names are the same in this table as in the tsv file and in the tree file,
-so with _ instead of spaces 
+so with _ between the words instead of whitespaces. 
 ```{r import GIS data}
 #import GIS data
 GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
@@ -90,9 +91,9 @@ GIS <- read.table(GIS_file, sep = ',', header = TRUE)
 GIS_names <- as.character(unlist(c(GIS[1])))
 GIS_names <- gsub('  ', '. ', GIS_names)
 GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
-
 #there is a discrepancy with several names that should have a - instead of a _ in some places. 
-#So we have to change those specific GIS names:
+
+#change those specific GIS names:
 GIS_names[GIS_names == "Acaena_novae_zelandiae"] <- "Acaena_novae-zelandiae"
 GIS_names[GIS_names == "Impatiens_noli_tangere"] <- "Impatiens_noli-tangere"  
 GIS_names[GIS_names == "Myrrhidendron_donnell_smithii" ] <- "Myrrhidendron_donnell-smithii" 
@@ -104,6 +105,8 @@ GIS_names[GIS_names == "Apera_spica_venti"] <- "Apera_spica-venti"
 GIS_names[GIS_names == "Arctostaphylos_uva_ursi"] <- "Arctostaphylos_uva-ursi"
 GIS_names[GIS_names == "Blitum_bonus_henricus"] <- "Blitum_bonus-henricus"
 GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
+
+#put the changed names back into the GIS table
 GIS$allmb_name <- GIS_names
 ```
 
@@ -115,7 +118,7 @@ keep_GIS_woody <- as.character(unlist(c(woody_tsv_bi[1])))
 #define the final GIS file for woodiness
 GIS_woody <- GIS[GIS$allmb_name %in% keep_GIS_woody,]
 
-#select the names that have to be kept in the tree
+#select the names that have to be kept in the tree based on the GIS file
 keep_tips_woody <- as.character(unlist(c(GIS_woody[1]))) 
 #define the final tree for mycorrhiza
 tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody)
@@ -135,11 +138,10 @@ GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_1$allmb_name] <- "1"
 #change order of the columns for esthetics
 GIS_woody <- GIS_woody[,c(1,43, 2:42)]
 
-#there are less plants in this GIS file than in the tsv file, this makes sense as there
-#are not enough occurrences for each plant in the ALLMB tree, so not enough GIS data. 
+#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as it could be the case that there are not enough occurrences for each plant in the ALLMB tree, and thus not enough GIS data. 
 ```
 
-## 6 Correct for colinearity in the predictor variables
+## 5 Correct for colinearity in the predictor variables
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
@@ -154,7 +156,6 @@ library(usdm)
 vif(GIS_woody[,c(3:43)])
 
 #choose variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
-
 # 1. Solely based on highest VIF value 
 vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 38, 39, 42, 43)])
 
@@ -190,30 +191,58 @@ vif(GIS_woody[,c(3:5, 7, 11, 14, 20, 22:24, 39, 43)])
 
 # 12. With growingDegDays0 and embergerQ
 vif(GIS_woody[,c(3:5, 10, 11, 17, 20, 22:24, 39, 43)])
-
 ```
 
-## 7 Model selection: Define formula and select model 
+## 6 Model selection: Define formula and select model 
 
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
-### Define formulas
+### Define input formulas
+Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
 ```{r define formula}
 # 0. Define starting formula
 woody_starting_formula <- woody ~ 1 
 
-# 1. Best formula
+# 1. Solely based on lowest VIF value 
+woody_formula_1 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+
+# 2. With ClimaticMoistureIndex:
+woody_formula_2 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
+
+# 3. With BIO6
+woody_formula_3 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio14 + bio15 + bio18 + bio19
+
+# 4. With growingDegDays0
+woody_formula_4 <- woody ~ Aspect + BulkDensity + ClayPercentage + growingDegDays0 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio18 + bio19
+
+# 5. With aridityIndexThornthwaite
+woody_formula_5 <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
+
+# 6. With embergerQ
+woody_formula_6 <- woody ~ Aspect + BulkDensity + ClayPercentage +embergerQ + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
+
+# 7. With BIO6, with ClimaticMoistureIndex:
+woody_formula_7 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
+
+# 8. With BIO6 and aridityIndexThornthwaite
+woody_formula_8 <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
+
+# 9. With BIO6 and embergerQ
+woody_formula_9 <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
+
+# 10. With growingDegDays0 and ClimaticMoistureIndex
+woody_formula_10 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + growingDegDays0 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
+
+# 11. With growingDegDays0 and aridityIndexThornthwaite
+woody_formula_11 <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + growingDegDays0 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
+
+# 12. With growingDegDays0 and embergerQ
+woody_formula_12 <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ + growingDegDays0 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
 
 ```
 
-### Model selection 
-What gives us the best result (in terms of the AIC value): 
-- Model: BM, OUrandomRoot, or OUfixedRoot
-- Direction: forward or both 
-For full script and outcomes of the selection process, see "Model_selection_woody"
-
-Change data to match the wanted data format
+### Change data to match the wanted data format
 There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
 the row names have to match the tip.lables of the tree, and secondly the trait value (0/1) has to be
 seen as a numeric value. 
@@ -228,14 +257,44 @@ GIS_woody$woody <- as.numeric(GIS_woody$woody)
 is.numeric(GIS_woody$woody)
 ```
 
-Model selection
+### Perform model selection
 ```{r model selection BM}
 #load required package
 library(phylolm)
 
-#define function components and run function 
+#define function components and run function, while changing:
+  # - formula: all input formulas 
+  # - model: BM, OUrandomRoot, or OUfixedRoot
+  # - direction: forward or both
 phylostep(formula = ??? , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "???", direction = "???", trace = 2)
 ```
+
+What gives us the best result (in terms of the AIC value)?  
+- Formula: which input formula 
+- Model: BM, OUrandomRoot, or OUfixedRoot
+- Direction: forward or both 
+- Model: what is the best model you get 
+For full script and outcomes of the model selection, see "Model_selection_woody" and "Model selection - Combined results". 
+
+## 7 Model evaluation
+
+To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
+```{r}
+#install and load required package 
+install.packages("performance")
+library("performance")
+
+model <- glm(model = , data = )
+check_model(model)
+```
+
+1. Check for multicolinearity
+2. Non-normality of residuals and outliers
+3. Non-normality of residuals
+4. Homoscedasticity (linear relationship)
+5. Homogeneity of variance (scale-location)
+6. Check for influential observations
+
 
 ## 8 Phylogenetic generalized linear modelling analysis
 

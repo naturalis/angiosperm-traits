@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1 Import data
 
-First the traits table and the original tree have to be read into R in the right format to be able to use them. 
+First the traits table and the original phylogeny (tree) have to be read into R in the right format to be able to use them. 
 
 ### The project root and the main tree
 ```{r define data root and import tree}
@@ -33,19 +33,17 @@ crops_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/crops.tsv'),
 crops_tsv <- read.table(crops_tsv_file, sep = '\t', header = TRUE)
 ```
 
-## 3 Recode dependent variables to binary form
+## 2 Recode dependent variables to binary form
 
 The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
-input is prefered for this analysis due to technical reasons, while all the data has 3 or 4 states at the
-moment. 
-
-### Cut out state 2
-
+input is prefered for this analysis due to technical reasons. BUt at the moment, the three plant traits 
+all have 3 or 4 states.
 For domestication, there are 3 trait-states: progenitor of domesticated (1), only domesticated (2) 
-and semi-domesticated (3). 
-This will be turned into: progenitor of domesticated and semi-domesticated together (1). This 
-eliminates the species that just exist in their domesticated form, which have already been altered 
-by human selection, so they can't tell us anything about pre-adaptations. 
+and semi-domesticated (3). This will be turned into: progenitor of domesticated and semi-domesticated 
+together (1). This eliminates the species that just exist in their domesticated form, which have 
+already been altered by human selection, so they can't tell us anything about pre-adaptations.
+
+### Cut out state 2 and combine state 1 and 3 
 ```{r cut out state 2}
 #cut out all the plants that have trait state 2 from the tsv file 
 crops_1_3 <- subset(crops_tsv, (crops_tsv$domestication == 1 | crops_tsv$domestication == 3))
@@ -60,7 +58,7 @@ The domestication database is not complete yet, some non-domesticated plants hav
 serve as the 0 state. These plants will come from the main tree, based on their distance on the
 pylogeny to the plants already included in the domestication traits table. 
 
-#### A. Import the right GIS data and make a GIS tree: 
+A. Import the right GIS data and make a GIS tree: 
 ```{r import GIS data}
 #import GIS data 
 GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
@@ -71,9 +69,9 @@ library(stringi)
 GIS_names <- as.character(unlist(c(GIS[1])))
 GIS_names <- gsub('  ', '. ', GIS_names)
 GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
-
 #there is a discrepancy with several names that should have a - instead of a _ in some places. 
-#So we have to change those specific GIS names:
+
+#change those specific GIS names:
 GIS_names[GIS_names == "Acaena_novae_zelandiae"] <- "Acaena_novae-zelandiae"
 GIS_names[GIS_names == "Impatiens_noli_tangere"] <- "Impatiens_noli-tangere"  
 GIS_names[GIS_names == "Myrrhidendron_donnell_smithii" ] <- "Myrrhidendron_donnell-smithii" 
@@ -94,11 +92,9 @@ GIS_tree <- drop.tip(tree, tips_to_drop_GIS)
 #are there still names that do not match?
 nomatch_GIS_tree <- setdiff(GIS_names, GIS_tree$tip.label)
 print(nomatch_GIS_tree)
+#yes there is one name that is in the GIS table but not in the GIS tree: "Zea_mays_subsp._parviglumis". This is a wild subspecies of Zea mays, so it has the same distances to the other species as Zea mays does. 
 
-#yes there is one name that is in the GIS table but not in the GIS tree: "Zea_mays_subsp._parviglumis"
-#this is a wild subspecies of Zea mays, so it has the same distances to the other species as Zea mays does. 
-
-#change the name of this subspecies to Zea_mays, otherwise there will be miscommunication during the model selction
+#change the name of this subspecies to Zea_mays
 GIS_names[GIS_names == "Zea_mays_subsp._parviglumis"] <- "Zea_mays"
 GIS$allmb_name <- GIS_names
 
@@ -107,10 +103,9 @@ tips_to_drop_GIS <- setdiff(tree$tip.label, GIS_names)
 GIS_tree <- drop.tip(tree, tips_to_drop_GIS)
 nomatch_GIS_tree <- setdiff(GIS_names, GIS_tree$tip.label)
 print(nomatch_GIS_tree)
-
 #all names match!
 
-#now change the name in the crops_tsv_1_3 file as well, so that the selection later on goes well
+#change the name in the crops_1_3 file as well
 crops_1_3$allmb_name[crops_1_3$allmb_name == "Zea_mays_subsp._parviglumis"] <- "Zea_mays"
 ```
 
@@ -128,7 +123,7 @@ tree_crops_tsv <- drop.tip(GIS_tree, tips_to_drop_crops)
 #make a vector of the taxa names that are still in the tree
 crops_names <- as.character(unlist(c(tree_crops_tsv$tip.label)))
 
-#there are only 34 taxa in this tree, as there is not enough information for all the taxa that are in the tsv file
+#there are only 34 taxa in this tree, which is less than in the original tree and the tsv file, this makes sense as it could be the case that there are not enough occurrences for each plant in the ALLMB tree, and thus not enough GIS data.
 ```
 
 #### C. Now do the distance matrix calculations
@@ -140,13 +135,11 @@ distances <- cophenetic.phylo(GIS_tree)
 print(crops_names)
 
 #search for a non-domesticated species (state 0) inside the matrix for every printed species (state 1) name above, 
-#sort the results based on the phylogenetic distance, and print the first 20 results
+#sort the results based on the phylogenetic distance, and print the first 30 results
 head(sort(distances[,colnames(distances) == crops_names[26]]), n=30) 
 
-#choose the one that has the shortest phylogenetic distance AND is not domesticated (use internet to make sure) 
-#AND is not in the crops_names list -> add it to a new vector
+#choose the one that has the shortest phylogenetic distance AND is not domesticated (use internet to make sure) AND is not in the crops_names list -> add it to a new vector
 #do this for [1] to [34], make sure the other new taxa you select are not already in the new vector.  
-
 
 #1 Euphorbia_usambarica                       		#2 Calycophysum_pedunculatum
 #3 Ibervillea_sonorae	                        		#4 Psiguria_triphylla
@@ -168,7 +161,7 @@ head(sort(distances[,colnames(distances) == crops_names[26]]), n=30)
 
 allmb_name <- c("Euphorbia_usambarica", "Calycophysum_pedunculatum", "Ibervillea_sonorae", "Psiguria_triphylla", "Gurania_eriantha", "Doyerea_emetocathartica", "Ficus_pandurata", "Fissicalyx_fendleri", "Dendrosida_sharpiana_subsp._pubescens", "Ipomoea_arborescens", "Heliconia_psittacorum", "Tradescantia_zebrina", "Amischotolype_hispida", "Scleria_gaertneri", "Festuca_arundinacea_subsp._orientalis", "Pogonarthria_squarrosa", "Digitaria_ischaemum", "Digitaria_violascens", "Elymus_repen", "Aegilops_cylindrica", "Aegilops_crassa", "Elymus_elongatus", "Poa_colensoi", "Molineria_capitulata", "Polygonatum_verticillatum", "Epipactis_helleborine", "Evodianthus_funifer", "Schoenoplectus_pungens_var._badius", "Helictotrichon_desertorum_subsp._basalticum", "Eleocharis_acutangula_subsp._breviseta", "Raddiella_esenbeckii", "Dienia_ophrydis", "Arum_maculatum", "Calla_palustris")
 
-#create a new dataframe for the state 0 taxa, and add columns that correspond with the ones in crops_tsv_1_3
+#create a new dataframe for the state 0 taxa, and add columns that correspond with the ones in crops_1_3
 crops_state0 <- data.frame(allmb_name)
 crops_state0$gbif_species_key <- "NA"
 crops_state0$domestication <- "0"
@@ -211,8 +204,7 @@ GIS_crops$domestication[GIS_crops$allmb_name %in% GIS_crops_0$allmb_name] <- "0"
 #change order of the columns for esthetics
 GIS_crops <- GIS_crops[,c(1,43, 2:42)]
 
-#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as there
-#are not enough occurrences for each plant in the ALLMB tree. 
+#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as it could be the case that there are not enough occurrences for each plant in the ALLMB tree, and thus not enough GIS data.
 ```
 
 ## 6 Correct for colinearity in the predictor variables
@@ -258,18 +250,40 @@ vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 39)])
 vif(GIS_crops[,c(3:5, 14, 20, 22:24, 28, 39, 43)]) 
 ```
 
-## 7 Model selection: Define formula and select model 
+## 7 Model selection: Define input formulas and perform model selection 
 
 The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
 GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
 
-### Define formulas
+### Define input formulas
+Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
 ```{r define formula}
 # 0. Define starting formula
 crops_starting_formula <- domestication ~ 1 
 
-# 1. Best formula
+# 1. Lowest VIF value
+crops_formula_1 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
 
+# 2. With PETseasonality
+crops_formula_2 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio19
+
+# 3. With BIO2
+crops_formula_3 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio13 + bio14 + bio19
+
+# 4. With BIO4
+crops_formula_4 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio15 + bio19
+
+# 5. BIO15
+crops_formula_5 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio15
+
+# 6. With PETseasonality and BIO2
+crops_formula_6 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio19
+
+# 7. With PETseasonality and BIO4
+crops_formula_7 <- domestication ~ Aspect + ClayPercentage + PETseasonality + PETWettestQuarter + OrganicCarbon + Slope + bio4 + bio19
+
+# 8. With Bio15 and BIO2
+crops_formula_8 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 
 ```
 
 ### Change data to match the wanted data format
@@ -287,7 +301,7 @@ GIS_crops$domestication <- as.numeric(GIS_crops$domestication)
 is.numeric(GIS_crops$domestication)
 ```
 
-### Model selection 
+### Perform model selection 
 What gives us the best result (in terms of the AIC value): 
 - Model: BM, OUrandomRoot, or OUfixedRoot
 - Direction: forward or both 
@@ -296,9 +310,38 @@ For full script and outcomes of the selection process, see "Model_selection_crop
 #load required package
 library(phylolm)
 
-#define function components and run function 
+#define function components and run function, while changing:
+  # - formula: all input formulas 
+  # - model: BM, OUrandomRoot, or OUfixedRoot
+  # - direction: forward or both
 phylostep(formula = ???, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "???", direction = "???", trace = 2)
 ```
+
+What gives us the best result (in terms of the AIC value)?  
+- Formula: which input formula 
+- Model: BM, OUrandomRoot, or OUfixedRoot
+- Direction: forward or both 
+- Model: what is the best model you get 
+For full script and outcomes of the model selection, see "Model_selection_crops" and "Model selection - Combined results". 
+
+## 7 Model evaluation
+
+To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
+```{r}
+#install and load required package 
+install.packages("performance")
+library("performance")
+
+model <- glm(model = , data = )
+check_model(model)
+```
+
+1. Check for multicolinearity
+2. Non-normality of residuals and outliers
+3. Non-normality of residuals
+4. Homoscedasticity (linear relationship)
+5. Homogeneity of variance (scale-location)
+6. Check for influential observations
 
 ## 8 Phylogenetic generalized linear modelling analysis
 
