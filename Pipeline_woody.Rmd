@@ -283,18 +283,26 @@ To see whether the best model we constructed, is still in compliance with the as
 #install and load required package 
 install.packages("performance")
 library("performance")
+install.packages("see")
+library("see")
 
-model <- glm(model = , data = )
+#fill in arguments and execute functions
+model <- glm(woody ~ 1, family = binomial(), data = GIS_woody)
 check_model(model)
 ```
 
 1. Check for multicolinearity
-2. Non-normality of residuals and outliers
+All correlation is low. 
+2. Non-normality of residuals and outliers.
+All dots are plotted along the line. 
 3. Non-normality of residuals
+----- not for glm
 4. Homoscedasticity (linear relationship)
+----- not for glm
 5. Homogeneity of variance (scale-location)
+The dots are mirrored... 
 6. Check for influential observations
-
+All values are below 0,5; which means that there are no outliers in this dataset. 
 
 ## 8 Phylogenetic generalized linear modelling analysis
 
