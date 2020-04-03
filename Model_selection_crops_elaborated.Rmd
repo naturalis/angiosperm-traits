@@ -173,10 +173,10 @@ phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula,
 
 ```{r model selection OUrandomRoot}
 #define formula components and run function (forward)
-phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2)
+phylostep(formula = crops_formula_32, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 
 #define formula components and run function (both)
-phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2)
+phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 
 ```
 
@@ -184,10 +184,10 @@ phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula,
 
 ```{r model selection OUfixedRoot}
 #define formula components and run function (forward)
-phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2)
+phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 100)
 
 #define formula components and run function (both)
-phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2)
+phylostep(formula = crops_formula_32, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 ```
 
 

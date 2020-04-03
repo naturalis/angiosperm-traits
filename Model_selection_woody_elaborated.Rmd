@@ -119,7 +119,7 @@ woody_formula_25b <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountB
 woody_formula_26 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio7 + bio14 + bio15 +  bio18 + bio19
 
 # 27. With bio8 
-woody_formula_27 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio18 + bio14 + bio15 + bio18 + bio19
+woody_formula_27 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
 
 # 28. With bio9
 woody_formula_28 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio9 + bio14 + bio15 + bio18 + bio19
@@ -155,10 +155,10 @@ BM stands for Brownian motion.
 library(phylolm)
 
 #define formula components and run function (forward)
-phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_9c, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
  
 #define formula components and run function (both)
-phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+phylostep(formula = woody_formula_5c, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 
 ```
 
@@ -168,10 +168,10 @@ OUrandomRoot stands for Ornstein-Uhlenbeck with a random root.
 
 ```{r model selection OUrandomRoot}
 #define formula components and run function (forward)
-phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_13, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "forward", trace = 2, lower.bound = 0, upper.bound = 1000)
 
 #define formula components and run function (both)
-phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2)
+phylostep(formula = woody_formula_34a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
   
 ```
 
@@ -181,9 +181,9 @@ OUfixedRoot stands for Ornstein-Uhlenbeck with a fixed root.
 
 ```{r model selection OUfixedRoot}
 #define formula components and run function (forward)
-phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_11, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2, lower.bound = 0, upper.bound = 1000)
  
 #define formula components and run function (both)
-phylostep(formula = woody_formula_16, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2)
+phylostep(formula = woody_formula_13, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
 
 ```
