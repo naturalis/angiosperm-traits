@@ -155,10 +155,10 @@ BM stands for Brownian motion.
 library(phylolm)
 
 #define formula components and run function (forward)
-phylostep(formula = woody_formula_19, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = woody_formula_9a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "forward", trace = 2)
  
 #define formula components and run function (both)
-phylostep(formula = woody_formula_5c, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+phylostep(formula = woody_formula_13, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 
 ```
 
@@ -171,7 +171,7 @@ OUrandomRoot stands for Ornstein-Uhlenbeck with a random root.
 phylostep(formula = woody_formula_13, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "forward", trace = 2, lower.bound = 0, upper.bound = 1000)
 
 #define formula components and run function (both)
-phylostep(formula = woody_formula_33, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
+phylostep(formula = woody_formula_14, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
   
 ```
 
@@ -184,6 +184,6 @@ OUfixedRoot stands for Ornstein-Uhlenbeck with a fixed root.
 phylostep(formula = woody_formula_11, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "forward", trace = 2, lower.bound = 0, upper.bound = 1000)
  
 #define formula components and run function (both)
-phylostep(formula = woody_formula_13, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
+phylostep(formula = woody_formula_25b, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
 
 ```

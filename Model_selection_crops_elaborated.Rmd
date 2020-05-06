@@ -40,8 +40,8 @@ crops_formula_7b <- domestication ~ Aspect + ClayPercentage + PETseasonality + P
 crops_formula_7c <- domestication ~ Aspect + ClayPercentage + PETseasonality + PETWettestQuarter + OrganicCarbon + Slope + bio4 + bio17 + bio19
 
 # 8. With Bio15 and BIO2
-crops_formula_8 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio16
-crops_formula_8 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18
+crops_formula_8a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio16
+crops_formula_8b <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18
 ```
 
 ## Extra formulas:
@@ -165,7 +165,7 @@ library(phylolm)
 phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
   
 #define formula components and run function (both)
-phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
+phylostep(formula = crops_formula_10d, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
   
 ```
 
@@ -176,7 +176,7 @@ phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula,
 phylostep(formula = crops_formula_32, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 
 #define formula components and run function (both)
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
+phylostep(formula = crops_formula_13a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 
 ```
 

@@ -150,6 +150,7 @@ or a correlation matrix. See the VIF_analysis_woody file for details of the deci
 ### VIF-analysis
 ```{r VIF analysis}
 #load required package
+install.packages("usdm")
 library(usdm)
 
 #fill in the arguments of the function and execute it 
@@ -260,6 +261,7 @@ is.numeric(GIS_woody$woody)
 ### Perform model selection
 ```{r model selection BM}
 #load required package
+install.packages("phylolm")
 library(phylolm)
 
 #define function components and run function, while changing:
