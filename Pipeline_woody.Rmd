@@ -50,27 +50,12 @@ woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
 
 ## 3 Tidy data
 
-### Trim the tree
-The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
-not in the traits table, these have to be cut out of the tree. It could be true that the taxa names don't 
-match between the tree file and the trait-table, in that case the names have to be fixed!
-
-```{r trim tree}
-#load required packages 
+### Match the names
+Make the taxa names the same in the table as in the tree; the difference is that the tsv file has white spaces where the tree file has underscores (_). 
+```{r match names}
+#load required package 
 library(stringi)
 
-#make sure the names are the same in the tree and the tsv file
-keep_tips_woody_tsv_bi <- as.character(unlist(c(woody_tsv_bi[1]))) 
-keep_tips_woody_tsv_bi <- stri_replace_all_charclass(keep_tips_woody_tsv_bi, "\\p{WHITE_SPACE}", "_")
-
-#define the temporary tree for woodiness
-tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody_tsv_bi)
-tree_woody_tsv <- drop.tip(tree, tips_to_drop_woody)
-```
-
-### Match the names
-Make the taxa names the same in the table as in the tree. 
-```{r match names}
 #replace the spaces in the taxa names with '_' 
 woody_tsv_bi$allmb_name <- stri_replace_all_charclass(woody_tsv_bi$allmb_name, "\\p{WHITE_SPACE}", "_")
 ```

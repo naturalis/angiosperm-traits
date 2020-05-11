@@ -61,27 +61,12 @@ myco_tsv$myco_state_int[myco_tsv$myco_state == "neither"] <- "1"
 
 ## 3 Tidy data
 
-### Trim the tree 
-The tree and the traits-tables have to match, but there are plants in the phylogeny (tree) that are 
-not in the traits table -> cut these out of the tree. It could be true that the taxa names don't 
-match between the tree file and the trait-table, in that case the names have to be fixed!
-
-```{r trim tree}
-#load required packages and data
+### Match the names 
+Make the taxa names the same in the table as in the tree; the difference is that the tsv file has white spaces where the tree file has underscores (_). 
+```{r match names}
+#load required package
 library(stringi)
 
-#make sure the names are the same in the tree and the tsv file
-keep_tips_myco_tsv_bi <- as.character(unlist(c(myco_tsv[1]))) 
-keep_tips_myco_tsv_bi <- stri_replace_all_charclass(keep_tips_myco_tsv_bi, "\\p{WHITE_SPACE}", "_")
-
-#define the temporary tree for mycorrhiza
-tips_to_drop_myco <- setdiff(tree$tip.label, keep_tips_myco_tsv_bi)
-tree_myco_tsv <- drop.tip(tree, tips_to_drop_myco)
-```
-
-### Match the names 
-Make the taxa names the same in the table as in the tree. 
-```{r match names}
 #replace the whitespaces in the taxa names with '_' 
 myco_tsv$allmb_name <- stri_replace_all_charclass(myco_tsv$allmb_name, "\\p{WHITE_SPACE}", "_")
 ```
