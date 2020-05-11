@@ -1,0 +1,110 @@
+---
+title: "BM_OU_question_full"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Import data 
+```{r define data root and import data}
+library(ape)
+project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
+
+#import and trait table
+woody_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.tsv'), collapse = '')
+woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
+
+#import tree
+tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
+tree <- read.tree(tree_file)
+```
+
+## 2 Recode dependent variables to binary form
+```{r cut out state 2}
+woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
+```
+
+## 3 Tidy data
+```{r match names}
+woody_tsv_bi$allmb_name <- stri_replace_all_charclass(woody_tsv_bi$allmb_name, "\\p{WHITE_SPACE}", "_")
+```
+
+## 4 Combine the data
+### Import GIS data
+```{r import GIS data}
+GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
+GIS <- read.table(GIS_file, sep = ',', header = TRUE)
+
+GIS_names <- as.character(unlist(c(GIS[1])))
+GIS_names <- gsub('  ', '. ', GIS_names)
+GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
+
+GIS_names[GIS_names == "Acaena_novae_zelandiae"] <- "Acaena_novae-zelandiae"
+GIS_names[GIS_names == "Impatiens_noli_tangere"] <- "Impatiens_noli-tangere"  
+GIS_names[GIS_names == "Myrrhidendron_donnell_smithii" ] <- "Myrrhidendron_donnell-smithii" 
+GIS_names[GIS_names == "Silene_flos_cuculi"] <- "Silene_flos-cuculi"
+GIS_names[GIS_names == "Pithecellobium_unguis_cati"] <- "Pithecellobium_unguis-cati"
+GIS_names[GIS_names == "Hyacinthoides_non_scripta" ] <- "Hyacinthoides_non-scripta" 
+GIS_names[GIS_names == "Alisma_plantago_aquatica"] <- "Alisma_plantago-aquatica" 
+GIS_names[GIS_names == "Apera_spica_venti"] <- "Apera_spica-venti"
+GIS_names[GIS_names == "Arctostaphylos_uva_ursi"] <- "Arctostaphylos_uva-ursi"
+GIS_names[GIS_names == "Blitum_bonus_henricus"] <- "Blitum_bonus-henricus"
+GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
+
+GIS$allmb_name <- GIS_names
+```
+
+### Tidy data
+```{r trim GIS and tree}
+#trim GIS table
+keep_GIS_woody <- as.character(unlist(c(woody_tsv_bi[1])))
+GIS_woody <- GIS[GIS$allmb_name %in% keep_GIS_woody,]
+
+#trim tree
+keep_tips_woody <- as.character(unlist(c(GIS_woody[1]))) 
+tips_to_drop_woody <- setdiff(tree$tip.label, keep_tips_woody)
+tree_woody <- drop.tip(tree, tips_to_drop_woody)
+```
+
+### Add the binary trait state to the GIS table
+```{r add binary state to GIS table}
+GIS_woody_0 <- woody_tsv_bi[woody_tsv_bi$woody == "0",]
+GIS_woody_1 <- woody_tsv_bi[woody_tsv_bi$woody == "1",]
+
+GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_0$allmb_name] <- "0"  
+GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_1$allmb_name] <- "1"  
+
+GIS_woody <- GIS_woody[,c(1,43, 2:42)]
+```
+
+## 6 Model selection: Define formulas and select model 
+```{r define formulas}
+#best BM model
+woody_formula_25a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
+
+#best OU model
+woody_formula_8c <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio16 + bio19
+```
+
+### Change data to match the wanted data format
+```{r}
+#make allmb_name column into the row names of this table
+rownames(GIS_woody) <- GIS_woody[,1]
+GIS_woody[,1] <- NULL
+
+#make sure the values in the 'woody' column are seen as numeric values
+GIS_woody$woody <- as.numeric(GIS_woody$woody)
+```
+
+### Perform model selection
+```{r}
+library(phylolm)
+
+#BM model selection
+phylostep(formula = woody_formula_25a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+
+#OU model selection
+phylostep(formula = woody_formula_8c, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
+```
