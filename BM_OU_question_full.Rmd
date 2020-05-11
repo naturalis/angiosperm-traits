@@ -79,13 +79,10 @@ GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_1$allmb_name] <- "1"
 GIS_woody <- GIS_woody[,c(1,43, 2:42)]
 ```
 
-## 6 Model selection: Define formulas and select model 
+## 6 Model selection: Define formula and select model 
 ```{r define formulas}
-#best BM model
+#best model (for both BM and OU)
 woody_formula_25a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
-
-#best OU model
-woody_formula_8c <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio16 + bio19
 ```
 
 ### Change data to match the wanted data format

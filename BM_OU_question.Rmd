@@ -32,11 +32,8 @@ GIS <- read.table(GIS_file, sep = ',', header = TRUE)
 
 ### Define formulas
 ```{r}
-#best BM model
+#best model (for both BM and OU)
 woody_formula_25a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
-
-#best OU model
-woody_formula_8c <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio16 + bio19
 ```
 
 ### Model selection
