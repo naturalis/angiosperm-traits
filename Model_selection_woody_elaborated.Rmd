@@ -7,8 +7,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Model selection derived woodiness
 
-# Model formulas
+## Define formulas 
+
+### First set of model formuals
+Based on the hypothesis. 
+
 ```{r}
 # 0. Starting formula
 woody_starting_formula <- woody ~ 1 
@@ -67,7 +72,9 @@ woody_formula_12e <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ +
 
 ```
 
-# Second set of model formulas 
+### Second set of model formulas 
+The rest of the variables that were not included yet. 
+
 ```{r}
 # 13. With things
 woody_formula_13 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
@@ -142,12 +149,11 @@ woody_formula_33 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarme
 # 34. With bio17
 woody_formula_34a <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio15 + bio17 + bio19
 woody_formula_34b <- woody ~ Aspect + BulkDensity + ClayPercentage+ minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio16 + bio17 + bio19
-
 ```
 
+## Preform model selection
 
-## Model selection with BM 
-
+### Model selection with BM 
 BM stands for Brownian motion. 
 
 ```{r model selection BM}
@@ -162,8 +168,7 @@ phylostep(formula = woody_formula_13, starting.formula = woody_starting_formula,
 
 ```
 
-## Model selection with OUrandomRoot
-
+### Model selection with OUrandomRoot
 OUrandomRoot stands for Ornstein-Uhlenbeck with a random root. 
 
 ```{r model selection OUrandomRoot}
@@ -175,8 +180,7 @@ phylostep(formula = woody_formula_14, starting.formula = woody_starting_formula,
   
 ```
 
-## Model selection with OUfixedRoot
-
+### Model selection with OUfixedRoot
 OUfixedRoot stands for Ornstein-Uhlenbeck with a fixed root. 
 
 ```{r model selection OUfixedRoot}

@@ -7,7 +7,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Model formulas:
+# Model selection domestication
+
+## Define formulas 
+
+### First set of model formuals
+Based on the hypothesis. 
 
 ```{r}
 # 0. Starting formula
@@ -44,7 +49,9 @@ crops_formula_8a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minT
 crops_formula_8b <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18
 ```
 
-## Extra formulas:
+### Second set of model formulas 
+The rest of the variables that were not included yet. 
+
 ```{r}
 # 9. With annualPET (6)
 crops_formula_9 <- domestication ~ Aspect + BulkDensity + ClayPercentage + annualPET + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
@@ -155,39 +162,42 @@ crops_formula_35 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minT
 crops_formula_36 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio13 + bio14 + bio19
 ```
 
-# Model selection with BM
+## Preform model selection with BM
+BM stands for Brownian motion. 
 
 ```{r model selection BM}
 #load required package
 library(phylolm)
 
 #define formula components and run function (forward)
-phylostep(formula = crops_formula_36, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = crops_formula_8a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "forward", trace = 2)
   
 #define formula components and run function (both)
-phylostep(formula = crops_formula_10d, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
+phylostep(formula = crops_formula_8a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
   
 ```
 
-## Model selection with OUrandomRoot
+## Preform model selection with OUrandomRoot
+OUrandomRoot stands for Ornstein-Uhlenbeck with a random root. 
 
 ```{r model selection OUrandomRoot}
 #define formula components and run function (forward)
-phylostep(formula = crops_formula_32, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 1000)
+phylostep(formula = crops_formula_10h, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 
 #define formula components and run function (both)
-phylostep(formula = crops_formula_13a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
+phylostep(formula = crops_formula_31a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 
 ```
 
-## Model selection with OUfixedRoot
+## Preform model selection with OUfixedRoot
+OUfixedRoot stands for Ornstein-Uhlenbeck with a fixed root. 
 
 ```{r model selection OUfixedRoot}
 #define formula components and run function (forward)
-phylostep(formula = crops_formula_8, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 100)
+phylostep(formula = crops_formula_8a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 100)
 
 #define formula components and run function (both)
-phylostep(formula = crops_formula_32, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
+phylostep(formula = crops_formula_20b, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 ```
 
 
