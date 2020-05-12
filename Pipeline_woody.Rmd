@@ -195,7 +195,6 @@ phylostep(formula = woody_formula_25a, starting.formula = woody_starting_formula
 
 #OUfixedRoot both: define formula components and run function
 phylostep(formula = woody_formula_25a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
-
 ```
 
 What gives us the best result (in terms of the AIC value)?  
@@ -204,18 +203,32 @@ What gives us the best result (in terms of the AIC value)?
 - Direction: forward or both 
 - Model: what is the best model you get 
 
+### Define best models
+```{r}
+# 25a. With bio5 for BM
+woodiness_BM <- woody ~ 0.83475898 + 0.15198885*BulkDensity -0.48410553*monthCountByTemp10 + 0.08058603*PETWettestQuarter + 0.43981669*OrganicCarbon -0.30052534*PhCaCL -0.19695033*Slope + 0.48659487*bio5 + 0.20864413*bio19
+
+# 25a. With bio5 for OUfixedRoot
+woodiness_OU <- woody ~ 0.79869004 -0.32765328*monthCountByTemp10 -0.16620515*PETDriestQuarter + 0.18423198*OrganicCarbon -0.17396725*PhCaCL -0.12842927*Slope + 0.34782999*bio5 -0.08450621*bio14 + 0.07455151*bio19 
+```
+
 ## 7 Model evaluation
 
 To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
 ```{r}
 #install and load required package 
 install.packages("performance")
-library("performance")
 install.packages("see")
-library("see")
+library(performance)
+library(see)
 
 #fill in arguments and execute functions
-model <- glm(woody ~ 1, family = binomial(), data = GIS_woody)
+# BM
+model <- glm(model = woodiness_BM, data = GIS_woody)
+check_model(model)
+
+# OU
+model <- glm(model = woodiness_OU, data = GIS_woody)
 check_model(model)
 ```
 

@@ -216,15 +216,32 @@ What gives us the best result (in terms of the AIC value)?
 - Direction: forward or both 
 - Model: what is the best model you get 
 
+### Define best models
+```{r}
+# BM
+mycorrhiza_BM <- 
+
+# OUfixedRoot
+mycorrhiza_OU <-
+
+```
+
 ## 7 Model evaluation
 
 To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
 ```{r}
 #install and load required package 
 install.packages("performance")
-library("performance")
+install.packages("see")
+library(performance)
+library(see)
 
-model <- glm(model = , data = )
+# BM
+model <- glm(model = mycorrhiza_BM, data = GIS_myco)
+check_model(model)
+
+# OU
+model <- glm(model = mycorrhiza_OU, data = GIS_myco)
 check_model(model)
 ```
 
