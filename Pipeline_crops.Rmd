@@ -211,7 +211,8 @@ GIS_crops <- GIS_crops[,c(1,43, 2:42)]
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
-or a correlation matrix. See the VIF_analysis_crops file for details of the decision making process.
+or a correlation matrix. 
+Only the combinations that result in the best models are shown, see VIF_analysis_crops" for all the used combinations. 
 
 ### VIF-analysis
 ```{r VIF analysis}
@@ -222,32 +223,11 @@ library(usdm)
 vif(GIS_crops[,c(3:43)])
 
 #choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
-# 1. Solely based on lowest VIF value
-vif(GIS_crops[,c(3:5, 14, 17, 18, 22:24, 26, 38, 39)])
+# 10a. With aridityIndexThornthwaite
+vif(GIS_crops[,c(3:5, 7, 9, 14, 19, 20, 22:24, 37, 43)]) 
 
-# 2. With PETseasonality
-vif(GIS_crops[,c(3:5, 14, 18, 20, 22:24, 38, 39, 43)]) 
-
-# 3. With BIO2 
-vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 37, 38, 43)]) 
-
-# 4. With BIO4 
-vif(GIS_crops[,c(3:5, 14, 20, 22:24, 28, 39, 43)]) 
-
-# 5. With BIO15
-vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 37, 39)]) 
-
-# 6. With PETseasonality and BIO2
-vif(GIS_crops[,c(3:5, 14, 18, 20, 22:24, 26, 38, 43)]) 
-
-# 7. With PETseasonality and BIO4
-vif(GIS_crops[,c(3, 5, 18, 20, 22, 24, 28, 43)]) 
-
-# 8. With BIO15 and BIO2 
-vif(GIS_crops[,c(3:5, 14, 17, 20, 22:24, 26, 39)]) 
-
-# 9. With BIO15 and BIO4 = same as with just BIO4
-vif(GIS_crops[,c(3:5, 14, 20, 22:24, 28, 39, 43)]) 
+# 35. With monthCountByTemp10
+vif(GIS_crops[,c(3:5, 14, 15, 19, 20, 22:24, 37, 38, 43)]) 
 ```
 
 ## 7 Model selection: Define input formulas and perform model selection 
@@ -257,33 +237,16 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 
 ### Define input formulas
 Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
+Only the formulas that result in the best models are shown, see "Model_selection_crops_elaborated" for all the used formulas. 
 ```{r define formula}
 # 0. Define starting formula
 crops_starting_formula <- domestication ~ 1 
 
-# 1. Lowest VIF value
-crops_formula_1 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+# 10a. With aridityIndexThornthwaite
+crops_formula_10a <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
 
-# 2. With PETseasonality
-crops_formula_2 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio19
-
-# 3. With BIO2
-crops_formula_3 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio13 + bio14 + bio19
-
-# 4. With BIO4
-crops_formula_4 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio15 + bio19
-
-# 5. BIO15
-crops_formula_5 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio15
-
-# 6. With PETseasonality and BIO2
-crops_formula_6 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio19
-
-# 7. With PETseasonality and BIO4
-crops_formula_7 <- domestication ~ Aspect + ClayPercentage + PETseasonality + PETWettestQuarter + OrganicCarbon + Slope + bio4 + bio19
-
-# 8. With Bio15 and BIO2
-crops_formula_8 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 
+# 35. With monthCountByTemp10
+crops_formula_35 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
 ```
 
 ### Change data to match the wanted data format
@@ -302,11 +265,8 @@ is.numeric(GIS_crops$domestication)
 ```
 
 ### Perform model selection 
-What gives us the best result (in terms of the AIC value): 
-- Model: BM, OUrandomRoot, or OUfixedRoot
-- Direction: forward or both 
-For full script and outcomes of the selection process, see "Model_selection_crops"
-```{r model selection BM}
+What formula gives us the best result (in terms of the AIC value)?
+```{r model selection}
 #load required package
 library(phylolm)
 
@@ -314,15 +274,19 @@ library(phylolm)
   # - formula: all input formulas 
   # - model: BM, OUrandomRoot, or OUfixedRoot
   # - direction: forward or both
-phylostep(formula = ???, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "???", direction = "???", trace = 2)
+
+#BM, both: define formula components and run function 
+phylostep(formula = crops_formula_8a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
+
+#OUfixedRoot, both: define formula components and run function 
+phylostep(formula = crops_formula_20b, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 ```
 
 What gives us the best result (in terms of the AIC value)?  
 - Formula: which input formula 
-- Model: BM, OUrandomRoot, or OUfixedRoot
-- Direction: forward or both 
+- Model: BM or OUfixedRoot
+- Direction: both 
 - Model: what is the best model you get 
-For full script and outcomes of the model selection, see "Model_selection_crops" and "Model selection - Combined results". 
 
 ## 7 Model evaluation
 

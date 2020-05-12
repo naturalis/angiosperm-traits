@@ -45,6 +45,8 @@ myco_formula_8a <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climatic
 myco_formula_8b <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio15 + bio17 + bio19
 myco_formula_8c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio14 + bio15 + bio19
 
+myco_formula_8d <- mycorrhiza ~ BulkDensity + climaticMoistureIndex + OrganicCarbon
+
 # 9. With embergerQ and thermicityIndex
 myco_formula_9a <- mycorrhiza ~ Aspect + BulkDensity + embergerQ + thermicityIndex + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18
 myco_formula_9b <- mycorrhiza ~ Aspect + BulkDensity + embergerQ + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio17 + bio18
@@ -143,7 +145,7 @@ library(phylolm)
 phylostep(formula = myco_formula_7a, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
  
 #define formula components and run function (both)
-phylostep(formula = myco_formula_24, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
+phylostep(formula = myco_formula_8c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
   
 ```
 
@@ -164,9 +166,9 @@ OUfixedRoot stands for Ornstein-Uhlenbeck with a fixed root.
 
 ```{r model selection OUfixedRoot}
 #define formula components and run function (forward)
-phylostep(formula = myco_formula_8b, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 1000)
+phylostep(formula = myco_formula_8d, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2, lower.bound = 0.000001, upper.bound = 1000)
  
 #define formula components and run function (both)
-phylostep(formula = myco_formula_50, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
+phylostep(formula = myco_formula_8c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2, starting.value = "ten")
 
 ```

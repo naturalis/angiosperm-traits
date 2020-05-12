@@ -130,7 +130,8 @@ GIS_woody <- GIS_woody[,c(1,43, 2:42)]
 
 There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
 so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
-or a correlation matrix. See the VIF_analysis_woody file for details of the decision making process.
+or a correlation matrix. 
+Only the combination that results in the best model is shown, see VIF_analysis_myco" for all the used combinations.
 
 ### VIF-analysis
 ```{r VIF analysis}
@@ -142,41 +143,8 @@ library(usdm)
 vif(GIS_woody[,c(3:43)])
 
 #choose variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
-# 1. Solely based on highest VIF value 
-vif(GIS_woody[,c(3:5, 14, 15, 17, 18, 20, 22:24, 38, 39, 42, 43)])
-
-# 2. With ClimaticMoistureIndex
-vif(GIS_woody[,c(3:5, 8, 14, 17, 18, 20, 22:24, 39, 43)])
-
-# 3. With BIO6
-vif(GIS_woody[,c(3:5, 14, 15, 17, 20, 22:24, 30, 38, 39, 42, 43)]) 
-
-# 4. With growingDegDays0
-vif(GIS_woody[,c(3:5, 11, 17, 18, 20, 22:24, 39, 42, 43)])
-
-# 5. With aridityIndexThornthwaite
-vif(GIS_woody[,c(3:5, 7, 14, 15, 17, 18, 20, 22:24, 39, 43)])
-
-# 6. With embergerQ
-vif(GIS_woody[,c(3:5, 10, 14, 15, 17, 20, 22:24, 39, 43)])
-
-# 7. With BIO6 and ClimaticMoistureIndex
-vif(GIS_woody[,c(3:5, 8, 14, 17, 20, 22:24, 30, 39, 43)]) 
-
-# 8. With BIO6 and aridityIndexThornthwaite
-vif(GIS_woody[,c(3:5, 7, 14, 17, 20, 22:24, 30, 39, 43)]) 
-
-# 9. With BIO6 and embergerQ
-vif(GIS_woody[,c(3:5, 10, 14, 15, 17, 20, 22:24, 30, 39, 43)])
-
-# 10. With growingDegDays0 and ClimaticMoistureIndex
-vif(GIS_woody[,c(3:5, 8, 11, 17, 18, 20, 22:24, 39, 43)])
-
-# 11. With growingDegDays0 and aridityIndexThornthwaite
-vif(GIS_woody[,c(3:5, 7, 11, 14, 20, 22:24, 39, 43)])
-
-# 12. With growingDegDays0 and embergerQ
-vif(GIS_woody[,c(3:5, 10, 11, 17, 20, 22:24, 39, 43)])
+# 25a. With bio5
+vif(GIS_woody[,c(3:5, 15, 17, 20, 22:24, 26, 29, 38, 39, 42, 43)])
 ```
 
 ## 6 Model selection: Define formula and select model 
@@ -186,46 +154,13 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 
 ### Define input formulas
 Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
+Only the formula that results in the best model is shown, see "Model_selection_crops_elaborated" for all the used formulas. 
 ```{r define formula}
 # 0. Define starting formula
 woody_starting_formula <- woody ~ 1 
 
-# 1. Solely based on lowest VIF value 
-woody_formula_1 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
-
-# 2. With ClimaticMoistureIndex:
-woody_formula_2 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
-
-# 3. With BIO6
-woody_formula_3 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio14 + bio15 + bio18 + bio19
-
-# 4. With growingDegDays0
-woody_formula_4 <- woody ~ Aspect + BulkDensity + ClayPercentage + growingDegDays0 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio18 + bio19
-
-# 5. With aridityIndexThornthwaite
-woody_formula_5 <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
-
-# 6. With embergerQ
-woody_formula_6 <- woody ~ Aspect + BulkDensity + ClayPercentage +embergerQ + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
-
-# 7. With BIO6, with ClimaticMoistureIndex:
-woody_formula_7 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
-
-# 8. With BIO6 and aridityIndexThornthwaite
-woody_formula_8 <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
-
-# 9. With BIO6 and embergerQ
-woody_formula_9 <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio15 + bio19
-
-# 10. With growingDegDays0 and ClimaticMoistureIndex
-woody_formula_10 <- woody ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + growingDegDays0 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
-
-# 11. With growingDegDays0 and aridityIndexThornthwaite
-woody_formula_11 <- woody ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + growingDegDays0 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
-
-# 12. With growingDegDays0 and embergerQ
-woody_formula_12 <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ + growingDegDays0 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio19
-
+# 25a. With bio5
+woody_formula_25a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
 ```
 
 ### Change data to match the wanted data format
@@ -244,6 +179,7 @@ is.numeric(GIS_woody$woody)
 ```
 
 ### Perform model selection
+What formula gives us the best result (in terms of the AIC value)?
 ```{r model selection BM}
 #load required package
 install.packages("phylolm")
@@ -253,15 +189,20 @@ library(phylolm)
   # - formula: all input formulas 
   # - model: BM, OUrandomRoot, or OUfixedRoot
   # - direction: forward or both
-phylostep(formula = ??? , starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "???", direction = "???", trace = 2)
+
+#BM, both: define formula components and run function
+phylostep(formula = woody_formula_25a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+
+#OUfixedRoot both: define formula components and run function
+phylostep(formula = woody_formula_25a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
+
 ```
 
 What gives us the best result (in terms of the AIC value)?  
 - Formula: which input formula 
-- Model: BM, OUrandomRoot, or OUfixedRoot
+- Model: BM or OUfixedRoot
 - Direction: forward or both 
 - Model: what is the best model you get 
-For full script and outcomes of the model selection, see "Model_selection_woody" and "Model selection - Combined results". 
 
 ## 7 Model evaluation
 
