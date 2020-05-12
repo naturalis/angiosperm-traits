@@ -56,6 +56,11 @@ phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log
 phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
+### Conclusion: The best model
+```{r}
+woody_best <- woody ~ 
+```
+
 ## 2. Domestication (staple crops)
 
 ### a. Best model formula
@@ -102,24 +107,29 @@ phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = , btol = , log
 phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
+### Conclusion: The best model
+```{r}
+crops_best <- domestication ~ 
+```
+
 ## 3. Mycorrhiza
 
 ### a. Best model formula
 ```{r}
-# BM: 
+# 8c. With growingDegDays5 for BM
+myco_formula_8c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio14 + bio15 + bio19
 
-# OUfixedRoot: 
+# ?. With ... for OUfixedRoot: 
 
 ```
 
 ### b. Best models
 ```{r}
 # BM
-mycorrhiza_BM <- 
+mycorrhiza_BM <- mycorrhiza ~ 0.4401803 -0.1885960*Aspect + 0.1493415*ClayPercentage + 0.4445646*climaticMoistureIndex + 0.1417067*Slope -0.5940963*bio3 -0.5048234*bio14 + 0.2912411*bio19
 
 # OUfixedRoot
 mycorrhiza_OU <-
-
 ```
 
 ### c. Model performance
@@ -146,5 +156,10 @@ phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = , btol = , log.a
 
 #OU
 phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+```
+
+### Conclusion: The best model
+```{r}
+myco_best <- myco ~ 
 ```
 
