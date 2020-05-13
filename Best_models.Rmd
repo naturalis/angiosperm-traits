@@ -38,12 +38,15 @@ library(performance)
 library(see)
 
 # BM
-model <- glm(model = woodiness_BM, data = GIS_woody)
-check_model(model)
+model_BM <- glm(woodiness_BM, GIS_woody)
+check_model(model_BM)
 
 # OU
-model <- glm(model = woodiness_OU, data = GIS_woody)
-check_model(model)
+model_OU <- glm(model = woodiness_OU, data = GIS_woody)
+check_model(model_OU)
+
+# Compare models
+compare_performance(woodiness_BM, woodiness_OU)
 ```
 
 ### d. Model optimization 
@@ -88,13 +91,16 @@ The model performance package is used, to see whether the model sticks to the as
 library(performance)
 library(see)
 
-# BM
-model <- glm(model = domestication_BM, data = GIS_crops)
-check_model(model)
+#BM
+model_BM_crops <- glm(model = domestication_BM, data = GIS_crops)
+check_model(model_BM_crops)
 
-# OU
-model <- glm(model = domestication_OU, data = GIS_crops)
-check_model(model)
+#OU
+model_OU_crops <- glm(model = domestication_OU, data = GIS_crops)
+check_model(model_OU_crops)
+
+# Compare models
+compare_performance(domestication_BM, domestication_OU)
 ```
 
 ### d. Model optimization 
@@ -140,12 +146,15 @@ library(performance)
 library(see)
 
 # BM
-model <- glm(model = mycorrhiza_BM, data = GIS_myco)
-check_model(model)
+model_BM_myco <- glm(model = mycorrhiza_BM, data = GIS_myco)
+check_model(model_BM_myco)
 
 # OU
-model <- glm(model = mycorrhiza_OU, data = GIS_myco)
-check_model(model)
+model_OU_myco <- glm(model = mycorrhiza_OU, data = GIS_myco)
+check_model(model_OU_myco)
+
+# Compare models
+compare_performance(mycorrhiza_BM, mycorrhiza_OU)
 ```
 
 ### d. Model optimization 

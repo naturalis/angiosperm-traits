@@ -308,12 +308,12 @@ library(performance)
 library(see)
 
 #BM
-model <- glm(model = domestication_BM, data = )
-check_model(model)
+model_BM_crops <- glm(model = domestication_BM, data = GIS_crops)
+check_model(model_BM_crops)
 
 #OU
-model <- glm(model = domestication_OU, data = )
-check_model(model)
+model_OU_crops <- glm(model = domestication_OU, data = GIS_crops)
+check_model(model_OU_crops)
 ```
 
 1. Check for multicolinearity

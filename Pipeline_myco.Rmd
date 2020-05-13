@@ -239,12 +239,12 @@ library(performance)
 library(see)
 
 # BM
-model <- glm(model = mycorrhiza_BM, data = GIS_myco)
-check_model(model)
+model_BM_myco <- glm(model = mycorrhiza_BM, data = GIS_myco)
+check_model(model_BM_myco)
 
 # OU
-model <- glm(model = mycorrhiza_OU, data = GIS_myco)
-check_model(model)
+model_OU_myco <- glm(model = mycorrhiza_OU, data = GIS_myco)
+check_model(model_OU_myco)
 ```
 
 1. Check for multicolinearity
