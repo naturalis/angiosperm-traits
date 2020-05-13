@@ -153,7 +153,8 @@ library(usdm)
 vif(GIS_myco[,c(3:43)])
 
 #choose the variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, results in:
-# . With 
+# 10c. With BIO8, BIO9, and climaticMoistureIndex
+vif(GIS_myco[,c(3:5, 8, 22:24, 27, 32, 33, 38, 39, 43)])
 
 # . With
 
@@ -171,7 +172,8 @@ Only the formulas that result in the best models are shown, see "Model_selection
 # 0. Define starting formula
 myco_starting_formula <- mycorrhiza ~ 1 
   
-# . With
+# 10c. With BIO8, BIO9, and climaticMoistureIndex
+myco_formula_10c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio14 + bio15 + bio19
 
 # . With
 
@@ -204,10 +206,10 @@ library(phylolm)
   # - direction: forward or both
 
 #BM, both: define formula components and run function
-phylostep(formula = myco_formula_8c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
+phylostep(formula = myco_formula_10c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
 
 #OUfixedRoot both: define formula components and run function
-phylostep(formula = myco_formula_8c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
+phylostep(formula = myco_formula_???, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 ```
 
 What gives us the best result (in terms of the AIC value)?  

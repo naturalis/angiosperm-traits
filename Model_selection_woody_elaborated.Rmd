@@ -72,86 +72,82 @@ woody_formula_12b <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ +
 woody_formula_12c <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ + growingDegDays0 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio3 + bio14 + bio15 + bio19
 woody_formula_12d <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ + growingDegDays0 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio15 + bio17 + bio19
 woody_formula_12e <- woody ~ Aspect + BulkDensity + ClayPercentage + embergerQ + growingDegDays0 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5 + bio15 + bio19
-
 ```
 
 ### Second set of model formulas 
 The rest of the variables that were not included yet. 
 
 ```{r}
-# 13. With things
-woody_formula_13 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+# 13. With annualPET
+woody_formula_13 <- woody ~ Aspect + BulkDensity + ClayPercentage + annualPET + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
 
-# 14. With annualPET
-woody_formula_14 <- woody ~ Aspect + BulkDensity + ClayPercentage + annualPET + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+# 14. With continentality
+woody_formula_14a <- woody ~ Aspect + BulkDensity + ClayPercentage + annualPET + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+woody_formula_14b <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+woody_formula_14c <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter +  PETWarmestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+woody_formula_14d <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+woody_formula_14e <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
+woody_formula_14f <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio3 + bio14 + bio15 + bio18 + bio19
+woody_formula_14g <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio8 + bio14 + bio15 + bio18 + bio19
 
-# 15. With continentality
-woody_formula_15a <- woody ~ Aspect + BulkDensity + ClayPercentage + annualPET + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
-woody_formula_15b <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
-woody_formula_15c <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter +  PETWarmestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
-woody_formula_15d <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
-woody_formula_15e <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
-woody_formula_15f <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio3 + bio14 + bio15 + bio18 + bio19
-woody_formula_15g <- woody ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio8 + bio14 + bio15 + bio18 + bio19
+# 15. With growingDegDays0
+woody_formula_15 <- woody ~ Aspect + BulkDensity + ClayPercentage + growingDegDays5 + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio18 + bio19
 
-# 16. With growingDegDays0
-woody_formula_16 <- woody ~ Aspect + BulkDensity + ClayPercentage + growingDegDays5 + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio18 + bio19
-
-# 17. With maxTempColdest
-woody_formula_17 <- woody ~ Aspect + BulkDensity + ClayPercentage + maxTempColdest + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+# 16. With maxTempColdest
+woody_formula_16 <- woody ~ Aspect + BulkDensity + ClayPercentage + maxTempColdest + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
  
-# 18. With PETColdestQuarter
-woody_formula_18 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETColdestQuarter + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+# 17. With PETColdestQuarter
+woody_formula_17 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETColdestQuarter + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
 
-# 19. With PETWarmestQuarter
-woody_formula_19 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWarmestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+# 18. With PETWarmestQuarter
+woody_formula_18 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWarmestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
 
-# 20. With thermicityIndex
-woody_formula_20 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
+# 19. With thermicityIndex
+woody_formula_19 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio18 + bio19
 
-# 21. With bio1
-woody_formula_21 <- woody ~ Aspect + BulkDensity + ClayPercentage + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio1 + bio14 + bio15 + bio18 + bio19
+# 20. With bio1
+woody_formula_20 <- woody ~ Aspect + BulkDensity + ClayPercentage + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio1 + bio14 + bio15 + bio18 + bio19
 
-# 22. With bio2
-woody_formula_22 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
+# 21. With bio2
+woody_formula_21 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
 
-# 23. With bio3
-woody_formula_23 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio3 + bio14 + bio15 + bio18 + bio19
+# 22. With bio3
+woody_formula_22 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio3 + bio14 + bio15 + bio18 + bio19
 
-# 24. With bio4
-woody_formula_24 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio14 + bio15 + bio18 + bio19
+# 23. With bio4
+woody_formula_23 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio14 + bio15 + bio18 + bio19
 
-# 25. With bio5
-woody_formula_25a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
-woody_formula_25b <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5 + bio6 + bio15 + bio18 + bio19
+# 24. With bio5
+woody_formula_24a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
+woody_formula_24b <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5 + bio6 + bio15 + bio18 + bio19
 
-# 26. With bio7
-woody_formula_26 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio7 + bio14 + bio15 +  bio18 + bio19
+# 25. With bio7
+woody_formula_25 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio7 + bio14 + bio15 +  bio18 + bio19
 
-# 27. With bio8 
-woody_formula_27 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio8 + bio14 + bio15 + bio18 + bio19
+# 26. With bio8 
+woody_formula_26 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio8 + bio14 + bio15 + bio18 + bio19
 
-# 28. With bio9
-woody_formula_28 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio9 + bio14 + bio15 + bio18 + bio19
+# 27. With bio9
+woody_formula_27 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio9 + bio14 + bio15 + bio18 + bio19
 
-# 29. With bio10
-woody_formula_29 <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio10 + bio14 + bio15 + bio18 + bio19
+# 28. With bio10
+woody_formula_28 <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio10 + bio14 + bio15 + bio18 + bio19
 
-# 30. With bio11
-woody_formula_30 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio11 + bio14 + bio15 + bio18 + bio19
+# 29. With bio11
+woody_formula_29 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio11 + bio14 + bio15 + bio18 + bio19
 
-# 31. With bio12
-woody_formula_31 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio12 + bio15 + bio19
+# 30. With bio12
+woody_formula_30 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio12 + bio15 + bio19
 
-# 32. With bio13
-woody_formula_32 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio15 + bio19
+# 31. With bio13
+woody_formula_31 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio15 + bio19
 
-# 33. With bio16
-woody_formula_33 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio16 + bio19
+# 32. With bio16
+woody_formula_32 <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio16 + bio19
 
-# 34. With bio17
-woody_formula_34a <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio15 + bio17 + bio19
-woody_formula_34b <- woody ~ Aspect + BulkDensity + ClayPercentage+ minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio16 + bio17 + bio19
+# 33. With bio17
+woody_formula_33a <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio15 + bio17 + bio19
+woody_formula_33b <- woody ~ Aspect + BulkDensity + ClayPercentage+ minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio16 + bio17 + bio19
 ```
 
 ## Change data to match the wanted data format

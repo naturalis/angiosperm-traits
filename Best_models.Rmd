@@ -16,7 +16,7 @@ These are the best models for all the traits.
 ### a. Best model formula
 ```{r}
 # 25a. With bio5 (for both BM and OU)
-woody_formula_25a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
+woody_formula_24a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
 ```
 
 ### b. Best models
@@ -66,10 +66,10 @@ woody_best <- woody ~
 ### a. Best model formula
 ```{r}
 # 10a. With aridityIndexThornthwaite (BM)
-crops_formula_10a <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
+crops_formula_11a <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
 
 # 35. With monthCountByTemp10 (OU)
-crops_formula_35 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+crops_formula_18 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
 ```
 
 ### b. Best models
@@ -117,7 +117,7 @@ crops_best <- domestication ~
 ### a. Best model formula
 ```{r}
 # 8c. With growingDegDays5 for BM
-myco_formula_8c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio14 + bio15 + bio19
+myco_formula_10c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio14 + bio15 + bio19
 
 # ?. With ... for OUfixedRoot: 
 

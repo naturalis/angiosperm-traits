@@ -82,7 +82,7 @@ GIS_woody <- GIS_woody[,c(1,43, 2:42)]
 ## 6 Model selection: Define formula and select model 
 ```{r define formulas}
 #best model (for both BM and OU)
-woody_formula_25a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
+woody_formula_24a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
 ```
 
 ### Change data to match the wanted data format
@@ -100,8 +100,8 @@ GIS_woody$woody <- as.numeric(GIS_woody$woody)
 library(phylolm)
 
 #BM model selection
-phylostep(formula = woody_formula_25a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
+phylostep(formula = woody_formula_24a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 
 #OU model selection
-phylostep(formula = woody_formula_8c, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
+phylostep(formula = woody_formula_24a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
 ```
