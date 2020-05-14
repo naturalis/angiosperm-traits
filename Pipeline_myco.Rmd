@@ -235,15 +235,17 @@ To see whether the best model we constructed, is still in compliance with the as
 #install and load required package 
 install.packages("performance")
 install.packages("see")
+install.packages("gridExtra")
 library(performance)
 library(see)
+library(gridExtra)
 
 # BM
-model_BM_myco <- glm(model = mycorrhiza_BM, data = GIS_myco)
+model_BM_myco <- glm(myco_formula_10c, data = GIS_myco)
 check_model(model_BM_myco)
 
 # OU
-model_OU_myco <- glm(model = mycorrhiza_OU, data = GIS_myco)
+model_OU_myco <- glm(myco_formula_???, data = GIS_myco)
 check_model(model_OU_myco)
 ```
 

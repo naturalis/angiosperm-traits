@@ -143,7 +143,7 @@ library(usdm)
 vif(GIS_woody[,c(3:43)])
 
 #choose variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
-# 25a. With bio5
+# 24a. With bio5
 vif(GIS_woody[,c(3:5, 15, 17, 20, 22:24, 26, 29, 38, 39, 42, 43)])
 ```
 
@@ -219,8 +219,10 @@ To see whether the best model we constructed, is still in compliance with the as
 #install and load required package 
 install.packages("performance")
 install.packages("see")
-library("performance")
+install.packages("gridExtra")
+library(performance)
 library(see)
+library(gridExtra)
 
 #fill in arguments and execute functions
 # BM
