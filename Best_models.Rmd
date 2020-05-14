@@ -15,45 +15,43 @@ These are the best models for all the traits.
 
 ### a. Best model formula
 ```{r}
-# 25a. With bio5 (for both BM and OU)
+# 24a. With bio5 (for both BM and OU)
 woody_formula_24a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
 ```
 
 ### b. Best models
 ```{r}
-# 25a. With bio5 for BM
+# 24a. With bio5 for BM
 woodiness_BM <- woody ~ 0.83475898 + 0.15198885*BulkDensity -0.48410553*monthCountByTemp10 + 0.08058603*PETWettestQuarter + 0.43981669*OrganicCarbon -0.30052534*PhCaCL -0.19695033*Slope + 0.48659487*bio5 + 0.20864413*bio19
 
-# 25a. With bio5 for OUfixedRoot
+# 24a. With bio5 for OUfixedRoot
 woodiness_OU <- woody ~ 0.79869004 -0.32765328*monthCountByTemp10 -0.16620515*PETDriestQuarter + 0.18423198*OrganicCarbon -0.17396725*PhCaCL -0.12842927*Slope + 0.34782999*bio5 -0.08450621*bio14 + 0.07455151*bio19 
 ```
 
 ### c. Model performance
 The model performance package is used, to see whether the model sticks to the assumptions we've made.
-```{r}
+```{r echo=TRUE}
 #install and load required package 
-install.packages("performance")
-install.packages("see")
 library(performance)
 library(see)
 
 # BM
-model_BM <- glm(woodiness_BM, GIS_woody)
-check_model(model_BM)
+model_BM_woody <- glm(woody_formula_24a, data = GIS_woody, family = "binomial")
+check_model(model_BM_woody)
 
 # OU
-model_OU <- glm(model = woodiness_OU, data = GIS_woody)
-check_model(model_OU)
+model_OU_woody <- glm(woody_formula_24a, data = GIS_woody, family = "binomial")
+check_model(model_OU_woody)
 
 # Compare models
-compare_performance(woodiness_BM, woodiness_OU)
+compare_performance(model_BM_woody, model_OU_woody)
 ```
 
 ### d. Model optimization 
 To optimize the model, the phyloglm function is used. 
 ```{r}
 # BM
-phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+phyloglm(formula = woody_formula_24a, data = GIS_woody, phy = tree_woody, method = "logistic_IG10")
 
 #OU
 phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
@@ -68,10 +66,10 @@ woody_best <- woody ~
 
 ### a. Best model formula
 ```{r}
-# 10a. With aridityIndexThornthwaite (BM)
+# 11a. With aridityIndexThornthwaite (BM)
 crops_formula_11a <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
 
-# 35. With monthCountByTemp10 (OU)
+# 18. With monthCountByTemp10 (OU)
 crops_formula_18 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
 ```
 
@@ -92,15 +90,15 @@ library(performance)
 library(see)
 
 #BM
-model_BM_crops <- glm(model = domestication_BM, data = GIS_crops)
+model_BM_crops <- glm(crops_formula_11a, data = GIS_crops, family = "binomial")
 check_model(model_BM_crops)
 
 #OU
-model_OU_crops <- glm(model = domestication_OU, data = GIS_crops)
+model_OU_crops <- glm(crops_formula_18, data = GIS_crops, family = "binomial")
 check_model(model_OU_crops)
 
 # Compare models
-compare_performance(domestication_BM, domestication_OU)
+compare_performance(model_BM_crops, model_OU_crops, rank = TRUE)
 ```
 
 ### d. Model optimization 
@@ -122,7 +120,7 @@ crops_best <- domestication ~
 
 ### a. Best model formula
 ```{r}
-# 8c. With growingDegDays5 for BM
+# 10c. With growingDegDays5 for BM
 myco_formula_10c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio14 + bio15 + bio19
 
 # ?. With ... for OUfixedRoot: 
@@ -146,15 +144,15 @@ library(performance)
 library(see)
 
 # BM
-model_BM_myco <- glm(model = mycorrhiza_BM, data = GIS_myco)
+model_BM_myco <- glm(myco_formula_10c, data = GIS_myco, family = "binomial")
 check_model(model_BM_myco)
 
 # OU
-model_OU_myco <- glm(model = mycorrhiza_OU, data = GIS_myco)
+model_OU_myco <- glm(myco_formula_??, data = GIS_myco, family = "binomial")
 check_model(model_OU_myco)
 
 # Compare models
-compare_performance(mycorrhiza_BM, mycorrhiza_OU)
+compare_performance(model_BM_myco, model_OU_myco)
 ```
 
 ### d. Model optimization 
