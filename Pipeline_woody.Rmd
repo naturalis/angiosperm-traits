@@ -136,7 +136,6 @@ Only the combination that results in the best model is shown, see VIF_analysis_m
 ### VIF-analysis
 ```{r VIF analysis}
 #load required package
-install.packages("usdm")
 library(usdm)
 
 #fill in the arguments of the function and execute it 
@@ -182,7 +181,6 @@ is.numeric(GIS_woody$woody)
 What formula gives us the best result (in terms of the AIC value)?
 ```{r model selection BM}
 #load required package
-install.packages("phylolm")
 library(phylolm)
 
 #define function components and run function, while changing:
@@ -217,21 +215,21 @@ woodiness_OU <- woody ~ 0.79869004 -0.32765328*monthCountByTemp10 -0.16620515*PE
 To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
 ```{r}
 #install and load required package 
-install.packages("performance")
-install.packages("see")
-install.packages("gridExtra")
 library(performance)
 library(see)
 library(gridExtra)
 
 #fill in arguments and execute functions
 # BM
-model_BM_woody <- glm(woody_formula_24a, data = GIS_woody)
+model_BM_woody <- glm(woody_formula_24a, data = GIS_woody, family = "binomial")
 check_model(model_BM_woody)
 
 # OU
-model_OU_woody <- glm(woody_formula_24a, data = GIS_woody)
+model_OU_woody <- glm(woody_formula_24a, data = GIS_woody, family = "binomial")
 check_model(model_OU_woody)
+
+# Compare models
+compare_performance(model_BM_woody, model_OU_woody)
 ```
 
 1. Check for multicolinearity

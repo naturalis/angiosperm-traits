@@ -30,7 +30,7 @@ woodiness_OU <- woody ~ 0.79869004 -0.32765328*monthCountByTemp10 -0.16620515*PE
 
 ### c. Model performance
 The model performance package is used, to see whether the model sticks to the assumptions we've made.
-```{r echo=TRUE}
+```{r}
 #install and load required package 
 library(performance)
 library(see)
