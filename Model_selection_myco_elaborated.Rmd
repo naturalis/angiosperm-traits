@@ -156,10 +156,10 @@ BM stands for Brownian motion.
 library(phylolm)
 
 #define formula components and run function (forward)
-phylostep(formula = myco_formula_7a, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
+phylostep(formula = myco_formula_8, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "forward", trace = 2)
  
 #define formula components and run function (both)
-phylostep(formula = myco_formula_8c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
+phylostep(formula = myco_formula_8, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
   
 ```
 
@@ -168,10 +168,10 @@ OUrandomRoot stands for Ornstein-Uhlenbeck with a random root.
 
 ```{r model selection OUrandomRoot}
 #define formula components and run function (forward)
-phylostep(formula = myco_formula_8c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2, lower.bound = 0.00000000001, upper.bound = Inf)
+phylostep(formula = myco_formula_8, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 1000)
  
 #define formula components and run function (both)
-phylostep(formula = myco_formula_8c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 90000)
+phylostep(formula = myco_formula_8, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUrandomRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 
 ```
 
@@ -180,9 +180,9 @@ OUfixedRoot stands for Ornstein-Uhlenbeck with a fixed root.
 
 ```{r model selection OUfixedRoot}
 #define formula components and run function (forward)
-phylostep(formula = myco_formula_8d, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2, lower.bound = 0.000001, upper.bound = 1000)
+phylostep(formula = myco_formula_8, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "forward", trace = 2, lower.bound = 0.001, upper.bound = 1000)
  
 #define formula components and run function (both)
-phylostep(formula = myco_formula_8c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2, starting.value = "ten")
+phylostep(formula = myco_formula_8, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
 
 ```
