@@ -36,11 +36,11 @@ library(performance)
 library(see)
 
 # BM
-model_BM_woody <- glm(woody_formula_24a, data = GIS_woody, family = "binomial")
+model_BM_woody <- glm(woody_formula_24a, data = GIS_woody, family = binomial(link = "logit"))
 check_model(model_BM_woody)
 
 # OU
-model_OU_woody <- glm(woody_formula_24a, data = GIS_woody, family = "binomial")
+model_OU_woody <- glm(woody_formula_24a, data = GIS_woody, family = binomial(link = "logit"))
 check_model(model_OU_woody)
 
 # Compare models
@@ -90,11 +90,11 @@ library(performance)
 library(see)
 
 #BM
-model_BM_crops <- glm(crops_formula_11a, data = GIS_crops, family = "binomial")
+model_BM_crops <- glm(crops_formula_11a, data = GIS_crops, family = binomial(link = "logit"))
 check_model(model_BM_crops)
 
 #OU
-model_OU_crops <- glm(crops_formula_18, data = GIS_crops, family = "binomial")
+model_OU_crops <- glm(crops_formula_18, data = GIS_crops, family = binomial(link = "logit"))
 check_model(model_OU_crops)
 
 # Compare models
@@ -144,15 +144,15 @@ library(performance)
 library(see)
 
 # BM
-model_BM_myco <- glm(myco_formula_10c, data = GIS_myco, family = "binomial")
+model_BM_myco <- glm(myco_formula_10c, data = GIS_myco, family = binomial(link = "logit"))
 check_model(model_BM_myco)
 
 # OU
-model_OU_myco <- glm(myco_formula_??, data = GIS_myco, family = "binomial")
+model_OU_myco <- glm(myco_formula_??, data = GIS_myco, family = binomial(link = "logit"))
 check_model(model_OU_myco)
 
 # Compare models
-compare_performance(model_BM_myco, model_OU_myco)
+compare_performance(model_BM_myco, model_OU_myco, rank = TRUE)
 ```
 
 ### d. Model optimization 

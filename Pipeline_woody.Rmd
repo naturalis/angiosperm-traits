@@ -183,11 +183,7 @@ What formula gives us the best result (in terms of the AIC value)?
 #load required package
 library(phylolm)
 
-#define function components and run function, while changing:
-  # - formula: all input formulas 
-  # - model: BM, OUrandomRoot, or OUfixedRoot
-  # - direction: forward or both
-
+#define function components and run function
 #BM, both: define formula components and run function
 phylostep(formula = woody_formula_24a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
 
@@ -199,16 +195,6 @@ What gives us the best result (in terms of the AIC value)?
 - Formula: which input formula 
 - Model: BM or OUfixedRoot
 - Direction: forward or both 
-- Model: what is the best model you get 
-
-### Define best models
-```{r}
-# 24a. With bio5 for BM
-woodiness_BM <- woody ~ 0.83475898 + 0.15198885*BulkDensity -0.48410553*monthCountByTemp10 + 0.08058603*PETWettestQuarter + 0.43981669*OrganicCarbon -0.30052534*PhCaCL -0.19695033*Slope + 0.48659487*bio5 + 0.20864413*bio19
-
-# 24a. With bio5 for OUfixedRoot
-woodiness_OU <- woody ~ 0.79869004 -0.32765328*monthCountByTemp10 -0.16620515*PETDriestQuarter + 0.18423198*OrganicCarbon -0.17396725*PhCaCL -0.12842927*Slope + 0.34782999*bio5 -0.08450621*bio14 + 0.07455151*bio19 
-```
 
 ## 7 Model evaluation
 
@@ -221,29 +207,21 @@ library(gridExtra)
 
 #fill in arguments and execute functions
 # BM
-model_BM_woody <- glm(woody_formula_24a, data = GIS_woody, family = "binomial")
+model_BM_woody <- glm(woody_formula_24a, data = GIS_woody, family = binomial(link = "logit"))
 check_model(model_BM_woody)
 
 # OU
-model_OU_woody <- glm(woody_formula_24a, data = GIS_woody, family = "binomial")
+model_OU_woody <- glm(woody_formula_24a, data = GIS_woody, family = binomial(link = "logit"))
 check_model(model_OU_woody)
 
 # Compare models
-compare_performance(model_BM_woody, model_OU_woody)
+compare_performance(model_BM_woody, model_OU_woody, rank = TRUE)
 ```
 
 1. Check for multicolinearity
-All correlation is low. 
-2. Non-normality of residuals and outliers.
-All dots are plotted along the line. 
-3. Non-normality of residuals
------ not for glm
-4. Homoscedasticity (linear relationship)
------ not for glm
-5. Homogeneity of variance (scale-location)
-The dots are mirrored... 
-6. Check for influential observations
-All values are below 0,5; which means that there are no outliers in this dataset. 
+2. Non-normality of residuals and outliers
+3. Homogeneity of variance (scale-location)
+4. Check for influential observations
 
 ## 8 Phylogenetic generalized linear modelling analysis
 
@@ -253,6 +231,15 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 ```{r phylogenetic generalized linear modelling}
 #fill in the arguments for the phyloglm function and execute it
 phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+```
+
+### Define best models
+```{r}
+# 24a. With bio5 for BM
+woodiness_BM <- woody ~ 0.83475898 + 0.15198885*BulkDensity -0.48410553*monthCountByTemp10 + 0.08058603*PETWettestQuarter + 0.43981669*OrganicCarbon -0.30052534*PhCaCL -0.19695033*Slope + 0.48659487*bio5 + 0.20864413*bio19
+
+# 24a. With bio5 for OUfixedRoot
+woodiness_OU <- woody ~ 0.79869004 -0.32765328*monthCountByTemp10 -0.16620515*PETDriestQuarter + 0.18423198*OrganicCarbon -0.17396725*PhCaCL -0.12842927*Slope + 0.34782999*bio5 -0.08450621*bio14 + 0.07455151*bio19 
 ```
 
 ## 9 Biological interpretation

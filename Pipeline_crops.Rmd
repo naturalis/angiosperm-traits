@@ -127,7 +127,7 @@ crops_names <- as.character(unlist(c(tree_crops_tsv$tip.label)))
 ```
 
 #### C. Now do the distance matrix calculations
-```{r distance matrix calculations}
+```{r distance matrix calculations, results='hide'}
 #make a patristic distance matrix, this shows the phylogenetic distances between all the species in the tree
 distances <- cophenetic.phylo(GIS_tree)
 
@@ -215,7 +215,7 @@ or a correlation matrix.
 Only the combinations that result in the best models are shown, see VIF_analysis_crops" for all the used combinations. 
 
 ### VIF-analysis
-```{r VIF analysis}
+```{r VIF analysis, eval=FALSE}
 #load required package
 library(usdm)
 
@@ -270,32 +270,18 @@ What formula gives us the best result (in terms of the AIC value)?
 #load required package
 library(phylolm)
 
-#define function components and run function, while changing:
-  # - formula: all input formulas 
-  # - model: BM, OUrandomRoot, or OUfixedRoot
-  # - direction: forward or both
-
+#define function components and run function
 #BM, both: define formula components and run function 
-phylostep(formula = crops_formula_11a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 2)
+phylostep(formula = crops_formula_11a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 0)
 
 #OUfixedRoot, both: define formula components and run function 
-phylostep(formula = crops_formula_18, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
+phylostep(formula = crops_formula_18, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 0, lower.bound = 0.001, upper.bound = 1000)
 ```
 
 What gives us the best result (in terms of the AIC value)?  
 - Formula: which input formula 
 - Model: BM or OUfixedRoot
 - Direction: both 
-- Model: what is the best model you get 
-
-### Define best models
-```{r}
-# BM
-domestication_BM <- domestication ~ 0.2718999 + 0.7254957*Aspect + 0.4467063*ClayPercentage + 0.4136109*PhCaCL + 0.2569151*Slope 
-
-# OUfixedRoot
-domestication_OU <- domestication ~ 0.2812481 + 0.7397210*Aspect -0.2509282*BulkDensity + 0.4460845*ClayPercentage + 0.3330660*PhCaCL + 0.1744375*Slope
-```
 
 ## 7 Model evaluation
 
@@ -307,11 +293,11 @@ library(see)
 library(gridExtra)
 
 #BM
-model_BM_crops <- glm(crops_formula_11a, data = GIS_crops, family = "binomial")
+model_BM_crops <- glm(crops_formula_11a, data = GIS_crops, family = binomial(link = "logit"))
 check_model(model_BM_crops)
 
 #OU
-model_OU_crops <- glm(crops_formula_18, data = GIS_crops, family = "binomial")
+model_OU_crops <- glm(crops_formula_18, data = GIS_crops, family = binomial(link = "logit"))
 check_model(model_OU_crops)
 
 # Compare models
@@ -320,19 +306,26 @@ compare_performance(model_BM_crops, model_OU_crops, rank = TRUE)
 
 1. Check for multicolinearity
 2. Non-normality of residuals and outliers
-3. Non-normality of residuals
-4. Homoscedasticity (linear relationship)
-5. Homogeneity of variance (scale-location)
-6. Check for influential observations
+3. Homogeneity of variance (scale-location)
+4. Check for influential observations
 
 ## 8 Phylogenetic generalized linear modelling analysis
 
 After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
-```{r phylogenetic generalized linear modelling}
+```{r phylogenetic generalized linear modelling, eval=FALSE}
 #fill in the arguments for the phyloglm function and execute it
 phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+```
+
+### Define best models
+```{r}
+# BM
+domestication_BM <- domestication ~ 0.2718999 + 0.7254957*Aspect + 0.4467063*ClayPercentage + 0.4136109*PhCaCL + 0.2569151*Slope 
+
+# OUfixedRoot
+domestication_OU <- domestication ~ 0.2812481 + 0.7397210*Aspect -0.2509282*BulkDensity + 0.4460845*ClayPercentage + 0.3330660*PhCaCL + 0.1744375*Slope
 ```
 
 ## 9 Biological interpretation
