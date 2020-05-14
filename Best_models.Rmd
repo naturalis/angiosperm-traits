@@ -19,16 +19,7 @@ These are the best models for all the traits.
 woody_formula_24a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
 ```
 
-### b. Best models
-```{r}
-# 24a. With bio5 for BM
-woodiness_BM <- woody ~ 0.83475898 + 0.15198885*BulkDensity -0.48410553*monthCountByTemp10 + 0.08058603*PETWettestQuarter + 0.43981669*OrganicCarbon -0.30052534*PhCaCL -0.19695033*Slope + 0.48659487*bio5 + 0.20864413*bio19
-
-# 24a. With bio5 for OUfixedRoot
-woodiness_OU <- woody ~ 0.79869004 -0.32765328*monthCountByTemp10 -0.16620515*PETDriestQuarter + 0.18423198*OrganicCarbon -0.17396725*PhCaCL -0.12842927*Slope + 0.34782999*bio5 -0.08450621*bio14 + 0.07455151*bio19 
-```
-
-### c. Model performance
+### b. Model performance
 The model performance package is used, to see whether the model sticks to the assumptions we've made.
 ```{r}
 #install and load required package 
@@ -47,7 +38,7 @@ check_model(model_OU_woody)
 compare_performance(model_BM_woody, model_OU_woody)
 ```
 
-### d. Model optimization 
+### c. Model optimization 
 To optimize the model, the phyloglm function is used. 
 ```{r}
 # BM
@@ -57,9 +48,13 @@ phyloglm(formula = woody_formula_24a, data = GIS_woody, phy = tree_woody, method
 phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
-### Conclusion: The best model
+### Conclusion: The best models
 ```{r}
-woody_best <- woody ~ 
+# 24a. With bio5 for BM
+woodiness_BM <- woody ~ 0.83475898 + 0.15198885*BulkDensity -0.48410553*monthCountByTemp10 + 0.08058603*PETWettestQuarter + 0.43981669*OrganicCarbon -0.30052534*PhCaCL -0.19695033*Slope + 0.48659487*bio5 + 0.20864413*bio19
+
+# 24a. With bio5 for OUfixedRoot
+woodiness_OU <- woody ~ 0.79869004 -0.32765328*monthCountByTemp10 -0.16620515*PETDriestQuarter + 0.18423198*OrganicCarbon -0.17396725*PhCaCL -0.12842927*Slope + 0.34782999*bio5 -0.08450621*bio14 + 0.07455151*bio19 
 ```
 
 ## 2. Domestication (staple crops)
@@ -73,16 +68,7 @@ crops_formula_11a <- domestication ~ Aspect + BulkDensity + ClayPercentage + ari
 crops_formula_18 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
 ```
 
-### b. Best models
-```{r}
-# BM
-domestication_BM <- domestication ~ 0.2718999 + 0.7254957*Aspect + 0.4467063*ClayPercentage + 0.4136109*PhCaCL + 0.2569151*Slope 
-
-# OUfixedRoot
-domestication_OU <- domestication ~ 0.2812481 + 0.7397210*Aspect -0.2509282*BulkDensity + 0.4460845*ClayPercentage + 0.3330660*PhCaCL + 0.1744375*Slope
-```
-
-### c. Model performance
+### b. Model performance
 The model performance package is used, to see whether the model sticks to the assumptions we've made.
 ```{r}
 #install and load required package 
@@ -101,7 +87,7 @@ check_model(model_OU_crops)
 compare_performance(model_BM_crops, model_OU_crops, rank = TRUE)
 ```
 
-### d. Model optimization 
+### c. Model optimization 
 To optimize the model, the phyloglm function is used. 
 ```{r}
 # BM
@@ -113,7 +99,11 @@ phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = , btol = , log
 
 ### Conclusion: The best model
 ```{r}
-crops_best <- domestication ~ 
+# BM
+domestication_BM <- domestication ~ 0.2718999 + 0.7254957*Aspect + 0.4467063*ClayPercentage + 0.4136109*PhCaCL + 0.2569151*Slope 
+
+# OUfixedRoot
+domestication_OU <- domestication ~ 0.2812481 + 0.7397210*Aspect -0.2509282*BulkDensity + 0.4460845*ClayPercentage + 0.3330660*PhCaCL + 0.1744375*Slope
 ```
 
 ## 3. Mycorrhiza
@@ -127,16 +117,7 @@ myco_formula_10c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climati
 
 ```
 
-### b. Best models
-```{r}
-# BM
-mycorrhiza_BM <- mycorrhiza ~ 0.4401803 -0.1885960*Aspect + 0.1493415*ClayPercentage + 0.4445646*climaticMoistureIndex + 0.1417067*Slope -0.5940963*bio3 -0.5048234*bio14 + 0.2912411*bio19
-
-# OUfixedRoot
-mycorrhiza_OU <-
-```
-
-### c. Model performance
+### b. Model performance
 The model performance package is used, to see whether the model sticks to the assumptions we've made.
 ```{r}
 #install and load required package 
@@ -155,7 +136,7 @@ check_model(model_OU_myco)
 compare_performance(model_BM_myco, model_OU_myco, rank = TRUE)
 ```
 
-### d. Model optimization 
+### c. Model optimization 
 To optimize the model, the phyloglm function is used. 
 ```{r}
 # BM
@@ -166,7 +147,11 @@ phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = , btol = , log.a
 ```
 
 ### Conclusion: The best model
-```{r}
-myco_best <- myco ~ 
-```
 
+```{r}
+# BM
+mycorrhiza_BM <- mycorrhiza ~ 0.4401803 -0.1885960*Aspect + 0.1493415*ClayPercentage + 0.4445646*climaticMoistureIndex + 0.1417067*Slope -0.5940963*bio3 -0.5048234*bio14 + 0.2912411*bio19
+
+# OUfixedRoot
+mycorrhiza_OU <-
+```
