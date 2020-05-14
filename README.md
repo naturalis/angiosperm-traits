@@ -36,7 +36,7 @@ Things done/to do:
    using the vif() function of the usdm package. 
 3. Model selection, i.e. which predictors go in the formula for the selected dependent variable - 
    using the phylostep() function of the phylolm package. 
-4. Check the best models for the assumptions that are made when performing generalized linear modeling 
-   - using the check_model() function of the performance package. 
+4. Check the best models for the assumptions that are made when performing generalized linear modeling - using 
+   the check_model() function of the performance package. 
 5. Model optimization to check the significance of the best models - using the phyloglm() function of 
    the phylolm package.
