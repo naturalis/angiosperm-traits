@@ -278,12 +278,25 @@ phylostep(formula = crops_formula_11a, starting.formula = crops_starting_formula
 phylostep(formula = crops_formula_18, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 0, lower.bound = 0.001, upper.bound = 1000)
 ```
 
-What gives us the best result (in terms of the AIC value)?  
-- Formula: which input formula 
-- Model: BM or OUfixedRoot
-- Direction: both 
+```{r}
+#load required function
+source('phyloglmstep.R')
 
-## 7 Model evaluation
+#define arguments and execute function
+phyloglmstep(crops_formula_11a, phy = tree_crops, data = GIS_crops)
+```
+
+## 7 Phylogenetic generalized linear modelling analysis
+
+After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
+There is a function in the phylolm package that allows us to do this: phyloglm. 
+
+```{r phylogenetic generalized linear modelling, eval=FALSE}
+#fill in the arguments for the phyloglm function and execute it
+phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+```
+
+## 8 Model evaluation
 
 To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
 ```{r}
@@ -293,11 +306,11 @@ library(see)
 library(gridExtra)
 
 #BM
-model_BM_crops <- glm(crops_formula_11a, data = GIS_crops, family = binomial(link = "logit"))
+model_BM_crops <- phyloglm()
 check_model(model_BM_crops)
 
 #OU
-model_OU_crops <- glm(crops_formula_18, data = GIS_crops, family = binomial(link = "logit"))
+model_OU_crops <- phyloglm()
 check_model(model_OU_crops)
 
 # Compare models
@@ -308,16 +321,6 @@ compare_performance(model_BM_crops, model_OU_crops, rank = TRUE)
 2. Non-normality of residuals and outliers
 3. Homogeneity of variance (scale-location)
 4. Check for influential observations
-
-## 8 Phylogenetic generalized linear modelling analysis
-
-After this, the phylogenetic generalized linear modeling analysis will be done, which optimizes the model. 
-There is a function in the phylolm package that allows us to do this: phyloglm. 
-
-```{r phylogenetic generalized linear modelling, eval=FALSE}
-#fill in the arguments for the phyloglm function and execute it
-phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
-```
 
 ### Define best models
 ```{r}

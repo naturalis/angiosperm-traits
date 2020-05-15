@@ -19,7 +19,17 @@ These are the best models for all the traits.
 woody_formula_24a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
 ```
 
-### b. Model performance
+### b. Model optimization 
+To optimize the model, the phyloglm function is used. 
+```{r}
+# BM
+phyloglm(formula = woody_formula_24a, data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = TRUE)
+
+#OU
+phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = TRUE)
+```
+
+### c. Model performance
 The model performance package is used, to see whether the model sticks to the assumptions we've made.
 ```{r}
 #install and load required package 
@@ -27,25 +37,15 @@ library(performance)
 library(see)
 
 # BM
-model_BM_woody <- glm(woody_formula_24a, data = GIS_woody, family = binomial(link = "logit"))
+model_BM_woody <- phyloglm()
 check_model(model_BM_woody)
 
 # OU
-model_OU_woody <- glm(woody_formula_24a, data = GIS_woody, family = binomial(link = "logit"))
+model_OU_woody <- phyloglm()
 check_model(model_OU_woody)
 
 # Compare models
 compare_performance(model_BM_woody, model_OU_woody)
-```
-
-### c. Model optimization 
-To optimize the model, the phyloglm function is used. 
-```{r}
-# BM
-phyloglm(formula = woody_formula_24a, data = GIS_woody, phy = tree_woody, method = "logistic_IG10")
-
-#OU
-phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
 ### Conclusion: The best models
@@ -68,7 +68,17 @@ crops_formula_11a <- domestication ~ Aspect + BulkDensity + ClayPercentage + ari
 crops_formula_18 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
 ```
 
-### b. Model performance
+### b. Model optimization 
+To optimize the model, the phyloglm function is used. 
+```{r}
+# BM
+phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = TRUE)
+
+#OU
+phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = TRUE)
+```
+
+### c. Model performance
 The model performance package is used, to see whether the model sticks to the assumptions we've made.
 ```{r}
 #install and load required package 
@@ -76,25 +86,15 @@ library(performance)
 library(see)
 
 #BM
-model_BM_crops <- glm(crops_formula_11a, data = GIS_crops, family = binomial(link = "logit"))
+model_BM_crops <- phyloglm()
 check_model(model_BM_crops)
 
 #OU
-model_OU_crops <- glm(crops_formula_18, data = GIS_crops, family = binomial(link = "logit"))
+model_OU_crops <- phyloglm()
 check_model(model_OU_crops)
 
 # Compare models
 compare_performance(model_BM_crops, model_OU_crops, rank = TRUE)
-```
-
-### c. Model optimization 
-To optimize the model, the phyloglm function is used. 
-```{r}
-# BM
-phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
-
-#OU
-phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
 ```
 
 ### Conclusion: The best model
@@ -117,7 +117,17 @@ myco_formula_10c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climati
 
 ```
 
-### b. Model performance
+### b. Model optimization 
+To optimize the model, the phyloglm function is used. 
+```{r}
+# BM
+phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = TRUE)
+
+#OU
+phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = TRUE)
+```
+
+### c. Model performance
 The model performance package is used, to see whether the model sticks to the assumptions we've made.
 ```{r}
 #install and load required package 
@@ -125,29 +135,18 @@ library(performance)
 library(see)
 
 # BM
-model_BM_myco <- glm(myco_formula_10c, data = GIS_myco, family = binomial(link = "logit"))
+model_BM_myco <- phyloglm()
 check_model(model_BM_myco)
 
 # OU
-model_OU_myco <- glm(myco_formula_??, data = GIS_myco, family = binomial(link = "logit"))
+model_OU_myco <- phyloglm()
 check_model(model_OU_myco)
 
 # Compare models
 compare_performance(model_BM_myco, model_OU_myco, rank = TRUE)
 ```
 
-### c. Model optimization 
-To optimize the model, the phyloglm function is used. 
-```{r}
-# BM
-phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
-
-#OU
-phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = , btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
-```
-
 ### Conclusion: The best model
-
 ```{r}
 # BM
 mycorrhiza_BM <- mycorrhiza ~ 0.4401803 -0.1885960*Aspect + 0.1493415*ClayPercentage + 0.4445646*climaticMoistureIndex + 0.1417067*Slope -0.5940963*bio3 -0.5048234*bio14 + 0.2912411*bio19
