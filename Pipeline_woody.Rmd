@@ -179,18 +179,6 @@ is.numeric(GIS_woody$woody)
 
 ### Perform model selection
 What formula gives us the best result (in terms of the AIC value)?
-```{r model selection BM}
-#load required package
-library(phylolm)
-
-#define function components and run function
-#BM, both: define formula components and run function
-phylostep(formula = woody_formula_24a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "BM", direction = "both", trace = 2)
-
-#OUfixedRoot both: define formula components and run function
-phylostep(formula = woody_formula_24a, starting.formula = woody_starting_formula, data = GIS_woody, phy = tree_woody, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0, upper.bound = 1000)
-```
-
 ```{r}
 #load required function
 source('phyloglmstep.R')
@@ -205,8 +193,15 @@ After this, the phylogenetic generalized linear modeling analysis will be done, 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
 ```{r phylogenetic generalized linear modelling}
+#load required package
+library(phylolm)
+
 #fill in the arguments for the phyloglm function and execute it
-phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+model_woody <- phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+
+print(model_woody)
+summary(model_woody) 
+plot(model_woody)
 ```
 
 ## 8 Model evaluation
@@ -218,18 +213,8 @@ library(performance)
 library(see)
 library(gridExtra)
 
-#fill in arguments and execute functions
-# BM
-model_BM_woody <- phyloglm(woody_formula_24a, data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = 10, log.alpha.bound = 4, start.beta=NULL, start.alpha=NULL, boot = 0, full.matrix = TRUE)
-    #again the estimate of 'alpha' is almost equal to the upper bound you give.
-check_model(model_BM_woody)
-
-# OU
-model_OU_woody <- phyloglm()
-check_model(model_OU_woody)
-
-# Compare models
-compare_performance(model_BM_woody, model_OU_woody, rank = TRUE)
+#check model
+check_model(model_woody)
 ```
 
 1. Check for multicolinearity
@@ -237,13 +222,10 @@ compare_performance(model_BM_woody, model_OU_woody, rank = TRUE)
 3. Homogeneity of variance (scale-location)
 4. Check for influential observations
 
-### Define best models
+### Define best model
 ```{r}
-# 24a. With bio5 for BM
-woodiness_BM <- woody ~ 0.83475898 + 0.15198885*BulkDensity -0.48410553*monthCountByTemp10 + 0.08058603*PETWettestQuarter + 0.43981669*OrganicCarbon -0.30052534*PhCaCL -0.19695033*Slope + 0.48659487*bio5 + 0.20864413*bio19
-
-# 24a. With bio5 for OUfixedRoot
-woodiness_OU <- woody ~ 0.79869004 -0.32765328*monthCountByTemp10 -0.16620515*PETDriestQuarter + 0.18423198*OrganicCarbon -0.17396725*PhCaCL -0.12842927*Slope + 0.34782999*bio5 -0.08450621*bio14 + 0.07455151*bio19 
+# Best model
+woodiness <- woody ~ 0.83475898 + 0.15198885*BulkDensity -0.48410553*monthCountByTemp10 + 0.08058603*PETWettestQuarter + 0.43981669*OrganicCarbon -0.30052534*PhCaCL -0.19695033*Slope + 0.48659487*bio5 + 0.20864413*bio19
 ```
 
 ## 9 Biological interpretation

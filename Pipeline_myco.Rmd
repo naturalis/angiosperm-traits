@@ -155,9 +155,6 @@ vif(GIS_myco[,c(3:43)])
 #choose the variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, results in:
 # 10c. With BIO8, BIO9, and climaticMoistureIndex
 vif(GIS_myco[,c(3:5, 8, 22:24, 27, 32, 33, 38, 39, 43)])
-
-# . With
-
 ```
 
 ## 6 Model selection: Define formula and select model 
@@ -174,9 +171,6 @@ myco_starting_formula <- mycorrhiza ~ 1
   
 # 10c. With BIO8, BIO9, and climaticMoistureIndex
 myco_formula_10c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio14 + bio15 + bio19
-
-# . With
-
 ```
 
 ### Change data to match the wanted data format
@@ -196,18 +190,6 @@ is.numeric(GIS_myco$mycorrhiza)
 
 ### Perform model selection
 What formula gives us the best result (in terms of the AIC value)?
-```{r model selection BM}
-#load required package
-library(phylolm)
-
-#define function components and run function
-#BM, both: define formula components and run function
-phylostep(formula = myco_formula_10c, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "BM", direction = "both", trace = 2)
-
-#OUfixedRoot both: define formula components and run function
-phylostep(formula = myco_formula_???, starting.formula = myco_starting_formula, data = GIS_myco, phy = tree_myco, model = "OUfixedRoot", direction = "both", trace = 2, lower.bound = 0.001, upper.bound = 1000)
-```
-
 ```{r}
 #load required function
 source('phyloglmstep.R')
@@ -222,29 +204,28 @@ After this, the phylogenetic generalized linear modeling analysis will be done, 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
 ```{r phylogenetic generalized linear modelling}
+#load required package
+library(phylolm)
+
 #fill in the arguments for the phyloglm function and execute it
-phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+model_myco <- phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+
+print(model_myco)
+summary(model_myco) 
+plot(model_myco)
 ```
 
 ## 8 Model evaluation
 
 To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
 ```{r}
-#install and load required package 
+#load required packages
 library(performance)
 library(see)
 library(gridExtra)
 
-# BM
-model_BM_myco <- phyloglm()
-check_model(model_BM_myco)
-
-# OU
-model_OU_myco <- phyloglm()
-check_model(model_OU_myco)
-
-# Compare models
-compare_performance(model_BM_myco, model_OU_myco, rank = TRUE)
+#execute function
+check_model(model_myco)
 ```
 
 1. Check for multicolinearity
@@ -254,16 +235,11 @@ compare_performance(model_BM_myco, model_OU_myco, rank = TRUE)
 
 ### Define best models
 ```{r}
-# BM
-mycorrhiza_BM <- mycorrhiza ~ 0.4401803 -0.1885960*Aspect + 0.1493415*ClayPercentage + 0.4445646*climaticMoistureIndex + 0.1417067*Slope -0.5940963*bio3 -0.5048234*bio14 + 0.2912411*bio19
-
-# OUfixedRoot
-mycorrhiza_OU <-
-
+#best model
+mycorrhiza <- mycorrhiza ~ 0.4401803 -0.1885960*Aspect + 0.1493415*ClayPercentage + 0.4445646*climaticMoistureIndex + 0.1417067*Slope -0.5940963*bio3 -0.5048234*bio14 + 0.2912411*bio19
 ```
 
 ## 9 Biological interpretation
 
 In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
 With this knowledge, the thesis can be completed. 
-

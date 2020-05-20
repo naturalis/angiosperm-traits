@@ -225,9 +225,6 @@ vif(GIS_crops[,c(3:43)])
 #choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
 # 11a. With aridityIndexThornthwaite
 vif(GIS_crops[,c(3:5, 7, 9, 14, 19, 20, 22:24, 37, 43)]) 
-
-# 18. With monthCountByTemp10
-vif(GIS_crops[,c(3:5, 14, 15, 19, 20, 22:24, 37, 38, 43)]) 
 ```
 
 ## 7 Model selection: Define input formulas and perform model selection 
@@ -244,9 +241,6 @@ crops_starting_formula <- domestication ~ 1
 
 # 11a. With aridityIndexThornthwaite
 crops_formula_11a <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
-
-# 18. With monthCountByTemp10
-crops_formula_18 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
 ```
 
 ### Change data to match the wanted data format
@@ -266,18 +260,6 @@ is.numeric(GIS_crops$domestication)
 
 ### Perform model selection 
 What formula gives us the best result (in terms of the AIC value)?
-```{r model selection}
-#load required package
-library(phylolm)
-
-#define function components and run function
-#BM, both: define formula components and run function 
-phylostep(formula = crops_formula_11a, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "BM", direction = "both", trace = 0)
-
-#OUfixedRoot, both: define formula components and run function 
-phylostep(formula = crops_formula_18, starting.formula = crops_starting_formula, data = GIS_crops, phy = tree_crops, model = "OUfixedRoot", direction = "both", trace = 0, lower.bound = 0.001, upper.bound = 1000)
-```
-
 ```{r}
 #load required function
 source('phyloglmstep.R')
@@ -292,29 +274,28 @@ After this, the phylogenetic generalized linear modeling analysis will be done, 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
 ```{r phylogenetic generalized linear modelling, eval=FALSE}
+#load required package
+library(phylolm)
+
 #fill in the arguments for the phyloglm function and execute it
-phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+model_crops <- phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+
+print(model_crops)
+summary(model_crops) 
+plot(model_crops)
 ```
 
 ## 8 Model evaluation
 
 To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
 ```{r}
-#install and load required package 
+#load required packages 
 library(performance)
 library(see)
 library(gridExtra)
 
-#BM
-model_BM_crops <- phyloglm()
-check_model(model_BM_crops)
-
-#OU
-model_OU_crops <- phyloglm()
-check_model(model_OU_crops)
-
-# Compare models
-compare_performance(model_BM_crops, model_OU_crops, rank = TRUE)
+#execute function
+check_model(model_crops)
 ```
 
 1. Check for multicolinearity
@@ -324,11 +305,8 @@ compare_performance(model_BM_crops, model_OU_crops, rank = TRUE)
 
 ### Define best models
 ```{r}
-# BM
-domestication_BM <- domestication ~ 0.2718999 + 0.7254957*Aspect + 0.4467063*ClayPercentage + 0.4136109*PhCaCL + 0.2569151*Slope 
-
-# OUfixedRoot
-domestication_OU <- domestication ~ 0.2812481 + 0.7397210*Aspect -0.2509282*BulkDensity + 0.4460845*ClayPercentage + 0.3330660*PhCaCL + 0.1744375*Slope
+#best model
+domestication <- domestication ~ 0.2718999 + 0.7254957*Aspect + 0.4467063*ClayPercentage + 0.4136109*PhCaCL + 0.2569151*Slope 
 ```
 
 ## 9 Biological interpretation
