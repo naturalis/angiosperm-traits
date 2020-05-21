@@ -261,11 +261,16 @@ is.numeric(GIS_crops$domestication)
 ### Perform model selection 
 What formula gives us the best result (in terms of the AIC value)?
 ```{r}
-#load required function
-source('phyloglmstep.R')
+#source function
+source('phyloglmsep.R')
 
-#define arguments and execute function
-phyloglmstep(crops_formula_11a, phy = tree_crops, data = GIS_crops)
+#fill in arguments and execute function
+phyloglmstep(crops_formula_24a, starting.formula = NULL, data=GIS_crops, phy=tree_crops, 
+                         method="logistic_MPLE",
+                         direction = "forward", trace = 0,
+                         btol = 100, log.alpha.bound = 8, start.beta=NULL, 
+                         start.alpha=NULL, boot = 0, full.matrix = TRUE,
+                         k=2)
 ```
 
 ## 7 Phylogenetic generalized linear modelling analysis
