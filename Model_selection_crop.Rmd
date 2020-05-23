@@ -182,11 +182,12 @@ is.numeric(GIS_crops$domestication)
 With the phyloglmstep() function by Rutger Vos.
 
 ```{r}
-#source function
-source('phyloglmsep.R')
+#source function and load required package
+library(phylolm)
+source('phyloglmstep.R')
 
 #fill in arguments and execute function
-phyloglmstep(crops_formula_24a, starting.formula = NULL, data=GIS_crops, phy=tree_crops, 
+phyloglmstep(crops_formula_31, starting.formula = NULL, data=GIS_crops, phy=tree_crops, 
                          method="logistic_MPLE",
                          direction = "forward", trace = 0,
                          btol = 100, log.alpha.bound = 8, start.beta=NULL, 

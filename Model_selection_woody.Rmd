@@ -172,14 +172,14 @@ With the phyloglmstep() function by Rutger Vos.
 
 ```{r}
 #source function and load required package
-source('phyloglmsep.R')
+source('phyloglmstep.R')
 library(phylolm)
 
 #fill in arguments and execute function
-phyloglmstep(woody_formula_12d, starting.formula = NULL, data=GIS_woody, phy=tree_woody, 
+phyloglmstep(woody_formula_33b, starting.formula = NULL, data=GIS_woody, phy=tree_woody, 
                          method="logistic_MPLE",
                          direction = "forward", trace = 2,
-                         btol = 90, log.alpha.bound = 7, start.beta=NULL, 
+                         btol = 100, log.alpha.bound = 8, start.beta=NULL, 
                          start.alpha=NULL, boot = 0, full.matrix = TRUE,
                          k=2)
-```
+z```

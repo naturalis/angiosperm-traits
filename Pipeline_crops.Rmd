@@ -261,8 +261,9 @@ is.numeric(GIS_crops$domestication)
 ### Perform model selection 
 What formula gives us the best result (in terms of the AIC value)?
 ```{r}
-#source function
-source('phyloglmsep.R')
+#source function and load required package
+library(phylolm)
+source('phyloglmstep.R')
 
 #fill in arguments and execute function
 phyloglmstep(crops_formula_24a, starting.formula = NULL, data=GIS_crops, phy=tree_crops, 

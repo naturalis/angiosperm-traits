@@ -191,8 +191,9 @@ is.numeric(GIS_myco$mycorrhiza)
 ### Perform model selection
 What formula gives us the best result (in terms of the AIC value)?
 ```{r}
-#source function
-source('phyloglmsep.R')
+#source function and load package
+library(phylolm)
+source('phyloglmstep.R')
 
 #fill in arguments and execute function
 phyloglmstep(myco_formula_24a, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
