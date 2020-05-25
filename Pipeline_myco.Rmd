@@ -166,11 +166,8 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis.
 Only the formulas that result in the best models are shown, see "Model_selection_crops_elaborated" for all the used formulas. 
 ```{r define formula}
-# 0. Define starting formula
-myco_starting_formula <- mycorrhiza ~ 1 
-  
-# 10c. With BIO8, BIO9, and climaticMoistureIndex
-myco_formula_10c <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + OrganicCarbon + PhCaCL + Slope + bio3 + bio8 + bio9 + bio14 + bio15 + bio19
+# Formula 2. With embergerQ
+myco_formula_2 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 
 ```
 
 ### Change data to match the wanted data format
@@ -196,7 +193,7 @@ library(phylolm)
 source('phyloglmstep.R')
 
 #fill in arguments and execute function
-phyloglmstep(myco_formula_24a, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
+phyloglmstep(myco_formula_2, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
                          method="logistic_MPLE",
                          direction = "forward", trace = 0,
                          btol = 100, log.alpha.bound = 8, start.beta=NULL, 
@@ -210,15 +207,18 @@ After this, the phylogenetic generalized linear modeling analysis will be done, 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
 ```{r phylogenetic generalized linear modelling}
-#load required package
-library(phylolm)
+#construct model
+myco_best_model <- mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15
 
 #fill in the arguments for the phyloglm function and execute it
-model_myco <- phyloglm(formula = , data = GIS_myco, phy = tree_myco, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+model_myco <- phyloglm(formula = myco_best_model, data = GIS_myco, phy = tree_myco, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
 
-print(model_myco)
-summary(model_myco) 
-plot(model_myco)
+summary(model_myco)
+```
+
+### Define final model
+```{r}
+final_model_myco <- mycorrhiza ~ - 0.58705 - 0.57211*ClayPercentage -0.64992*bio2 + 0.55083*bio15
 ```
 
 ## 8 Model evaluation
@@ -231,7 +231,7 @@ library(see)
 library(gridExtra)
 
 #execute function
-check_model(model_myco)
+check_model(final_model_myco)
 ```
 
 1. Check for multicolinearity
@@ -239,13 +239,54 @@ check_model(model_myco)
 3. Homogeneity of variance (scale-location)
 4. Check for influential observations
 
-### Define best models
-```{r}
-#best model
-mycorrhiza <- mycorrhiza ~ 0.4401803 -0.1885960*Aspect + 0.1493415*ClayPercentage + 0.4445646*climaticMoistureIndex + 0.1417067*Slope -0.5940963*bio3 -0.5048234*bio14 + 0.2912411*bio19
+## 9 Plot results
+
+```{r boxplots}
+#load required package 
+library(dplyr)
+
+#define two subsets
+GIS_filtered_AM <- GIS_myco %>%
+    select(mycorrhiza, ClayPercentage, bio2, bio15) %>%
+    subset(mycorrhiza == 0)
+GIS_filtered_EM <- GIS_myco %>%
+    select(mycorrhiza, ClayPercentage, bio2, bio15) %>%
+    subset(mycorrhiza == 1)
+
+#make boxplots
+boxplot(GIS_filtered_EM$ClayPercentage,GIS_filtered_AM$ClayPercentage,
+    main = "Clay percentage",
+    at = c(1,2),
+    names = c("ectomycorrhiza", "arbuscular mycorrhiza"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
+boxplot(GIS_filtered_woody$bio2,GIS_filtered_non_woody$bio2,
+    main = "Mean diurnal range (mean of monthly (max temp - min temp))",
+    at = c(1,2),
+    names = c("ectomycorrhiza", "arbuscular mycorrhiza"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
+boxplot(GIS_filtered_woody$bio15,GIS_filtered_non_woody$bio15,
+    main = "Precipitation seasonality (coefficient of variation)",
+    at = c(1,2),
+    names = c("ectomycorrhiza", "arbuscular mycorrhiza"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
 ```
 
-## 9 Biological interpretation
+## 10 Biological interpretation
 
 In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
 With this knowledge, the thesis can be completed. 

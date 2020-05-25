@@ -155,9 +155,6 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
 Only the formula that results in the best model is shown, see "Model_selection_crops_elaborated" for all the used formulas. 
 ```{r define formula}
-# 0. Define starting formula
-woody_starting_formula <- woody ~ 1 
-
 # 24a. With bio5
 woody_formula_24a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
 ```
@@ -181,6 +178,7 @@ is.numeric(GIS_woody$woody)
 What formula gives us the best result (in terms of the AIC value)?
 ```{r}
 #source function
+library(phylolm)
 source('phyloglmstep.R')
 
 #fill in arguments and execute function
@@ -198,15 +196,30 @@ After this, the phylogenetic generalized linear modeling analysis will be done, 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
 ```{r phylogenetic generalized linear modelling}
-#load required package
-library(phylolm)
+#construct the best model
+woody_best_model <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5 + bio14
 
 #fill in the arguments for the phyloglm function and execute it
-model_woody <- phyloglm(formula = , data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
-
-print(model_woody)
+model_woody <- phyloglm(formula = woody_best_model, data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
 summary(model_woody) 
-plot(model_woody)
+```
+
+### Second round
+The bio14 variable was not significant, so we will leave that out and do the phyloglm optimization again. 
+
+```{r}
+#construct best model
+woody_best_model2<- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5
+
+#fill in arguments and execute function
+model_woody2 <- phyloglm(formula = woody_best_model2, data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
+
+summary(model_woody2)
+```
+
+### Define final model
+```{r}
+final_model_woody <- woody ~ 1.78041 - 2.20071*monthCountByTemp10 + 0.28208*PETWettestQuarter + 1.28682*OrganicCarbon - 1.07275*PhCaCL - 0.98976*Slope + 1.48267*bio5
 ```
 
 ## 8 Model evaluation
@@ -219,7 +232,7 @@ library(see)
 library(gridExtra)
 
 #check model
-check_model(model_woody)
+check_model(final_model_woody)
 ```
 
 1. Check for multicolinearity
@@ -227,13 +240,86 @@ check_model(model_woody)
 3. Homogeneity of variance (scale-location)
 4. Check for influential observations
 
-### Define best model
-```{r}
-# Best model
-woodiness <- woody ~ 0.83475898 + 0.15198885*BulkDensity -0.48410553*monthCountByTemp10 + 0.08058603*PETWettestQuarter + 0.43981669*OrganicCarbon -0.30052534*PhCaCL -0.19695033*Slope + 0.48659487*bio5 + 0.20864413*bio19
+## 9 Plot results
+
+```{r boxplots}
+#load required package
+library(dplyr)
+
+#define two subsets
+GIS_filtered_non_woody <- GIS_woody %>%
+    select(woody, monthCountByTemp10, PETWettestQuarter, OrganicCarbon,
+    PhCaCL, Slope, bio5) %>%
+    subset(woody == 0)
+GIS_filtered_woody <- GIS_woody %>%
+    select(woody, monthCountByTemp10, PETWettestQuarter, OrganicCarbon,
+    PhCaCL, Slope, bio5) %>%
+    subset(woody == 1)
+
+#make boxplots
+boxplot(GIS_filtered_woody$monthCountByTemp10,GIS_filtered_non_woody$monthCountByTemp10,
+    main = "Number of months with mean temp greater than 10 degrees C",
+    at = c(1,2),
+    names = c("derived woody", "herbaceous"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
+boxplot(GIS_filtered_woody$PETWettestQuarter,GIS_filtered_non_woody$PETWettestQuarter,
+    main = "Mean monthly potential evapotranspiration of wettest quarter",
+    at = c(1,2),
+    names = c("derived woody", "herbaceous"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
+boxplot(GIS_filtered_woody$OrganicCarbon,GIS_filtered_non_woody$OrganicCarbon,
+    main = "Soil organic carbon content",
+    at = c(1,2),
+    names = c("derived woody", "herbaceous"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
+boxplot(GIS_filtered_woody$PhCaCL,GIS_filtered_non_woody$PhCaCL,
+    main = "Soil pH",
+    at = c(1,2),
+    names = c("derived woody", "herbaceous"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
+boxplot(GIS_filtered_woody$Slope,GIS_filtered_non_woody$Slope,
+    main = "Slope",
+    at = c(1,2),
+    names = c("derived woody", "herbaceous"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
+boxplot(GIS_filtered_woody$bio5,GIS_filtered_non_woody$bio5,
+    main = "Max temperature of warmest month",
+    at = c(1,2),
+    names = c("derived woody", "herbaceous"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
 ```
 
-## 9 Biological interpretation
+## 10 Biological interpretation
 
 In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
 With this knowledge, the thesis can be completed. 

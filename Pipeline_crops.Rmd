@@ -236,11 +236,8 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
 Only the formulas that result in the best models are shown, see "Model_selection_crops_elaborated" for all the used formulas. 
 ```{r define formula}
-# 0. Define starting formula
-crops_starting_formula <- domestication ~ 1 
-
-# 11a. With aridityIndexThornthwaite
-crops_formula_11a <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
+# Formula 4. With BIO4
+crops_formula_4a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio13 + bio15 + bio19
 ```
 
 ### Change data to match the wanted data format
@@ -266,7 +263,7 @@ library(phylolm)
 source('phyloglmstep.R')
 
 #fill in arguments and execute function
-phyloglmstep(crops_formula_24a, starting.formula = NULL, data=GIS_crops, phy=tree_crops, 
+phyloglmstep(crops_formula_4a, starting.formula = NULL, data=GIS_crops, phy=tree_crops, 
                          method="logistic_MPLE",
                          direction = "forward", trace = 0,
                          btol = 100, log.alpha.bound = 8, start.beta=NULL, 
@@ -280,15 +277,29 @@ After this, the phylogenetic generalized linear modeling analysis will be done, 
 There is a function in the phylolm package that allows us to do this: phyloglm. 
 
 ```{r phylogenetic generalized linear modelling, eval=FALSE}
-#load required package
-library(phylolm)
+#construct best model
+crops_best_model <- domestication ~ 1 + Aspect + ClayPercentage + PETWarmestQuarter + PETWettestQuarter
 
 #fill in the arguments for the phyloglm function and execute it
-model_crops <- phyloglm(formula = , data = GIS_crops, phy = tree_crops, method = "logistic_MPLE", btol = , log.alpha.bound = , start.beta = , start.alpha = , boot = , full.matrix = )
+model_crops <- phyloglm(formula = crops_best_model, data = GIS_crops, phy = tree_crops, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
 
-print(model_crops)
 summary(model_crops) 
-plot(model_crops)
+```
+
+### Second try
+```{r}
+#construct best model
+crops_best_model2 <- domestication ~ 1 + ClayPercentage + PETWarmestQuarter 
+
+#fill in the arguments for the phyloglm function and execute it
+model_crops2 <- phyloglm(formula = crops_best_model2, data = GIS_crops, phy = tree_crops, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
+
+summary(model_crops2) 
+```
+
+### Define final model
+```{r}
+final_model_crops <- domestication ~ - 1.90666 + 2.32367*ClayPercentage + 2.00246*PETWarmestQuarter 
 ```
 
 ## 8 Model evaluation
@@ -301,7 +312,7 @@ library(see)
 library(gridExtra)
 
 #execute function
-check_model(model_crops)
+check_model(final_model_crops)
 ```
 
 1. Check for multicolinearity
@@ -309,13 +320,44 @@ check_model(model_crops)
 3. Homogeneity of variance (scale-location)
 4. Check for influential observations
 
-### Define best models
-```{r}
-#best model
-domestication <- domestication ~ 0.2718999 + 0.7254957*Aspect + 0.4467063*ClayPercentage + 0.4136109*PhCaCL + 0.2569151*Slope 
+## 9 Plot results
+
+```{r boxplots}
+#load required package
+library(dplyr)
+
+#define two subsets
+GIS_filtered_non_predom <- GIS_crops %>%
+    select(domestication, ClayPercentage, PETWarmestQuarter) %>%
+    subset(domestication == 0)
+GIS_filtered_predom <- GIS_crops %>%
+    select(domestication, ClayPercentage, PETWarmestQuarter) %>%
+    subset(domestication == 1)
+
+#make boxplots
+boxplot(GIS_filtered_predom$ClayPercentage,GIS_filtered_non_predom$ClayPercentage,
+    main = "Clay percentage",
+    at = c(1,2),
+    names = c("preadapted for domestication", "not domesticated"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
+boxplot(GIS_filtered_predom$PETWarmestQuarter,GIS_filtered_non_predom$PETWarmestQuarter,
+    main = "Mean monthly potential evapotranspiration of warmest quarter",
+    at = c(1,2),
+    names = c("preadapted for domestication", "not domesticated"),
+    las = 2,
+    col = c("orange","red"),
+    border = "brown",
+    horizontal = TRUE,
+    notch = TRUE
+)
 ```
 
-## 9 Biological interpretation
+## 10 Biological interpretation
 
 In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
 With this knowledge, the thesis can be completed. 

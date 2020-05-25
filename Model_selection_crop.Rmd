@@ -187,7 +187,7 @@ library(phylolm)
 source('phyloglmstep.R')
 
 #fill in arguments and execute function
-phyloglmstep(crops_formula_31, starting.formula = NULL, data=GIS_crops, phy=tree_crops, 
+phyloglmstep(crops_formula_4a, starting.formula = NULL, data=GIS_crops, phy=tree_crops, 
                          method="logistic_MPLE",
                          direction = "forward", trace = 0,
                          btol = 100, log.alpha.bound = 8, start.beta=NULL, 
