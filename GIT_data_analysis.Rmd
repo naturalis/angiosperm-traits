@@ -1,0 +1,255 @@
+---
+title: "GIT_data_analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# GIT data analysis
+
+## Load raw GIS data
+```{r}
+library(readr)
+raw_means <- read_csv("raw_means.csv")
+View(raw_means)
+```
+
+## Determine highest and lowest value of each variable
+```{r}
+#function to return the highest value of each column
+colMax <- function(data)
+  sapply(data, max, na.rm = TRUE)
+colMax(raw_means)
+
+#function to return the lowest value of each column
+colMin <- function(data)
+  sapply(data, min, na.rm = TRUE)
+colMin(raw_means)
+colnames(raw_means)
+```
+
+### Results
+Aspect                   1.297   - 4.656
+BulkDensity              70.3    - 158.278
+ClayPercentage           8.189   - 46.867
+annualPET                173.379 - 1975.946
+aridityIndexThornthwaite 0       - 99.042
+climaticMoistureIndex    -0.989  - 0.718
+continentality           0.767   - 40.646
+embergerQ                2.379   - 1184.093
+growingDegDays0          1073.07 - 117687.109
+growingDegDays5          216.757 - 117687.109
+maxTempColdest           -255.06 - 309.739
+minTempWarmest           -6.68   - 252.095
+monthCountByTemp10       0       - 12
+PETColdestQuarter        0.119   - 145.757
+PETDriestQuarter         3.21    - 203.433
+PETseasonality           571.258 - 6616.934
+PETWarmestQuarter        44.167  - 220.222
+PETWettestQuarter        21.19   - 203.51
+thermicityIndex          -428.485- 722.5
+OrganicCarbon            0       - 1607.102
+PhCaCL                   38.29   - 75.555
+Slope                    0.001   - 0.142
+bio1                     -138.55 - 272.191
+bio2                     37.943  - 173.071
+bio3                     15.289  - 88.636
+bio4                     234.932 - 14490.064
+bio5                     76.385  - 397.342
+bio6                     -327.945- 229.162
+bio7                     76.943  - 525.92
+bio8                     -13.869 - 310.027
+bio9                     -254.217- 302.941
+bio10                    29.578  - 314.726
+bio11                    -281.361- 266.533
+bio12                    12.4    - 3503.571
+bio13                    3.5     - 496.955
+bio14                    0       - 189
+bio15                    10.415  - 111.651
+bio16                    9       - 1442.636
+bio17                    0       - 650.727
+bio18                    0       - 1160.182
+bio19                    1.455   - 960.065
+
+## Value check 
+Are the values in compliance with with the type of plants you would normally see this in? E.g. are the plants with the driest values indeed cacti? To check whether rows and columns are not distorted. 
+```{r}
+#sort based on drought
+raw_means <- raw_means[rev(order(raw_means$aridityIndexThornthwaite)),]
+    #2nd plant grows in dry areas
+
+#sort based on continentality
+raw_means <- raw_means[rev(order(raw_means$continentality)),]
+    #1st plant grows in dry, sandy, and stony places
+
+#sort based on bio5 (Max Temperature of Warmest Month)
+raw_means <- raw_means[rev(order(raw_means$bio5)),]
+    #1st plant grows in the desert
+
+#sort based on bio10 Mean Temperature of Warmest Quarter
+raw_means <- raw_means[rev(order(raw_means$bio10)),]
+    #1st grows in dry sandy areas of Australia
+```
+
+## Plot OMI-transformed variables against raw values
+Plot the variables that are left in the final models, against their raw_means. This should result in a strong linear relationship, that is either negative or positive. This will give us a hint as to whether we can interpret the OMI-transformed variables directly, or we should reverse their coefficient. 
+
+### Fix names of raw_means
+```{r}
+#fix names
+raw_names <- as.character(unlist(c(raw_means[1])))
+raw_names <- stri_replace_all_charclass(raw_names, "\\p{WHITE_SPACE}", "_")
+
+#re-insert names
+raw_means$X1 <- raw_names
+```
+
+### Woodiness
+The variables that are left are: monthCountByTemp10, PETWettestQuarter, OrganicCarbon, PhCaCL, Slope, and bio5.
+
+#### Trim raw_means for woody
+```{r}
+#trim data frame
+raw_means_woody <- raw_means[raw_means$X1 %in% keep_tips_woody,]
+```
+
+#### monthCountByTemp10
+```{r}
+#define two variables to plot
+monthCountByTemp10_OMI <- GIS_woody$monthCountByTemp10
+monthCountByTemp10_RAW <- raw_means_woody$monthCountByTemp10
+
+#plot against each other
+plot(monthCountByTemp10_OMI, monthCountByTemp10_RAW)
+abline(lm(monthCountByTemp10_RAW ~ monthCountByTemp10_OMI))
+```
+
+#### PETWettestQuarter
+```{r}
+#define two variables
+PETWettestQuarter_OMI <- GIS_woody$PETWettestQuarter
+PETWettestQuarter_RAW <- raw_means_woody$PETWettestQuarter
+
+#plot against each other
+plot(PETWettestQuarter_OMI, PETWettestQuarter_RAW)
+abline(lm(PETWettestQuarter_RAW ~ PETWettestQuarter_OMI))
+```
+
+#### OrganicCarbon
+```{r}
+#define two variables
+OrganicCarbon_OMI <- GIS_woody$OrganicCarbon
+OrganicCarbon_RAW <- raw_means_woody$OrganicCarbon
+
+#plot against each other
+plot(OrganicCarbon_OMI, OrganicCarbon_RAW)
+abline(lm(OrganicCarbon_RAW ~ OrganicCarbon_OMI))
+```
+
+#### PhCaCL
+```{r}
+#define two variables
+PhCaCL_OMI <- GIS_woody$PhCaCL
+PhCaCL_RAW <- raw_means_woody$PhCaCL
+
+#plot against each other
+plot(PhCaCL_OMI, PhCaCL_RAW)
+abline(lm(PhCaCL_RAW ~ PhCaCL_OMI))
+```
+
+#### Slope
+```{r}
+#define two variables
+Slope_OMI <- GIS_woody$Slope
+Slope_RAW <- raw_means_woody$Slope
+
+#plot against each other
+plot(Slope_OMI, Slope_RAW)
+abline(lm(Slope_RAW ~ Slope_OMI))
+```
+
+#### bio5
+```{r}
+#define two variables
+bio5_OMI <- GIS_woody$bio5
+bio5_RAW <- raw_means_woody$bio5
+
+#plot against each other
+plot(bio5_OMI, bio5_RAW)
+abline(lm(bio5_RAW ~ bio5_OMI))
+```
+
+### Mycorrhiza
+The variables that are left are: ClayPercentage, bio2, and bio15.
+
+#### Trim raw_means for myco
+```{r}
+#trim data frame
+raw_means_myco <- raw_means[raw_means$X1 %in% keep_tips_myco,]
+```
+
+#### ClayPercentage
+```{r}
+#define two variables
+ClayPercentage_OMI <- GIS_myco$ClayPercentage
+ClayPercentage_RAW_myco <- raw_means_myco$ClayPercentage
+
+#plot against each other
+plot(ClayPercentage_OMI, ClayPercentage_RAW_myco)
+abline(lm(ClayPercentage_RAW_myco ~ ClayPercentage_OMI))
+```
+
+#### bio2
+```{r}
+#define two variables
+bio2_OMI <- GIS_myco$bio2
+bio2_RAW <- raw_means_myco$bio2
+
+#plot against each other
+plot(bio2_OMI, bio2_RAW)
+abline(lm(bio2_RAW ~ bio2_OMI))
+```
+
+#### bio15
+```{r}
+#define two variables
+bio15_OMI <- GIS_myco$bio15
+bio15_RAW <- raw_means_myco$bio15
+
+#plot against each other
+plot(bio15_OMI, bio15_RAW)
+abline(lm(bio15_RAW ~ bio15_OMI))
+```
+
+### Domestication
+The variables that are left are: ClayPercentage and PETWarmestQuarter.
+
+#### Trim raw_means for domestication
+```{r}
+#trim data frame
+raw_means_crops <- raw_means[raw_means$X1 %in% keep_tips_crops,]
+```
+
+#### ClayPercentage
+```{r}
+#define two variables
+ClayPercentage_OMI <- GIS_crops$ClayPercentage
+ClayPercentage_RAW_crops <- raw_means_crops$ClayPercentage
+
+#plot against each other
+plot(ClayPercentage_OMI, ClayPercentage_RAW_crops)
+abline(lm(ClayPercentage_RAW_crops ~ ClayPercentage_OMI))
+```
+
+#### PETWarmestQuarter
+```{r}
+#define two variables
+PETWarmestQuarter_OMI <- GIS_crops$PETWarmestQuarter
+PETWarmestQuarter_RAW <- raw_means_crops$PETWarmestQuarter
+
+#plot against each other
+plot(PETWarmestQuarter_OMI, PETWarmestQuarter_RAW)
+abline(lm(PETWarmestQuarter_RAW ~ PETWarmestQuarter_OMI))
+```
