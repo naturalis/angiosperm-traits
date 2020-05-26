@@ -313,7 +313,7 @@ library(see)
 library(gridExtra)
 
 #construct model without phylogeny
-model_check_crops <- glm(domestication ~ ClayPercentage + PETWarmestQuarter, data = GIS_crops)
+model_check_crops <- glm(domestication ~ 1 + ClayPercentage + PETWarmestQuarter, data = GIS_crops)
 
 #execute function
 check_model(model_check_crops)
