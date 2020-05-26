@@ -223,7 +223,8 @@ final_model_myco <- mycorrhiza ~ - 0.58705 - 0.57211*ClayPercentage -0.64992*bio
 
 ## 8 Model evaluation
 
-To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
+This is needed to see whether the best models we constructed, are still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'. However, this function is not appropriate for models that include a phylogeny, so in this case, a phyloGLM is not seen as a subclass of GLMs. We will still do it while keeping out the phylogeny, but keep in mind this might result in skewed interpretation.
+
 ```{r}
 #load required packages
 library(performance)
@@ -253,34 +254,39 @@ GIS_filtered_EM <- GIS_myco %>%
     select(mycorrhiza, ClayPercentage, bio2, bio15) %>%
     subset(mycorrhiza == 1)
 
+#change margins
+par(mar=c(3,9,3,3))
+
 #make boxplots
 boxplot(GIS_filtered_EM$ClayPercentage,GIS_filtered_AM$ClayPercentage,
     main = "Clay percentage",
     at = c(1,2),
     names = c("ectomycorrhiza", "arbuscular mycorrhiza"),
     las = 2,
-    col = c("orange","red"),
-    border = "brown",
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
     horizontal = TRUE,
     notch = TRUE
 )
-boxplot(GIS_filtered_woody$bio2,GIS_filtered_non_woody$bio2,
+
+boxplot(GIS_filtered_EM$bio2,GIS_filtered_AM$bio2,
     main = "Mean diurnal range (mean of monthly (max temp - min temp))",
     at = c(1,2),
     names = c("ectomycorrhiza", "arbuscular mycorrhiza"),
     las = 2,
-    col = c("orange","red"),
-    border = "brown",
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
     horizontal = TRUE,
     notch = TRUE
 )
-boxplot(GIS_filtered_woody$bio15,GIS_filtered_non_woody$bio15,
+
+boxplot(GIS_filtered_EM$bio15,GIS_filtered_AM$bio15, 
     main = "Precipitation seasonality (coefficient of variation)",
     at = c(1,2),
     names = c("ectomycorrhiza", "arbuscular mycorrhiza"),
     las = 2,
-    col = c("orange","red"),
-    border = "brown",
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
     horizontal = TRUE,
     notch = TRUE
 )

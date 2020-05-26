@@ -224,7 +224,8 @@ final_model_woody <- woody ~ 1.78041 - 2.20071*monthCountByTemp10 + 0.28208*PETW
 
 ## 8 Model evaluation
 
-To see whether the best model we constructed, is still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'
+This is needed to see whether the best models we constructed, are still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'. However, this function is not appropriate for models that include a phylogeny, so in this case, a phyloGLM is not seen as a subclass of GLMs. We will still do it while keeping out the phylogeny, but keep in mind this might result in skewed interpretation.
+
 ```{r}
 #install and load required package 
 library(performance)
@@ -256,14 +257,17 @@ GIS_filtered_woody <- GIS_woody %>%
     PhCaCL, Slope, bio5) %>%
     subset(woody == 1)
 
+#change margins
+par(mar=c(3,7,3,3))
+
 #make boxplots
 boxplot(GIS_filtered_woody$monthCountByTemp10,GIS_filtered_non_woody$monthCountByTemp10,
     main = "Number of months with mean temp greater than 10 degrees C",
     at = c(1,2),
     names = c("derived woody", "herbaceous"),
     las = 2,
-    col = c("orange","red"),
-    border = "brown",
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
     horizontal = TRUE,
     notch = TRUE
 )
@@ -272,8 +276,8 @@ boxplot(GIS_filtered_woody$PETWettestQuarter,GIS_filtered_non_woody$PETWettestQu
     at = c(1,2),
     names = c("derived woody", "herbaceous"),
     las = 2,
-    col = c("orange","red"),
-    border = "brown",
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
     horizontal = TRUE,
     notch = TRUE
 )
@@ -282,8 +286,8 @@ boxplot(GIS_filtered_woody$OrganicCarbon,GIS_filtered_non_woody$OrganicCarbon,
     at = c(1,2),
     names = c("derived woody", "herbaceous"),
     las = 2,
-    col = c("orange","red"),
-    border = "brown",
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
     horizontal = TRUE,
     notch = TRUE
 )
@@ -292,8 +296,8 @@ boxplot(GIS_filtered_woody$PhCaCL,GIS_filtered_non_woody$PhCaCL,
     at = c(1,2),
     names = c("derived woody", "herbaceous"),
     las = 2,
-    col = c("orange","red"),
-    border = "brown",
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
     horizontal = TRUE,
     notch = TRUE
 )
@@ -302,8 +306,8 @@ boxplot(GIS_filtered_woody$Slope,GIS_filtered_non_woody$Slope,
     at = c(1,2),
     names = c("derived woody", "herbaceous"),
     las = 2,
-    col = c("orange","red"),
-    border = "brown",
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
     horizontal = TRUE,
     notch = TRUE
 )
@@ -312,8 +316,8 @@ boxplot(GIS_filtered_woody$bio5,GIS_filtered_non_woody$bio5,
     at = c(1,2),
     names = c("derived woody", "herbaceous"),
     las = 2,
-    col = c("orange","red"),
-    border = "brown",
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
     horizontal = TRUE,
     notch = TRUE
 )

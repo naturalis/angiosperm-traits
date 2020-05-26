@@ -111,7 +111,8 @@ final_model_myco <- mycorrhiza ~ - 0.58705 - 0.57211*ClayPercentage -0.64992*bio
 ```
 
 ### d. Model performance
-The model performance package is used, to see whether the model sticks to the assumptions we've made.
+This is needed to see whether the best models we constructed, are still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'. However, this function is not appropriate for models that include a phylogeny, so in this case, a phyloGLM is not seen as a subclass of GLMs. We will still do it while keeping out the phylogeny, but keep in mind this might result in skewed interpretation. 
+
 ```{r}
 #install and load required package 
 library(performance)
@@ -127,6 +128,6 @@ Just for fun, see which model performs best.
 
 ```{r}
 # Compare models
-compare_performance(model_woody, model_crops, model_myco, rank = TRUE)
+compare_performance(final_model_woody, final_model_crops, final_model_myco, rank = TRUE)
 ```
 
