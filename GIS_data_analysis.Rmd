@@ -1,5 +1,5 @@
 ---
-title: "GIT_data_analysis"
+title: "GIS_data_analysis"
 output: html_document
 ---
 
@@ -7,20 +7,20 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# GIT data analysis
+# GIS data analysis
 
 ## Load raw GIS data
 ```{r}
 #import raw_means data
 project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
 raw_means_file <- paste(c(project_root, 'angiosperm-traits/raw_means.csv'), collapse = '')
-
 raw_means <- read.table(raw_means_file, sep = ',', header = TRUE)
 ```
 
 ## Fix names and row names of raw_means
 ```{r}
 #fix names
+library(stringi)
 raw_names <- as.character(unlist(c(raw_means[1])))
 raw_names <- stri_replace_all_charclass(raw_names, "\\p{WHITE_SPACE}", "_")
 raw_means$X <- raw_names
