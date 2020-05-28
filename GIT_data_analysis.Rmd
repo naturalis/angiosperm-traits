@@ -11,9 +11,23 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Load raw GIS data
 ```{r}
-library(readr)
-raw_means <- read_csv("raw_means.csv")
-View(raw_means)
+#import raw_means data
+project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
+raw_means_file <- paste(c(project_root, 'angiosperm-traits/raw_means.csv'), collapse = '')
+
+raw_means <- read.table(raw_means_file, sep = ',', header = TRUE)
+```
+
+## Fix names and row names of raw_means
+```{r}
+#fix names
+raw_names <- as.character(unlist(c(raw_means[1])))
+raw_names <- stri_replace_all_charclass(raw_names, "\\p{WHITE_SPACE}", "_")
+raw_means$X <- raw_names
+
+#set species names as row names
+row.names(raw_means) <- raw_means$X
+raw_means[,1] <- NULL
 ```
 
 ## Determine highest and lowest value of each variable
@@ -96,31 +110,23 @@ raw_means <- raw_means[rev(order(raw_means$bio10)),]
 ## Plot OMI-transformed variables against raw values
 Plot the variables that are left in the final models, against their raw_means. This should result in a strong linear relationship, that is either negative or positive. This will give us a hint as to whether we can interpret the OMI-transformed variables directly, or we should reverse their coefficient. 
 
-### Fix names of raw_means
-```{r}
-#fix names
-raw_names <- as.character(unlist(c(raw_means[1])))
-raw_names <- stri_replace_all_charclass(raw_names, "\\p{WHITE_SPACE}", "_")
-
-#re-insert names
-raw_means$X1 <- raw_names
-```
-
 ### Woodiness
 The variables that are left are: monthCountByTemp10, PETWettestQuarter, OrganicCarbon, PhCaCL, Slope, and bio5.
 
 #### Trim raw_means for woody
 ```{r}
 #trim data frame
-raw_means_woody <- raw_means[raw_means$X1 %in% keep_tips_woody,]
-combined_woody <- merge(raw_means_woody, GIS_woody, by = 1)
+raw_means_woody <- raw_means[row.names(raw_means) %in% keep_tips_woody,]
+combined_woody <- merge(raw_means_woody, GIS_woody, by = 0)
+row.names(combined_woody) <- combined_woody$Row.names
+combined_woody[,1] <- NULL
 ```
 
 #### monthCountByTemp10
 ```{r}
 #define two variables to plot
-monthCountByTemp10_OMI <- combined_woody$monthCountByTemp10.x
-monthCountByTemp10_RAW <- combined_woody$monthCountByTemp10.y
+monthCountByTemp10_RAW <- combined_woody$monthCountByTemp10.x
+monthCountByTemp10_OMI <- combined_woody$monthCountByTemp10.y
 
 #plot against each other
 plot(monthCountByTemp10_OMI, monthCountByTemp10_RAW)
@@ -130,9 +136,8 @@ abline(lm(monthCountByTemp10_RAW ~ monthCountByTemp10_OMI))
 #### PETWettestQuarter
 ```{r}
 #define two variables
-PETWettestQuarter_OMI <- combined_woody$PETWettestQuarter.x
-PETWettestQuarter_RAW <- combined_woody$PETWettestQuarter.y
-
+PETWettestQuarter_RAW <- combined_woody$PETWettestQuarter.x
+PETWettestQuarter_OMI <- combined_woody$PETWettestQuarter.y
 #plot against each other
 plot(PETWettestQuarter_OMI, PETWettestQuarter_RAW)
 abline(lm(PETWettestQuarter_RAW ~ PETWettestQuarter_OMI))
@@ -141,8 +146,8 @@ abline(lm(PETWettestQuarter_RAW ~ PETWettestQuarter_OMI))
 #### OrganicCarbon
 ```{r}
 #define two variables
-OrganicCarbon_OMI <- combined_woody$OrganicCarbon.x
-OrganicCarbon_RAW <- combined_woody$OrganicCarbon.y
+OrganicCarbon_RAW <- combined_woody$OrganicCarbon.x
+OrganicCarbon_OMI <- combined_woody$OrganicCarbon.y
 
 #plot against each other
 plot(OrganicCarbon_OMI, OrganicCarbon_RAW)
@@ -152,8 +157,8 @@ abline(lm(OrganicCarbon_RAW ~ OrganicCarbon_OMI))
 #### PhCaCL
 ```{r}
 #define two variables
-PhCaCL_OMI <- combined_woody$PhCaCL.x
-PhCaCL_RAW <- combined_woody$PhCaCL.y
+PhCaCL_RAW <- combined_woody$PhCaCL.x
+PhCaCL_OMI <- combined_woody$PhCaCL.y
 
 #plot against each other
 plot(PhCaCL_OMI, PhCaCL_RAW)
@@ -163,8 +168,8 @@ abline(lm(PhCaCL_RAW ~ PhCaCL_OMI))
 #### Slope
 ```{r}
 #define two variables
-Slope_OMI <- combined_woody$Slope.x
-Slope_RAW <- combined_woody$Slope.y
+Slope_RAW <- combined_woody$Slope.x
+Slope_OMI <- combined_woody$Slope.y
 
 #plot against each other
 plot(Slope_OMI, Slope_RAW)
@@ -174,8 +179,8 @@ abline(lm(Slope_RAW ~ Slope_OMI))
 #### bio5
 ```{r}
 #define two variables
-bio5_OMI <- combined_woody$bio5.x
-bio5_RAW <- combined_woody$bio5.y
+bio5_RAW <- combined_woody$bio5.x
+bio5_OMI <- combined_woody$bio5.y
 
 #plot against each other
 plot(bio5_OMI, bio5_RAW)
@@ -188,26 +193,28 @@ The variables that are left are: ClayPercentage, bio2, and bio15.
 #### Trim raw_means for myco
 ```{r}
 #trim data frame
-raw_means_myco <- raw_means[raw_means$X1 %in% keep_tips_myco,]
-combined_myco <- merge(raw_means_myco, GIS_myco, by = 1)
+raw_means_myco <- raw_means[row.names(raw_means) %in% keep_tips_myco,]
+combined_myco <- merge(raw_means_myco, GIS_myco, by = 0)
+row.names(combined_myco) <- combined_myco$Row.names
+combined_myco[,1] <- NULL
 ```
 
 #### ClayPercentage
 ```{r}
 #define two variables
-ClayPercentage_OMI <- combined_myco$ClayPercentage.x
-ClayPercentage_RAW_myco <- combined_myco$ClayPercentage.y
+ClayPercentage_RAW_myco <- combined_myco$ClayPercentage.x
+ClayPercentage_OMI_myco <- combined_myco$ClayPercentage.y
 
 #plot against each other
-plot(ClayPercentage_OMI, ClayPercentage_RAW_myco)
-abline(lm(ClayPercentage_RAW_myco ~ ClayPercentage_OMI))
+plot(ClayPercentage_OMI_myco, ClayPercentage_RAW_myco)
+abline(lm(ClayPercentage_RAW_myco ~ ClayPercentage_OMI_myco))
 ```
 
 #### bio2
 ```{r}
 #define two variables
-bio2_OMI <- combined_myco$bio2.x
-bio2_RAW <- combined_myco$bio2.y
+bio2_RAW <- combined_myco$bio2.x
+bio2_OMI <- combined_myco$bio2.y
 
 #plot against each other
 plot(bio2_OMI, bio2_RAW)
@@ -217,8 +224,8 @@ abline(lm(bio2_RAW ~ bio2_OMI))
 #### bio15
 ```{r}
 #define two variables
-bio15_OMI <- combined_myco$bio15.x
-bio15_RAW <- combined_myco$bio15.y
+bio15_RAW <- combined_myco$bio15.x
+bio15_OMI <- combined_myco$bio15.y
 
 #plot against each other
 plot(bio15_OMI, bio15_RAW)
@@ -231,26 +238,28 @@ The variables that are left are: ClayPercentage and PETWarmestQuarter.
 #### Trim raw_means for domestication
 ```{r}
 #trim data frame
-raw_means_crops <- raw_means[raw_means$X1 %in% keep_tips_crops,]
-combined_crops <- merge(raw_means_crops, GIS_crops, by = 1)
+raw_means_crops <- raw_means[row.names(raw_means) %in% keep_tips_crops,]
+combined_crops <- merge(raw_means_crops, GIS_crops, by = 0)
+row.names(combined_crops) <- combined_crops$Row.names
+combined_crops[,1] <- NULL
 ```
 
 #### ClayPercentage
 ```{r}
 #define two variables
-ClayPercentage_OMI <- combined_crops$ClayPercentage.x
-ClayPercentage_RAW_crops <- combined_crops$ClayPercentage.y
+ClayPercentage_RAW_crops <- combined_crops$ClayPercentage.x
+ClayPercentage_OMI_crops <- combined_crops$ClayPercentage.y
 
 #plot against each other
-plot(ClayPercentage_OMI, ClayPercentage_RAW_crops)
-abline(lm(ClayPercentage_RAW_crops ~ ClayPercentage_OMI))
+plot(ClayPercentage_OMI_crops, ClayPercentage_RAW_crops)
+abline(lm(ClayPercentage_RAW_crops ~ ClayPercentage_OMI_crops))
 ```
 
 #### PETWarmestQuarter
 ```{r}
 #define two variables
-PETWarmestQuarter_OMI <- combined_crops$PETWarmestQuarter.x
-PETWarmestQuarter_RAW <- combined_crops$PETWarmestQuarter.y
+PETWarmestQuarter_RAW <- combined_crops$PETWarmestQuarter.x
+PETWarmestQuarter_OMI <- combined_crops$PETWarmestQuarter.y
 
 #plot against each other
 plot(PETWarmestQuarter_OMI, PETWarmestQuarter_RAW)
