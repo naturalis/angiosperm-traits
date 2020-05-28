@@ -166,9 +166,13 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis.
 Only the formulas that result in the best models are shown, see "Model_selection_crops_elaborated" for all the used formulas. 
 ```{r define formula}
-# Formula 2. With embergerQ
+# Formula 2. With embergerQ (alpha warning, AIC 1026,5)
 myco_formula_2 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 
+
+# Formula 4. With continentality (no alpha warning, AIC 1037,3)
+myco_formula_4 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18 + bio19
 ```
+NB: Both these formulas can be used, they result in the same final model. 
 
 ### Change data to match the wanted data format
 There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
@@ -195,7 +199,7 @@ source('phyloglmstep.R')
 #fill in arguments and execute function
 phyloglmstep(myco_formula_2, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
                          method="logistic_MPLE",
-                         direction = "forward", trace = 0,
+                         direction = "both", trace = 0,
                          btol = 100, log.alpha.bound = 8, start.beta=NULL, 
                          start.alpha=NULL, boot = 0, full.matrix = TRUE,
                          k=2)
@@ -218,7 +222,7 @@ summary(model_myco)
 
 ### Define final model
 ```{r}
-final_model_myco <- mycorrhiza ~ - 0.58705 - 0.57211*ClayPercentage -0.64992*bio2 + 0.55083*bio15
+final_model_myco_1 <- mycorrhiza ~ - 0.58705 - 0.57211*ClayPercentage -0.64992*bio2 + 0.55083*bio15
 ```
 
 ## 8 Model evaluation
@@ -231,14 +235,22 @@ library(performance)
 library(see)
 library(gridExtra)
 
+#construct model without phylogeny
+model_check_myco <- glm(mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15, data = GIS_myco)
+
 #execute function
-check_model(final_model_myco)
+par(mar=c(5,5,5,5))
+check_model(model_check_myco)
 ```
 
 1. Check for multicolinearity
+All variables have low correlation. 
 2. Non-normality of residuals and outliers
+...
 3. Homogeneity of variance (scale-location)
+...
 4. Check for influential observations
+...
 
 ## 9 Plot results
 

@@ -44,8 +44,11 @@ library(performance)
 library(see)
 library(gridExtra)
 
-#execute function
-check_model(final_model_woody)
+#construct model without phylogeny
+model_check_woody <- glm(woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5, data = GIS_woody)
+
+#check model
+check_model(model_check_woody)
 ```
 
 ## 2. Domestication (staple crops)
@@ -81,8 +84,11 @@ library(performance)
 library(see)
 library(gridExtra)
 
+#construct model without phylogeny
+model_check_crops <- glm(domestication ~ 1 + ClayPercentage + PETWarmestQuarter, data = GIS_crops)
+
 #execute function
-check_model(final_model_crops)
+check_model(model_check_crops)
 ```
 
 ## 3. Mycorrhiza
@@ -119,8 +125,11 @@ library(performance)
 library(see)
 library(gridExtra)
 
+#construct model without phylogeny
+model_check_myco <- glm(mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15, data = GIS_myco)
+
 #execute function
-check_model(final_model_myco)
+check_model(model_check_myco)
 ```
 
 ## Compare all the models

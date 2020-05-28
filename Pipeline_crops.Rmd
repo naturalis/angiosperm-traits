@@ -320,9 +320,13 @@ check_model(model_check_crops)
 ```
 
 1. Check for multicolinearity
+All variables have low correlation. 
 2. Non-normality of residuals and outliers
+...
 3. Homogeneity of variance (scale-location)
+...
 4. Check for influential observations
+...
 
 ## 9 Plot results
 

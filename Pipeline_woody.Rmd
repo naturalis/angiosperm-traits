@@ -209,7 +209,7 @@ The bio14 variable was not significant, so we will leave that out and do the phy
 
 ```{r}
 #construct best model
-woody_best_model2<- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5
+woody_best_model2 <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5
 
 #fill in arguments and execute function
 model_woody2 <- phyloglm(formula = woody_best_model2, data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
@@ -232,14 +232,21 @@ library(performance)
 library(see)
 library(gridExtra)
 
+#construct model without phylogeny
+model_check_woody <- glm(woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5, data = GIS_woody)
+
 #check model
-check_model(final_model_woody)
+check_model(model_check_woody)
 ```
 
 1. Check for multicolinearity
+All variables have low correlation. 
 2. Non-normality of residuals and outliers
+...
 3. Homogeneity of variance (scale-location)
+...
 4. Check for influential observations
+...
 
 ## 9 Plot results
 
