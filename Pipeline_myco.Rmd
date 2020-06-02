@@ -197,7 +197,7 @@ library(phylolm)
 source('phyloglmstep.R')
 
 #fill in arguments and execute function
-phyloglmstep(myco_formula_2, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
+phyloglmstep(myco_formula_4, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
                          method="logistic_MPLE",
                          direction = "both", trace = 0,
                          btol = 100, log.alpha.bound = 8, start.beta=NULL, 
@@ -212,17 +212,18 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 
 ```{r phylogenetic generalized linear modelling}
 #construct model
-myco_best_model <- mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15
+myco_best_model_alpha <- mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15
+myco_best_model_no_alpha <- mycorrhiza ~ 1 + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + bio2 + bio15 + bio19
 
 #fill in the arguments for the phyloglm function and execute it
-model_myco <- phyloglm(formula = myco_best_model, data = GIS_myco, phy = tree_myco, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
+model_myco <- phyloglm(formula = myco_best_model_alpha, data = GIS_myco, phy = tree_myco, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
 
 summary(model_myco)
 ```
 
 ### Define final model
 ```{r}
-final_model_myco_1 <- mycorrhiza ~ - 0.58705 - 0.57211*ClayPercentage -0.64992*bio2 + 0.55083*bio15
+final_model_myco <- mycorrhiza ~ - 0.58705 - 0.57211*ClayPercentage -0.64992*bio2 + 0.55083*bio15
 ```
 
 ## 8 Model evaluation
@@ -236,7 +237,7 @@ library(see)
 library(gridExtra)
 
 #construct model without phylogeny
-model_check_myco <- glm(mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15, data = GIS_myco)
+model_check_myco <- glm(mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15, data = GIS_myco, family = binomial())
 
 #execute function
 par(mar=c(5,5,5,5))

@@ -233,7 +233,7 @@ library(see)
 library(gridExtra)
 
 #construct model without phylogeny
-model_check_woody <- glm(woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5, data = GIS_woody)
+model_check_woody <- glm(woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5, data = GIS_woody, family = binomial())
 
 #check model
 check_model(model_check_woody)

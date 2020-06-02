@@ -151,22 +151,6 @@ woody_formula_33a <- woody ~ Aspect + BulkDensity + ClayPercentage + minTempWarm
 woody_formula_33b <- woody ~ Aspect + BulkDensity + ClayPercentage+ minTempWarmest + monthCountByTemp10 + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15 + bio16 + bio17 + bio19
 ```
 
-## Change data to match the wanted data format
-
-There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
-the row names have to match the tip.lables of the tree, and secondly the trait value (0/1) has to be
-seen as a numeric value. 
-```{r}
-#make allmb_name column into the row names of this table
-rownames(GIS_woody) <- GIS_woody[,1]
-GIS_woody[,1] <- NULL
-
-#make sure the values in the 'woody' column are seen as numeric values
-GIS_woody$woody <- as.numeric(GIS_woody$woody)
-#check whether it worked
-is.numeric(GIS_woody$woody)
-```
-
 ## Preform model selection
 With the phyloglmstep() function by Rutger Vos.
 
@@ -182,4 +166,4 @@ phyloglmstep(woody_formula_24a, starting.formula = NULL, data=GIS_woody, phy=tre
                          btol = 100, log.alpha.bound = 8, start.beta=NULL, 
                          start.alpha=NULL, boot = 0, full.matrix = TRUE,
                          k=2)
-z```
+```
