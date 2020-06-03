@@ -13,7 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1 Import data
 
-First the traits table and the original phylogeny (tree) have to be read into R in the right format to be able to use them. 
+First the traits table and the original phylogeny (tree) have to be read into R in the right format 
+to be able to use them. 
 
 ### The project root and the main tree
 ```{r define data root and import tree}
@@ -36,12 +37,12 @@ woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
 ## 2 Recode dependent variables to binary form
 
 The data of the dependent characters (the plant traits) have to be recoded. This is because a binary 
-input is prefered for this analysis due to technical reasons. BUt at the moment, the three plant traits 
-all have 3 or 4 states For secondary woodiness, there are 3 trait-states: derived woody (0), non-woody (1), 
-ancestral woody (2). 
+input is prefered for this analysis due to technical reasons. BUt at the moment, the three plant 
+traits all have 3 or 4 states For secondary woodiness, there are 3 trait-states: derived woody (0), 
+non-woody (1), ancestral woody (2). 
 This will be turned into: derived woody (0) and non-woody (1). Because we want to know more about this 
-precise shift between non-woody and derived woodiness. So all the plants with ancestral woodiness (3) as 
-trait, have to be eliminated from the analysis. 
+precise shift between non-woody and derived woodiness. So all the plants with ancestral woodiness (3) 
+as trait, have to be eliminated from the analysis. 
 
 ```{r cut out state 2}
 #define new sub-woody, which contains binary trait values (tsv)
@@ -51,7 +52,8 @@ woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
 ## 3 Tidy data
 
 ### Match the names
-Make the taxa names the same in the table as in the tree; the difference is that the tsv file has white spaces where the tree file has underscores (_). 
+Make the taxa names the same in the table as in the tree; the difference is that the tsv file has 
+white spaces where the tree file has underscores (_). 
 ```{r match names}
 #load required package 
 library(stringi)
@@ -62,11 +64,13 @@ woody_tsv_bi$allmb_name <- stri_replace_all_charclass(woody_tsv_bi$allmb_name, "
 
 ## 4 Combine the data
 
-The trait states, the selected subset of taxa names, and the GIS information all have to be combined into one file. 
+The trait states, the selected subset of taxa names, and the GIS information all have to be 
+combined into one file. 
 
 ### Import GIS data
-Import the data and make sure the taxa names are the same in this table as in the tsv file and in the tree file,
-so with _ between the words instead of whitespaces. 
+Import the data and make sure the taxa names are the same in this table as in the tsv file and 
+in the tree file, so with _ between the words instead of whitespaces. 
+
 ```{r import GIS data}
 #import GIS data
 GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
@@ -123,15 +127,18 @@ GIS_woody$woody[GIS_woody$allmb_name %in% GIS_woody_1$allmb_name] <- "1"
 #change order of the columns for esthetics
 GIS_woody <- GIS_woody[,c(1,43, 2:42)]
 
-#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as it could be the case that there are not enough occurrences for each plant in the ALLMB tree, and thus not enough GIS data. 
+#there are less plants in this GIS file than in the tree or the tsv file, this makes sense as it 
+#could be the case that there are not enough occurrences for each plant in the ALLMB tree, 
+#and thus not enough GIS data. 
 ```
 
 ## 5 Correct for colinearity in the predictor variables
 
-There will probably be some colinearity in the GIS-data. This could lead to instability and bias in the model, 
-so a correction will have to be done. This can be done using the variance inflation factor (of the usdm package)
-or a correlation matrix. 
-Only the combination that results in the best model is shown, see VIF_analysis_myco" for all the used combinations.
+There will probably be some colinearity in the GIS-data. This could lead to instability and bias 
+in the model, so a correction will have to be done. This can be done using the variance inflation 
+factor (of the usdm package) or a correlation matrix. 
+Only the combination that results in the best model is shown, see VIF_analysis_myco" for all 
+the used combinations.
 
 ### VIF-analysis
 ```{r VIF analysis}
@@ -141,28 +148,35 @@ library(usdm)
 #fill in the arguments of the function and execute it 
 vif(GIS_woody[,c(3:43)])
 
-#choose variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
+#choose variables to delete that have a higher VIF value than 10, but make sure it makes sense 
+#in terms of biology, resulting in:
 # 22a. With bio5
 vif(GIS_woody[,c(3:5, 15, 17, 20, 22:24, 26, 29, 38, 39, 42, 43)])
 ```
 
 ## 6 Model selection: Define formula and select model 
 
-The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
-GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
+The linear model will have to be made, with the trait-presence-column as the dependent variable, 
+and the GIS data frames as the predictor variables. The function phylostep of the phylolm 
+package will be used. 
 
 ### Define input formulas
-Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
-Only the formula that results in the best model is shown, see "Model_selection_crops_elaborated" for all the used formulas. 
+Define the formulas that will be used as input formula in the phylostep function, based on the 
+results of the VIF analysis. Only the formula that results in the best model is shown, see 
+"Model_selection_crops_elaborated" for all the used formulas. 
+
 ```{r define formula}
 # 22a. With bio5
-woody_formula_22a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
+woody_formula_22a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 
++ PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 
++ bio15 + bio18 + bio19
 ```
 
 ### Change data to match the wanted data format
 There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
 the row names have to match the tip.lables of the tree, and secondly the trait value (0/1) has to be
 seen as a numeric value. 
+
 ```{r}
 #make allmb_name column into the row names of this table
 rownames(GIS_woody) <- GIS_woody[,1]
@@ -182,49 +196,59 @@ library(phylolm)
 source('phyloglmstep.R')
 
 #fill in arguments and execute function
-phyloglmstep(woody_formula_24a, starting.formula = NULL, data=GIS_woody, phy=tree_woody, 
-                         method="logistic_MPLE",
-                         direction = "forward", trace = 0,
-                         btol = 100, log.alpha.bound = 8, start.beta=NULL, 
-                         start.alpha=NULL, boot = 0, full.matrix = TRUE,
-                         k=2)
+phyloglmstep(woody_formula_24a, starting.formula = NULL, data=GIS_woody, phy=tree_woody,
+             method="logistic_MPLE", direction = "forward", trace = 0, btol = 100, 
+             log.alpha.bound = 8, start.beta=NULL, start.alpha=NULL, boot = 0, 
+             full.matrix = TRUE, k=2)
 ```
 
 ## 7 Phylogenetic generalized linear modelling analysis
 
-After this, the phylogenetic generalized linear modeling analysis will be done, with which we can optimize the model by looking at the significance of the different values.  
-There is a function in the phylolm package that allows us to do this: phyloglm. 
+After this, the phylogenetic generalized linear modeling analysis will be done, with which we 
+can optimize the model by looking at the significance of the different values.  There is a 
+function in the phylolm package that allows us to do this: phyloglm. 
 
 ```{r phylogenetic generalized linear modelling}
 #construct the best model
-woody_best_model <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5 + bio14
+woody_best_model <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL 
++ Slope + bio5 + bio14
 
 #fill in the arguments for the phyloglm function and execute it
-model_woody <- phyloglm(formula = woody_best_model, data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
+model_woody <- phyloglm(formula = woody_best_model, data = GIS_woody, phy = tree_woody, 
+                        method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
 summary(model_woody) 
 ```
 
 ### Second round
-The bio14 variable was not significant, so we will leave that out and do the phyloglm optimization again. 
+The bio14 variable was not significant, so we will leave that out and do the phyloglm optimization 
+again. 
 
 ```{r}
 #construct best model
-woody_best_model2 <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5
+woody_best_model2 <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL 
++ Slope + bio5
 
 #fill in arguments and execute function
-model_woody2 <- phyloglm(formula = woody_best_model2, data = GIS_woody, phy = tree_woody, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
+model_woody2 <- phyloglm(formula = woody_best_model2, data = GIS_woody, phy = tree_woody, 
+                         method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
 
 summary(model_woody2)
 ```
 
 ### Define final model
 ```{r}
-final_model_woody <- woody ~ 1.78041 - 2.20071*monthCountByTemp10 + 0.28208*PETWettestQuarter + 1.28682*OrganicCarbon - 1.07275*PhCaCL - 0.98976*Slope + 1.48267*bio5
+final_model_woody <- woody ~ 1.78041 - 2.20071*monthCountByTemp10 + 0.28208*PETWettestQuarter 
++ 1.28682*OrganicCarbon - 1.07275*PhCaCL - 0.98976*Slope + 1.48267*bio5
 ```
 
 ## 8 Model evaluation
 
-This is needed to see whether the best models we constructed, are still in compliance with the assumptions that have to be met when performing a GLM. There is a package that can do this for you, called 'performance'. We'll do a comprehensive model check, with function 'check_model()'. However, this function is not appropriate for models that include a phylogeny, so in this case, a phyloGLM is not seen as a subclass of GLMs. We will still do it while keeping out the phylogeny, but keep in mind this might result in skewed interpretation.
+This is needed to see whether the best models we constructed, are still in compliance with the 
+assumptions that have to be met when performing a GLM. There is a package that can do this for you, 
+called 'performance'. We'll do a comprehensive model check, with function 'check_model()'. However, 
+this function is not appropriate for models that include a phylogeny, so in this case, a phyloGLM 
+is not seen as a subclass of GLMs. We will still do it while keeping out the phylogeny, but keep 
+in mind this might result in skewed interpretation.
 
 ```{r}
 #install and load required package 
@@ -233,7 +257,8 @@ library(see)
 library(gridExtra)
 
 #construct model without phylogeny
-model_check_woody <- glm(woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5, data = GIS_woody, family = binomial())
+model_check_woody <- glm(woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon 
+                         + PhCaCL + Slope + bio5, data = GIS_woody, family = binomial())
 
 #check model
 check_model(model_check_woody)
@@ -332,5 +357,5 @@ boxplot(GIS_filtered_woody$bio5,GIS_filtered_non_woody$bio5,
 
 ## 10 Biological interpretation
 
-In the end, the final models and the predictor variables that are included will have to be interpreted biologically. 
-With this knowledge, the thesis can be completed. 
+In the end, the final models and the predictor variables that are included will have to be 
+interpreted biologically. With this knowledge, the thesis can be completed. 
