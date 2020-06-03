@@ -153,8 +153,8 @@ library(usdm)
 vif(GIS_myco[,c(3:43)])
 
 #choose the variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, results in:
-# 10c. With BIO8, BIO9, and climaticMoistureIndex
-vif(GIS_myco[,c(3:5, 8, 22:24, 27, 32, 33, 38, 39, 43)])
+# 3. With continentality
+vif(GIS_myco[,c(3:5, 7, 9, 14, 20, 22:24, 26, 39, 42, 43)])
 ```
 
 ## 6 Model selection: Define formula and select model 
@@ -166,11 +166,8 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis.
 Only the formulas that result in the best models are shown, see "Model_selection_crops_elaborated" for all the used formulas. 
 ```{r define formula}
-# Formula 2. With embergerQ (alpha warning, AIC 1026,5)
-myco_formula_2 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 
-
-# Formula 4. With continentality (no alpha warning, AIC 1037,3)
-myco_formula_4 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18 + bio19
+# Formula 3. With continentality (alpha warning, AIC 1026,5) (no alpha warning AIC 1037,3)
+myco_formula_3 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18 + bio19
 ```
 NB: Both these formulas can be used, they result in the same final model. 
 
@@ -197,9 +194,18 @@ library(phylolm)
 source('phyloglmstep.R')
 
 #fill in arguments and execute function
-phyloglmstep(myco_formula_4, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
+## no alpha warning
+phyloglmstep(myco_formula_3, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
                          method="logistic_MPLE",
                          direction = "both", trace = 0,
+                         btol = 100, log.alpha.bound = 8, start.beta=NULL, 
+                         start.alpha=NULL, boot = 0, full.matrix = TRUE,
+                         k=2)
+
+## alpha warning
+phyloglmstep(myco_formula_3, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
+                         method="logistic_MPLE",
+                         direction = "forward", trace = 0,
                          btol = 100, log.alpha.bound = 8, start.beta=NULL, 
                          start.alpha=NULL, boot = 0, full.matrix = TRUE,
                          k=2)
@@ -213,6 +219,7 @@ There is a function in the phylolm package that allows us to do this: phyloglm.
 ```{r phylogenetic generalized linear modelling}
 #construct model
 myco_best_model_alpha <- mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15
+
 myco_best_model_no_alpha <- mycorrhiza ~ 1 + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + bio2 + bio15 + bio19
 
 #fill in the arguments for the phyloglm function and execute it

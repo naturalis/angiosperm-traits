@@ -223,8 +223,8 @@ library(usdm)
 vif(GIS_crops[,c(3:43)])
 
 #choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
-# 11a. With aridityIndexThornthwaite
-vif(GIS_crops[,c(3:5, 7, 9, 14, 19, 20, 22:24, 37, 43)]) 
+# 4a. With bio4
+vif(GIS_crops[,c(3:5, 14, 19, 20, 22:24, 28, 37, 39, 43)]) 
 ```
 
 ## 7 Model selection: Define input formulas and perform model selection 
@@ -236,7 +236,7 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
 Only the formulas that result in the best models are shown, see "Model_selection_crops_elaborated" for all the used formulas. 
 ```{r define formula}
-# Formula 4. With BIO4
+# Formula 4a. With BIO4
 crops_formula_4a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio13 + bio15 + bio19
 ```
 

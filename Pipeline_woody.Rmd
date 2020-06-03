@@ -142,7 +142,7 @@ library(usdm)
 vif(GIS_woody[,c(3:43)])
 
 #choose variables to delete that have a higher VIF value than 10, but make sure it makes sense in terms of biology, resulting in:
-# 24a. With bio5
+# 22a. With bio5
 vif(GIS_woody[,c(3:5, 15, 17, 20, 22:24, 26, 29, 38, 39, 42, 43)])
 ```
 
@@ -155,8 +155,8 @@ GIS data frames as the predictor variables. The function phylostep of the phylol
 Define the formulas that will be used as input formula in the phylostep function, based on the results of the VIF analysis. 
 Only the formula that results in the best model is shown, see "Model_selection_crops_elaborated" for all the used formulas. 
 ```{r define formula}
-# 24a. With bio5
-woody_formula_24a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
+# 22a. With bio5
+woody_formula_22a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
 ```
 
 ### Change data to match the wanted data format
