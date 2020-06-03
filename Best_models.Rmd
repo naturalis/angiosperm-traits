@@ -56,7 +56,7 @@ check_model(model_check_woody)
 ### a. Best model formula
 ```{r}
 #construct best model
-crops_best_model2 <- domestication ~ 1 + ClayPercentage + PETWarmestQuarter 
+dom_best_model2 <- domestication ~ 1 + ClayPercentage + PETWarmestQuarter 
 ```
 
 ### b. Model optimization 
@@ -66,14 +66,14 @@ To optimize the model, the phyloglm function is used.
 library(phylolm)
 
 #fill in the arguments and execute it
-model_crops2 <- phyloglm(formula = crops_best_model2, data = GIS_crops, phy = tree_crops, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
+model_dom2 <- phyloglm(formula = dom_best_model2, data = GIS_dom, phy = tree_dom, method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
 
-summary(model_crops2) 
+summary(model_dom2) 
 ```
 
 ### c. Final model
 ```{r}
-final_model_crops <- domestication ~ - 1.90666 + 2.32367*ClayPercentage + 2.00246*PETWarmestQuarter 
+final_model_dom <- domestication ~ - 1.90666 + 2.32367*ClayPercentage + 2.00246*PETWarmestQuarter 
 ```
 
 ### d. Model performance
@@ -85,10 +85,10 @@ library(see)
 library(gridExtra)
 
 #construct model without phylogeny
-model_check_crops <- glm(domestication ~ 1 + ClayPercentage + PETWarmestQuarter, data = GIS_crops, family = binomial())
+model_check_dom <- glm(domestication ~ 1 + ClayPercentage + PETWarmestQuarter, data = GIS_dom, family = binomial())
 
 #execute function
-check_model(model_check_crops)
+check_model(model_check_dom)
 ```
 
 ## 3. Mycorrhiza
@@ -137,6 +137,6 @@ Just for fun, see which model performs best.
 
 ```{r}
 # Compare models
-compare_performance(final_model_woody, final_model_crops, final_model_myco, rank = TRUE)
+compare_performance(final_model_woody, final_model_dom, final_model_myco, rank = TRUE)
 ```
 

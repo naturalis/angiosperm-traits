@@ -1,0 +1,181 @@
+---
+title: "Model_selection_dom"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Model selection domestication
+
+The linear model will have to be made, with the trait-presence-column as the dependent variable, and the 
+GIS data frames as the predictor variables. The function phylostep of the phylolm package will be used. 
+
+## Define formulas 
+
+### First set of model formuals
+Based on the hypothesis. 
+
+```{r}
+# 0. Starting formula
+dom_starting_formula <- domestication ~ 1 
+
+# 1. Lowest VIF value
+dom_formula_1 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 2. With PETseasonality
+dom_formula_2 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio15 + bio16 + bio19
+
+# 3. With BIO2
+dom_formula_3 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio13 + bio14 + bio19
+
+# 4. With BIO4
+dom_formula_4a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio13 + bio15 + bio19
+dom_formula_4b <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio16 + bio19
+dom_formula_4c <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio15 + bio18 + bio19
+
+# 5. With bio5 
+dom_formula_5 <- domestication ~ Aspect + BulkDensity + ClayPercentage + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio13 + bio14 + bio19
+
+# 6. With bio6
+dom_formula_6 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6  + bio13 + bio14 + bio19
+
+# 7. With bio7 
+dom_formula_7 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio7 + bio14 + bio19
+
+# 8. BIO15
+dom_formula_8a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio7 + bio13 + bio15
+dom_formula_8b <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio15 + bio19
+```
+
+### Second set of model formulas 
+The rest of the variables that were not included yet. 
+
+```{r}
+# 9. With annualPET (6)
+dom_formula_9 <- domestication ~ Aspect + BulkDensity + ClayPercentage + annualPET + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 10. With aridityIndexThornthwaite 
+dom_formula_10a <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
+dom_formula_10b <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + maxTempColdest + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
+dom_formula_10c <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio19
+dom_formula_10d <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio7 + bio13 + bio19
+dom_formula_10e <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio13 + bio19
+dom_formula_10f <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio6 + bio13 + bio19
+dom_formula_10g <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio9 + bio13 + bio19
+dom_formula_10h <- domestication ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio11 + bio13 + bio19
+
+# 11. With climaticMoistureIndex 
+dom_formula_11 <- domestication ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+
+# 12. With continentality
+dom_formula_12 <- domestication ~ Aspect + BulkDensity + ClayPercentage + continentality + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 13. With embergerQ 
+dom_formula_13a <- domestication ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio18
+dom_formula_13b <- domestication ~ Aspect + BulkDensity + ClayPercentage + continentality + embergerQ + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope
+dom_formula_13c <- domestication ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope
+dom_formula_13d <- domestication ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4
+dom_formula_13e <- domestication ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio7
+dom_formula_13f <- domestication ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13
+dom_formula_13g <- domestication ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio15
+dom_formula_13h <- domestication ~ Aspect + BulkDensity + ClayPercentage + embergerQ + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio16
+
+# 14. With growingDegDays0 
+dom_formula_14a <- domestication ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + growingDegDays0 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+dom_formula_14b <- domestication ~ Aspect + BulkDensity + ClayPercentage + growingDegDays0 + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+dom_formula_14c <- domestication ~ Aspect + BulkDensity + ClayPercentage + growingDegDays0 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio19
+
+# 15. With growingDegDays5
+dom_formula_15a <- domestication ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + growingDegDays5 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+dom_formula_15b <- domestication ~ Aspect + BulkDensity + ClayPercentage + growingDegDays5 + minTempWarmest + PETWarmestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+dom_formula_15c <- domestication ~ Aspect + BulkDensity + ClayPercentage + growingDegDays5 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio19
+
+# 16. With maxTempColdestMonth 
+dom_formula_16 <- domestication ~ Aspect + BulkDensity + ClayPercentage + maxTempColdest + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 17. With monthCountByTemp10
+dom_formula_17 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + monthCountByTemp10 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 18. With PETColdestQuarter 
+dom_formula_18 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETColdestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio13 + bio14 + bio19
+
+# 19. With PETWarmestQuarter 
+dom_formula_19 <- domestication ~ Aspect + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14
+
+# 20. PETWettestQuarter
+dom_formula_20 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio13 + bio14 + bio19
+
+# 21. With thermicityIndex
+dom_formula_21a <- domestication ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+dom_formula_21b <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio14 + bio19
+dom_formula_21c <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio19
+
+# 22. With bio1
+dom_formula_22a <- domestication ~ Aspect + BulkDensity + ClayPercentage + climaticMoistureIndex + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio1 + bio14 + bio19
+dom_formula_22b <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio1 + bio14 + bio19
+dom_formula_22c <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio1 + bio2 + bio14 + bio19
+
+# 23. With bio3 
+dom_formula_23a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio3 + bio13 + bio14 + bio19
+dom_formula_23b <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio3 + bio13 + bio14 + bio19
+
+# 24. With bio8 
+dom_formula_24 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio8 + bio13 + bio14 + bio19
+
+# 25. With bio9 
+dom_formula_25 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio9 + bio13 + bio14 + bio19
+
+# 26. With bio10 
+dom_formula_26 <- domestication ~ Aspect + BulkDensity + ClayPercentage + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio10 + bio13  + bio14 + bio19
+
+# 27. With bio11
+dom_formula_27 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio11  + bio13 + bio14 + bio19
+
+# 28. With bio12 
+dom_formula_28 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio12 + bio19
+
+# 29. With bio16 
+dom_formula_29 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio16 + bio19
+
+# 30. With bio17
+dom_formula_30 <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio13 + bio17
+
+# 31. With bio18 
+dom_formula_31a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio14 + bio18
+dom_formula_31b <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio18
+```
+
+## Change data to match the wanted data format
+
+There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
+the row names have to match the tip.lables of the tree, and secondly the trait value (0/1) has to be
+seen as a numeric value. 
+```{r}
+#make allmb_name column into the row names of this table
+rownames(GIS_dom) <- GIS_dom[,1]
+GIS_dom[,1] <- NULL
+
+#make sure the values in the 'woody' column are seen as numeric values
+GIS_dom$domestication <- as.numeric(GIS_dom$domestication)
+#check whether it worked
+is.numeric(GIS_dom$domestication)
+```
+
+## Perform model selection
+With the phyloglmstep() function by Rutger Vos.
+
+```{r}
+#source function and load required package
+library(phylolm)
+source('phyloglmstep.R')
+
+#fill in arguments and execute function
+phyloglmstep(dom_formula_4a, starting.formula = NULL, data=GIS_dom, phy=tree_dom, 
+                         method="logistic_MPLE",
+                         direction = "forward", trace = 0,
+                         btol = 100, log.alpha.bound = 8, start.beta=NULL, 
+                         start.alpha=NULL, boot = 0, full.matrix = TRUE,
+                         k=2)
+```

@@ -238,28 +238,28 @@ The variables that are left are: ClayPercentage and PETWarmestQuarter.
 #### Trim raw_means for domestication
 ```{r}
 #trim data frame
-raw_means_crops <- raw_means[row.names(raw_means) %in% keep_tips_crops,]
-combined_crops <- merge(raw_means_crops, GIS_crops, by = 0)
-row.names(combined_crops) <- combined_crops$Row.names
-combined_crops[,1] <- NULL
+raw_means_dom <- raw_means[row.names(raw_means) %in% keep_tips_dom,]
+combined_dom <- merge(raw_means_dom, GIS_dom, by = 0)
+row.names(combined_dom) <- combined_dom$Row.names
+combined_dom[,1] <- NULL
 ```
 
 #### ClayPercentage
 ```{r}
 #define two variables
-ClayPercentage_RAW_crops <- combined_crops$ClayPercentage.x
-ClayPercentage_OMI_crops <- combined_crops$ClayPercentage.y
+ClayPercentage_RAW_dom <- combined_dom$ClayPercentage.x
+ClayPercentage_OMI_dom <- combined_dom$ClayPercentage.y
 
 #plot against each other
-plot(ClayPercentage_OMI_crops, ClayPercentage_RAW_crops)
-abline(lm(ClayPercentage_RAW_crops ~ ClayPercentage_OMI_crops))
+plot(ClayPercentage_OMI_dom, ClayPercentage_RAW_dom)
+abline(lm(ClayPercentage_RAW_dom ~ ClayPercentage_OMI_dom))
 ```
 
 #### PETWarmestQuarter
 ```{r}
 #define two variables
-PETWarmestQuarter_RAW <- combined_crops$PETWarmestQuarter.x
-PETWarmestQuarter_OMI <- combined_crops$PETWarmestQuarter.y
+PETWarmestQuarter_RAW <- combined_dom$PETWarmestQuarter.x
+PETWarmestQuarter_OMI <- combined_dom$PETWarmestQuarter.y
 
 #plot against each other
 plot(PETWarmestQuarter_OMI, PETWarmestQuarter_RAW)
