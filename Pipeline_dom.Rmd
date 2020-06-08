@@ -247,7 +247,7 @@ vif(GIS_dom[,c(3:43)])
 
 #choose a variable to delete that has a higher VIF value than 10, but make sure it makes sense 
 #in terms of biology, resulting in:
-# 4a. With bio4
+# 6a. With bio4
 vif(GIS_dom[,c(3:5, 14, 19, 20, 22:24, 28, 37, 39, 43)]) 
 ```
 
@@ -263,8 +263,8 @@ results of the VIF analysis. Only the formulas that result in the best models ar
 "Model_selection_dom_elaborated" for all the used formulas. 
 
 ```{r define formula}
-# Formula 4a. With BIO4
-dom_formula_4a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest 
+# Formula 6a. With BIO4
+dom_formula_6a <- domestication ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest 
 + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio13 
 + bio15 + bio19
 ```
@@ -292,7 +292,7 @@ library(phylolm)
 source('phyloglmstep.R')
 
 #fill in arguments and execute function
-phyloglmstep(dom_formula_4a, starting.formula = NULL, data=GIS_dom, phy=tree_dom, 
+phyloglmstep(dom_formula_6a, starting.formula = NULL, data=GIS_dom, phy=tree_dom, 
              method="logistic_MPLE", direction = "both", trace = 0,btol = 100, 
              log.alpha.bound = 8, start.beta=NULL, start.alpha=NULL, boot = 0, 
              full.matrix = TRUE, k=2)
