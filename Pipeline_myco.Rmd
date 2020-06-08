@@ -161,8 +161,11 @@ vif(GIS_myco[,c(3:43)])
 
 #choose the variables to delete that have a higher VIF value than 10, but make sure it makes 
 #sense in terms of biology, results in:
-# 3. With continentality
+# 3. With continentality (no alpha warning)
 vif(GIS_myco[,c(3:5, 7, 9, 14, 20, 22:24, 26, 39, 42, 43)])
+
+# 4. With embergerQ (alpha warning)
+vif(GIS_myco[,c(3:5, 7, 10, 14, 20, 22:24, 26, 28, 39, 42)])
 ```
 
 ## 6 Model selection: Define formula and select model 
@@ -177,12 +180,14 @@ results of the VIF analysis. Only the formulas that result in the best models ar
 "Model_selection_crops_elaborated" for all the used formulas. 
 
 ```{r define formula}
-# Formula 3. With continentality (alpha warning, AIC 1026,5) (no alpha warning AIC 1037,3)
+# Formula 3. With continentality (no alpha warning AIC 1037,3)
 myco_formula_3 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite 
 + continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 
 + bio15 + bio18 + bio19
+
+# Formula 4. With embergerQ (alpha warning, AIC 1026,5) 
+myco_formula_4 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18
 ```
-NB: Both these formulas can be used, they result in the same final model. 
 
 ### Change data to match the wanted data format
 There are some flaws in the GIS data frame that make it unfit for the phylostep function. First of all
@@ -208,13 +213,13 @@ source('phyloglmstep.R')
 
 #fill in arguments and execute function
 ## no alpha warning
-phyloglmstep(myco_formula_4a, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
+phyloglmstep(myco_formula_3, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
              method="logistic_MPLE", direction = "both", trace = 0, btol = 100, 
              log.alpha.bound = 8, start.beta=NULL, start.alpha=NULL, boot = 0, 
              full.matrix = TRUE, k=2)
 
 ## alpha warning
-phyloglmstep(myco_formula_3, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
+phyloglmstep(myco_formula_4, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
              method="logistic_MPLE", direction = "forward", trace = 0, btol = 100, 
              log.alpha.bound = 8, start.beta=NULL, start.alpha=NULL, boot = 0, 
              full.matrix = TRUE, k=2)
@@ -228,17 +233,21 @@ do this: phyloglm.
 
 ```{r phylogenetic generalized linear modelling}
 #construct model
-myco_best_model_alpha <- mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15
-
 myco_best_model_no_alpha <- mycorrhiza ~ 1 + BulkDensity + ClayPercentage + minTempWarmest 
 + PETWettestQuarter + OrganicCarbon + PhCaCL + bio2 + bio15 + bio19
 
+myco_best_model_alpha <- mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15
+
 #fill in the arguments for the phyloglm function and execute it
+model_myco <- phyloglm(formula = myco_best_model_no_alpha, data = GIS_myco, phy = tree_myco, 
+                       method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
+summary(model_myco)
+
 model_myco <- phyloglm(formula = myco_best_model_alpha, data = GIS_myco, phy = tree_myco, 
                        method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
-
 summary(model_myco)
 ```
+Conclusion: Both these formulas can be used, they result in the same final model. 
 
 ### Define final model
 ```{r}
