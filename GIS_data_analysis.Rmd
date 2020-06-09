@@ -24,7 +24,22 @@ library(stringi)
 raw_names <- as.character(unlist(c(raw_means[1])))
 raw_names <- stri_replace_all_charclass(raw_names, "\\p{WHITE_SPACE}", "_")
 raw_means$X <- raw_names
+```
 
+## The range of woodiness-associated plants for monthCountByTemp10
+```{r}
+#select the woody taxa that should be kept in the raw_means file
+keep_raw_woody <- as.character(unlist(c(woody_tsv_bi[1])))
+#define the raw_means file for woodiness
+raw_woody <- raw_means[raw_means$X %in% keep_raw_woody,]
+
+#sort the table based on the monthCountByTemp10 variable
+```
+Highest value: 12
+Lowest value: 0,48
+
+## Set species names as row names
+```{r}
 #set species names as row names
 row.names(raw_means) <- raw_means$X
 raw_means[,1] <- NULL
