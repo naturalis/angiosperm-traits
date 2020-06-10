@@ -367,8 +367,9 @@ All variables have low correlation.
 
 ## 9 Plot results
 
-The results are plotted in the form of boxplots that show the differences between the variable
+The results are plotted in the form of boxplots that show the differences between the variables.
 
+### OMI-transformed GIS data boxplots
 ```{r boxplots}
 #load required package
 library(dplyr)

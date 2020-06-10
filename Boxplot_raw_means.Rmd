@@ -1,0 +1,123 @@
+---
+title: "Boxplots_raw_means"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Domestication
+
+## Load domestication GIS data
+```{r define data root and import tree}
+library(ape)
+project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
+tree_file <- paste(c(project_root, 'ALLMB.tre'), collapse = '')
+tree <- read.tree(tree_file)
+dom_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/crops.tsv'), collapse = '')
+dom_tsv <- read.table(dom_tsv_file, sep = '\t', header = TRUE)
+dom_1_3 <- subset(dom_tsv, (dom_tsv$domestication == 1 | dom_tsv$domestication == 3))
+dom_1_3$domestication_binary[dom_1_3$domestication == "1"] <- "1"
+GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
+GIS <- read.table(GIS_file, sep = ',', header = TRUE)
+library(stringi)
+GIS_names <- as.character(unlist(c(GIS[1])))
+GIS_names <- gsub('  ', '. ', GIS_names)
+GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
+GIS_names[GIS_names == "Acaena_novae_zelandiae"] <- "Acaena_novae-zelandiae"
+GIS_names[GIS_names == "Impatiens_noli_tangere"] <- "Impatiens_noli-tangere"  
+GIS_names[GIS_names == "Myrrhidendron_donnell_smithii" ] <- "Myrrhidendron_donnell-smithii" 
+GIS_names[GIS_names == "Silene_flos_cuculi"] <- "Silene_flos-cuculi"
+GIS_names[GIS_names == "Pithecellobium_unguis_cati"] <- "Pithecellobium_unguis-cati"
+GIS_names[GIS_names == "Hyacinthoides_non_scripta" ] <- "Hyacinthoides_non-scripta" 
+GIS_names[GIS_names == "Alisma_plantago_aquatica"] <- "Alisma_plantago-aquatica" 
+GIS_names[GIS_names == "Apera_spica_venti"] <- "Apera_spica-venti"
+GIS_names[GIS_names == "Arctostaphylos_uva_ursi"] <- "Arctostaphylos_uva-ursi"
+GIS_names[GIS_names == "Blitum_bonus_henricus"] <- "Blitum_bonus-henricus"
+GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
+GIS$allmb_name <- GIS_names
+tips_to_drop_GIS <- setdiff(tree$tip.label, GIS_names)
+GIS_tree <- drop.tip(tree, tips_to_drop_GIS)
+GIS_names[GIS_names == "Zea_mays_subsp._parviglumis"] <- "Zea_mays"
+GIS$allmb_name <- GIS_names
+dom_1_3$allmb_name[dom_1_3$allmb_name == "Zea_mays_subsp._parviglumis"] <- "Zea_mays"
+keep_tips_dom_1_3 <- as.character(unlist(c(dom_1_3[1]))) 
+tips_to_drop_dom <- setdiff(GIS_tree$tip.label, keep_tips_dom_1_3)
+tree_dom_tsv <- drop.tip(GIS_tree, tips_to_drop_dom)
+dom_names <- as.character(unlist(c(tree_dom_tsv$tip.label)))
+allmb_name <- c("Euphorbia_usambarica", "Calycophysum_pedunculatum", "Ibervillea_sonorae", 
+                "Psiguria_triphylla", "Gurania_eriantha", "Doyerea_emetocathartica", 
+                "Ficus_pandurata", "Fissicalyx_fendleri", "Dendrosida_sharpiana_subsp._pubescens", 
+                "Ipomoea_arborescens", "Heliconia_psittacorum", "Tradescantia_zebrina", 
+                "Amischotolype_hispida", "Scleria_gaertneri", "Festuca_arundinacea_subsp._orientalis", 
+                "Pogonarthria_squarrosa", "Digitaria_ischaemum", "Digitaria_violascens", 
+                "Elymus_repen", "Aegilops_cylindrica", "Aegilops_crassa", "Elymus_elongatus", 
+                "Poa_colensoi", "Molineria_capitulata", "Polygonatum_verticillatum", 
+                "Epipactis_helleborine", "Evodianthus_funifer", "Schoenoplectus_pungens_var._badius", 
+                "Helictotrichon_desertorum_subsp._basalticum","Eleocharis_acutangula_subsp._breviseta",
+                "Raddiella_esenbeckii", "Dienia_ophrydis", "Arum_maculatum", "Calla_palustris")
+dom_state0 <- data.frame(allmb_name)
+dom_state0$gbif_species_key <- "NA"
+dom_state0$domestication <- "0"
+dom_state0$progenitor_of <- "NA"
+dom_state0$domestication_binary <- "0"
+dom_bi <- rbind(dom_1_3, dom_state0)  
+GIS_dom_1 <- dom_1_3[dom_1_3$allmb_name %in% GIS$allmb_name,]
+GIS_dom_0 <- dom_state0[dom_state0$allmb_name %in% GIS$allmb_name,]
+```
+
+### Raw means GIS data boxplots
+```{r boxplots}
+#load required package
+library(dplyr)
+
+#load raw_means data
+raw_means_file <- paste(c(project_root, 'angiosperm-traits/raw_means.csv'), collapse = '')
+raw_means <- read.table(raw_means_file, sep = ',', header = TRUE)
+raw_names <- as.character(unlist(c(raw_means[1])))
+raw_names <- stri_replace_all_charclass(raw_names, "\\p{WHITE_SPACE}", "_")
+raw_means$X <- raw_names
+
+#make subselection of raw_means data
+keep_raw_dom <- as.character(unlist(c(dom_bi[1])))
+raw_dom <- raw_means[raw_means$X %in% keep_raw_dom,]
+
+#insert domestication column (state 0/1)
+raw_dom$domestication[raw_dom$X %in% GIS_dom_1$allmb_name] <- "1"
+raw_dom$domestication[raw_dom$X %in% GIS_dom_0$allmb_name] <- "0"
+
+#define two subsets
+raw_filtered_non_predom <- raw_dom %>%
+    select(domestication, ClayPercentage, PETWarmestQuarter) %>%
+    subset(domestication == 0)
+raw_filtered_predom <- raw_dom %>%
+    select(domestication, ClayPercentage, PETWarmestQuarter) %>%
+    subset(domestication == 1)
+
+#change margins
+par(mar=c(3,12,3,3))
+
+#make boxplots
+boxplot(raw_filtered_predom$ClayPercentage,raw_filtered_non_predom$ClayPercentage,
+    main = "Clay percentage",
+    at = c(1,2),
+    names = c("preadapted for domestication", "not domesticated"),
+    las = 2,
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
+    horizontal = TRUE,
+    notch = TRUE
+)
+
+boxplot(raw_filtered_predom$PETWarmestQuarter,raw_filtered_non_predom$PETWarmestQuarter,
+    main = "Mean monthly potential evapotranspiration of warmest quarter",
+    at = c(1,2),
+    names = c("preadapted for domestication", "not domesticated"),
+    las = 2,
+    col = c("cornflowerblue","lightcoral"),
+    border = "gray29",
+    horizontal = TRUE,
+    notch = TRUE
+)
+```
+
