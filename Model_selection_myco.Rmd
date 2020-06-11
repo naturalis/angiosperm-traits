@@ -135,7 +135,7 @@ library(phylolm)
 source('phyloglmstep.R')
 
 #fill in arguments and execute function
-phyloglmstep(myco_formula_4, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
+phyloglmstep(myco_formula_3, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
                          method="logistic_MPLE",
                          direction = "both", trace = 0,
                          btol = 100, log.alpha.bound = 8, start.beta=NULL, 

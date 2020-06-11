@@ -1,4 +1,12 @@
 ---
+title: "Alternative_mycorrhiza_analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+---
 title: "Pipeline_myco"
 output: html_document
 ---
@@ -49,14 +57,12 @@ the rest together (1). So in this case nothing will be eliminated from the analy
 have to be collapsed together. 
 
 ```{r collapse state 1, 2 and 3}
-#create new column
-myco_tsv["myco_state_int"] <- NA
+#only keep AM and EM
+myco_tsv <- subset(myco_tsv, (myco_tsv$myco_state == "arbuscular" | myco_tsv$myco_state == "ecto"))
 
-#add binary values to column based on names 
+#create new column and add binary values to column based on names 
 myco_tsv$myco_state_int[myco_tsv$myco_state == "arbuscular"] <- "0"
 myco_tsv$myco_state_int[myco_tsv$myco_state == "ecto"] <- "1"
-myco_tsv$myco_state_int[myco_tsv$myco_state == "both"] <- "1"
-myco_tsv$myco_state_int[myco_tsv$myco_state == "neither"] <- "1"
 
 #now myco_tsv contains an added column with binary state values
 ```
@@ -180,13 +186,11 @@ results of the VIF analysis. Only the formulas that result in the best models ar
 "Model_selection_crops_elaborated" for all the used formulas. 
 
 ```{r define formula}
-# Formula 3. With continentality (no alpha warning AIC 1037,3)
-myco_formula_3 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite 
-+ continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 
-+ bio15 + bio18 + bio19
+# Formula 3. With ... (no alpha warning AIC 1037,3)
+myco_formula_
 
-# Formula 4. With embergerQ (alpha warning, AIC 1026,5) 
-myco_formula_4 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18
+# Formula 4. With ... (alpha warning, AIC 1026,5) 
+myco_formula_
 ```
 
 ### Change data to match the wanted data format
@@ -220,7 +224,7 @@ phyloglmstep(myco_formula_3, starting.formula = NULL, data=GIS_myco, phy=tree_my
 
 ## alpha warning
 phyloglmstep(myco_formula_4, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
-             method="logistic_MPLE", direction = "both", trace = 0, btol = 100, 
+             method="logistic_MPLE", direction = "forward", trace = 0, btol = 100, 
              log.alpha.bound = 8, start.beta=NULL, start.alpha=NULL, boot = 0, 
              full.matrix = TRUE, k=2)
 ```
@@ -233,12 +237,12 @@ do this: phyloglm.
 
 ```{r phylogenetic generalized linear modelling}
 #construct model
-myco_best_model_no_alpha <- mycorrhiza ~ 1 + BulkDensity + ClayPercentage + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + bio2 + bio15 + bio19
+myco_best_model <- mycorrhiza ~ 1 + Aspect + BulkDensity + PETWettestQuarter + OrganicCarbon + bio15 + bio18
 
 myco_best_model_alpha <- mycorrhiza ~ 1 + ClayPercentage + bio2 + bio15
 
 #fill in the arguments for the phyloglm function and execute it
-model_myco <- phyloglm(formula = myco_best_model_no_alpha, data = GIS_myco, phy = tree_myco, 
+model_myco <- phyloglm(formula = myco_best_model, data = GIS_myco, phy = tree_myco, 
                        method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
 summary(model_myco)
 
