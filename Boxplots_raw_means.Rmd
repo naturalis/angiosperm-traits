@@ -103,7 +103,7 @@ raw_filtered_predom <- raw_dom %>%
     subset(domestication == 1)
 
 #change margins
-par(mar=c(3,12,3,3))
+par(mar=c(3,12,3,4))
 
 #make boxplots
 boxplot(raw_filtered_predom$ClayPercentage,raw_filtered_non_predom$ClayPercentage,
@@ -118,7 +118,7 @@ boxplot(raw_filtered_predom$ClayPercentage,raw_filtered_non_predom$ClayPercentag
 )
 
 boxplot(raw_filtered_predom$PETWarmestQuarter,raw_filtered_non_predom$PETWarmestQuarter,
-    main = "Mean monthly potential evapotranspiration of warmest quarter",
+    main = "Mean monthly PET of warmest quarter",
     at = c(1,2),
     names = c("preadapted for domestication", "not domesticated"),
     las = 2,
@@ -185,7 +185,7 @@ boxplot(raw_filtered_EM$ClayPercentage,raw_filtered_AM$ClayPercentage,
 )
 
 boxplot(raw_filtered_EM$bio2,raw_filtered_AM$bio2,
-    main = "Mean diurnal range (mean of monthly (max temp - min temp))",
+    main = "Mean diurnal range (mean of monthly max - min temp)",
     at = c(1,2),
     names = c("ectomycorrhiza", "arbuscular mycorrhiza"),
     las = 2,
@@ -250,7 +250,7 @@ par(mar=c(3,7,3,3))
 
 #make boxplots
 boxplot(raw_filtered_woody$monthCountByTemp10,raw_filtered_non_woody$monthCountByTemp10,
-    main = "Number of months with mean temp greater than 10 degrees C",
+    main = "Number of months with mean temp greater than 10°C",
     at = c(1,2),
     names = c("derived woody", "herbaceous"),
     las = 2,
@@ -260,7 +260,7 @@ boxplot(raw_filtered_woody$monthCountByTemp10,raw_filtered_non_woody$monthCountB
     notch = TRUE
 )
 boxplot(raw_filtered_woody$PETWettestQuarter,raw_filtered_non_woody$PETWettestQuarter,
-    main = "Mean monthly potential evapotranspiration of wettest quarter",
+    main = "Mean monthly PET of wettest quarter",
     at = c(1,2),
     names = c("derived woody", "herbaceous"),
     las = 2,
