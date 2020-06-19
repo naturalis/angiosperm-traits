@@ -60,11 +60,10 @@ raw_EM <- raw_myco_full %>%
 raw_EM <- na.omit(raw_EM)
 
 # calculate hypervolume
-hv.AM <- hypervolume(raw_AM, method = 'svm', name = 'AM', svm.nu = 0.001)
-hv.EM <- hypervolume(raw_EM, method = 'svm', name = 'EM',  svm.nu = 0.001)
-
-hv.list <- hypervolume_join(hv.AM,hv.EM)
-plot(hv.list,show.3d = F)
+hv.AM <- hypervolume(raw_AM, method = 'svm', name = 'Arbuscular mycorrhiza', svm.nu = 0.001)
+hv.EM <- hypervolume(raw_EM, method = 'svm', name = 'Ectomycorrhiza, both, and neither',  svm.nu = 0.001)
+hv.list.myco <- hypervolume_join(hv.AM,hv.EM)
+plot(hv.list.myco, show.3d = F, cex.names = 1.5, cex.legend = 2)
 ```
 
 ## Load domestication GIS data
@@ -122,12 +121,10 @@ raw_predom <- raw_dom_full %>%
     select(ClayPercentage, PETWarmestQuarter) 
 
 # calculate hypervolume
-hv.non.predom <- hypervolume(raw_non_predom, method = 'svm', name = 'non predomesticated', svm.nu = 0.001)
-hv.predom <- hypervolume(raw_predom, method = 'svm', name = 'predomesticated',  svm.nu = 0.001)
-
-hv.list <- hypervolume_join(hv.non.predom,hv.predom)
-plot(hv.list,show.3d = F)
-plot(hv.list,show.3d = T)
+hv.non.predom <- hypervolume(raw_non_predom, method = 'svm', name = 'Non domesticated', svm.nu = 0.001)
+hv.predom <- hypervolume(raw_predom, method = 'svm', name = 'Pre-adapted for domesticated',  svm.nu = 0.001)
+hv.list.dom <- hypervolume_join(hv.non.predom,hv.predom)
+dom.2D <- plot(hv.list.dom, show.3d = F, cex.names = 1.5, cex.legend = 2)
 ```
 
 ## Load derived woodiness GIS data
@@ -156,18 +153,16 @@ raw_woody_full$woody[raw_woody_full$X %in% GIS_woody_0$allmb_name] <- "0"
 #define two subsets
 raw_non_woody <- raw_woody_full %>%
     subset(woody == 0) %>% 
-    select(monthCountByTemp10, PETWettestQuarter, OrganicCarbon,
-    PhCaCL, Slope, bio5)
+    select(monthCountByTemp10, PhCaCL, Slope)
+raw_non_woody <- na.omit(raw_non_woody)
 raw_woody <- raw_woody_full %>%
     subset(woody == 1) %>%
-    select(monthCountByTemp10, PETWettestQuarter, OrganicCarbon,
-    PhCaCL, Slope, bio5) 
+    select(monthCountByTemp10, PhCaCL, Slope) 
 
 # calculate hypervolume
-hv.non.woody <- hypervolume(raw_non_woody, method = 'svm', name = 'non woody', svm.nu = 0.001)
-hv.woody <- hypervolume(raw_woody, method = 'svm', name = 'woody',  svm.nu = 0.001)
+hv.non.woody <- hypervolume(raw_non_woody, method = 'svm', name = 'Herbaceous', svm.nu = 0.001)
+hv.woody <- hypervolume(raw_woody, method = 'svm', name = 'Derived woody',  svm.nu = 0.001)
 
-hv.list <- hypervolume_join(hv.non.woody,hv.woody)
-plot(hv.list,show.3d = F)
-plot(hv.list,show.3d = T)
+hv.list.woody <- hypervolume_join(hv.non.woody,hv.woody)
+plot(hv.list.woody, show.3d = F, cex.names = 1.5, cex.legend = 2)
 ```
