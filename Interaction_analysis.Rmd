@@ -1,0 +1,173 @@
+---
+title: "Interaction_analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load hypervolume package
+```{r}
+library(hypervolume)
+library(dplyr)
+library(alphahull)
+library(stringi)
+```
+
+# Raw_means data
+```{r}
+#load raw_means data
+raw_means_file <- paste(c(project_root, 'angiosperm-traits/raw_means.csv'), collapse = '')
+raw_means <- read.table(raw_means_file, sep = ',', header = TRUE)
+raw_names <- as.character(unlist(c(raw_means[1])))
+raw_names <- stri_replace_all_charclass(raw_names, "\\p{WHITE_SPACE}", "_")
+raw_means$X <- raw_names
+```
+
+## Load mycorrhiza GIS data
+```{r}
+myco_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/myco_taxa.tsv'), collapse = '')
+myco_tsv <- read.table(myco_tsv_file, sep = '\t', header = TRUE)
+myco_tsv["myco_state_int"] <- NA
+myco_tsv$myco_state_int[myco_tsv$myco_state == "arbuscular"] <- "0"
+myco_tsv$myco_state_int[myco_tsv$myco_state == "ecto"] <- "1"
+myco_tsv$myco_state_int[myco_tsv$myco_state == "both"] <- "1"
+myco_tsv$myco_state_int[myco_tsv$myco_state == "neither"] <- "1"
+myco_tsv$allmb_name <- stri_replace_all_charclass(myco_tsv$allmb_name, "\\p{WHITE_SPACE}", "_")
+keep_GIS_myco <- as.character(unlist(c(myco_tsv[1]))) 
+GIS_myco <- GIS[GIS$allmb_name %in% keep_GIS_myco,]
+GIS_myco_0 <- myco_tsv[myco_tsv$myco_state_int == "0",]
+GIS_myco_1 <- myco_tsv[myco_tsv$myco_state_int == "1",]
+```
+
+```{r}
+#make subselection of raw_means data
+keep_raw_myco <- as.character(unlist(c(myco_tsv[1])))
+raw_myco_full <- raw_means[raw_means$X %in% keep_raw_myco,]
+
+#insert mycorrhiza column (state 0/1)
+raw_myco_full$mycorrhiza[raw_myco_full$X %in% GIS_myco_1$allmb_name] <- "1"
+raw_myco_full$mycorrhiza[raw_myco_full$X %in% GIS_myco_0$allmb_name] <- "0"
+
+#define two subsets
+raw_AM <- raw_myco_full %>%
+    subset(mycorrhiza == 0) %>%
+    select(ClayPercentage, bio2, bio15) 
+raw_EM <- raw_myco_full %>%
+    subset(mycorrhiza == 1) %>%
+    select(ClayPercentage, bio2, bio15) 
+raw_EM <- na.omit(raw_EM)
+
+# calculate hypervolume
+hv.AM <- hypervolume(raw_AM, method = 'svm', name = 'AM', svm.nu = 0.001)
+hv.EM <- hypervolume(raw_EM, method = 'svm', name = 'EM',  svm.nu = 0.001)
+
+hv.list <- hypervolume_join(hv.AM,hv.EM)
+plot(hv.list,show.3d = F)
+```
+
+## Load domestication GIS data
+```{r}
+dom_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/crops.tsv'), collapse = '')
+dom_tsv <- read.table(dom_tsv_file, sep = '\t', header = TRUE)
+dom_1_3 <- subset(dom_tsv, (dom_tsv$domestication == 1 | dom_tsv$domestication == 3))
+dom_1_3$domestication_binary[dom_1_3$domestication == "1"] <- "1"
+tips_to_drop_GIS <- setdiff(tree$tip.label, GIS_names)
+GIS_tree <- drop.tip(tree, tips_to_drop_GIS)
+GIS_names[GIS_names == "Zea_mays_subsp._parviglumis"] <- "Zea_mays"
+GIS$allmb_name <- GIS_names
+dom_1_3$allmb_name[dom_1_3$allmb_name == "Zea_mays_subsp._parviglumis"] <- "Zea_mays"
+keep_tips_dom_1_3 <- as.character(unlist(c(dom_1_3[1]))) 
+tips_to_drop_dom <- setdiff(GIS_tree$tip.label, keep_tips_dom_1_3)
+tree_dom_tsv <- drop.tip(GIS_tree, tips_to_drop_dom)
+dom_names <- as.character(unlist(c(tree_dom_tsv$tip.label)))
+allmb_name <- c("Euphorbia_usambarica", "Calycophysum_pedunculatum", "Ibervillea_sonorae", 
+                "Psiguria_triphylla", "Gurania_eriantha", "Doyerea_emetocathartica", 
+                "Ficus_pandurata", "Fissicalyx_fendleri", "Dendrosida_sharpiana_subsp._pubescens", 
+                "Ipomoea_arborescens", "Heliconia_psittacorum", "Tradescantia_zebrina", 
+                "Amischotolype_hispida", "Scleria_gaertneri", "Festuca_arundinacea_subsp._orientalis", 
+                "Pogonarthria_squarrosa", "Digitaria_ischaemum", "Digitaria_violascens", 
+                "Elymus_repen", "Aegilops_cylindrica", "Aegilops_crassa", "Elymus_elongatus", 
+                "Poa_colensoi", "Molineria_capitulata", "Polygonatum_verticillatum", 
+                "Epipactis_helleborine", "Evodianthus_funifer", "Schoenoplectus_pungens_var._badius", 
+                "Helictotrichon_desertorum_subsp._basalticum","Eleocharis_acutangula_subsp._breviseta",
+                "Raddiella_esenbeckii", "Dienia_ophrydis", "Arum_maculatum", "Calla_palustris")
+dom_state0 <- data.frame(allmb_name)
+dom_state0$gbif_species_key <- "NA"
+dom_state0$domestication <- "0"
+dom_state0$progenitor_of <- "NA"
+dom_state0$domestication_binary <- "0"
+dom_bi <- rbind(dom_1_3, dom_state0)  
+GIS_dom_1 <- dom_1_3[dom_1_3$allmb_name %in% GIS$allmb_name,]
+GIS_dom_0 <- dom_state0[dom_state0$allmb_name %in% GIS$allmb_name,]
+```
+
+### Domestication Raw means GIS data boxplots
+```{r boxplots}
+#make subselection of raw_means data
+keep_raw_dom <- as.character(unlist(c(dom_bi[1])))
+raw_dom_full <- raw_means[raw_means$X %in% keep_raw_dom,]
+
+#insert domestication column (state 0/1)
+raw_dom_full$domestication[raw_dom_full$X %in% GIS_dom_1$allmb_name] <- "1"
+raw_dom_full$domestication[raw_dom_full$X %in% GIS_dom_0$allmb_name] <- "0"
+
+#define two subsets
+raw_non_predom <- raw_dom_full %>%
+    subset(domestication == 0) %>%
+    select(ClayPercentage, PETWarmestQuarter)
+raw_predom <- raw_dom_full %>%
+    subset(domestication == 1) %>%
+    select(ClayPercentage, PETWarmestQuarter) 
+
+# calculate hypervolume
+hv.non.predom <- hypervolume(raw_non_predom, method = 'svm', name = 'non predomesticated', svm.nu = 0.001)
+hv.predom <- hypervolume(raw_predom, method = 'svm', name = 'predomesticated',  svm.nu = 0.001)
+
+hv.list <- hypervolume_join(hv.non.predom,hv.predom)
+plot(hv.list,show.3d = F)
+plot(hv.list,show.3d = T)
+```
+
+## Load derived woodiness GIS data
+```{r define data root and import tree}
+woody_tsv_file <- paste(c(project_root, 'sdmdl-angiosperm-data/data/woody.tsv'), collapse = '')
+woody_tsv <- read.table(woody_tsv_file, sep = '\t', header = TRUE)
+woody_tsv_bi <- subset(woody_tsv, (woody_tsv$woody == 0 | woody_tsv$woody ==1))
+library(stringi)
+woody_tsv_bi$allmb_name <- stri_replace_all_charclass(woody_tsv_bi$allmb_name, "\\p{WHITE_SPACE}", "_")
+keep_GIS_woody <- as.character(unlist(c(woody_tsv_bi[1])))
+GIS_woody <- GIS[GIS$allmb_name %in% keep_GIS_woody,]
+GIS_woody_0 <- woody_tsv_bi[woody_tsv_bi$woody == "0",]
+GIS_woody_1 <- woody_tsv_bi[woody_tsv_bi$woody == "1",]
+```
+
+## Derived woodiness raw means GIS data boxplots
+```{r boxplots}
+#make subselection of raw_means data
+keep_raw_woody <- as.character(unlist(c(woody_tsv_bi[1])))
+raw_woody_full <- raw_means[raw_means$X %in% keep_raw_woody,]
+
+#insert woodiness column (state 0/1)
+raw_woody_full$woody[raw_woody_full$X %in% GIS_woody_1$allmb_name] <- "1"
+raw_woody_full$woody[raw_woody_full$X %in% GIS_woody_0$allmb_name] <- "0"
+
+#define two subsets
+raw_non_woody <- raw_woody_full %>%
+    subset(woody == 0) %>% 
+    select(monthCountByTemp10, PETWettestQuarter, OrganicCarbon,
+    PhCaCL, Slope, bio5)
+raw_woody <- raw_woody_full %>%
+    subset(woody == 1) %>%
+    select(monthCountByTemp10, PETWettestQuarter, OrganicCarbon,
+    PhCaCL, Slope, bio5) 
+
+# calculate hypervolume
+hv.non.woody <- hypervolume(raw_non_woody, method = 'svm', name = 'non woody', svm.nu = 0.001)
+hv.woody <- hypervolume(raw_woody, method = 'svm', name = 'woody',  svm.nu = 0.001)
+
+hv.list <- hypervolume_join(hv.non.woody,hv.woody)
+plot(hv.list,show.3d = F)
+plot(hv.list,show.3d = T)
+```
