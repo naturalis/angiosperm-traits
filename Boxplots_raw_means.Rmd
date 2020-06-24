@@ -129,6 +129,16 @@ boxplot(raw_filtered_predom$PETWarmestQuarter,raw_filtered_non_predom$PETWarmest
 )
 ```
 
+### Means for each variable
+```{r}
+# ClayPercentage
+mean(raw_filtered_predom$ClayPercentage)
+mean(raw_filtered_non_predom$ClayPercentage)
+# PETWarmestQuarter
+mean(raw_filtered_predom$PETWarmestQuarter)
+mean(raw_filtered_non_predom$PETWarmestQuarter)
+```
+
 # Mycorrhiza
 
 ## Load mycorrhiza GIS data
@@ -205,6 +215,21 @@ boxplot(raw_filtered_EM$bio15,raw_filtered_AM$bio15,
     horizontal = TRUE,
     notch = TRUE
 )
+```
+
+### Means for each variable
+```{r}
+# ClayPercentage
+myco_clay <- as.numeric(unlist(c(raw_filtered_EM$ClayPercentage)))
+myco_clay <- na.omit(myco_clay)
+mean(myco_clay)
+mean(raw_filtered_AM$ClayPercentage)
+# bio2
+mean(raw_filtered_EM$bio2)
+mean(raw_filtered_AM$bio2)
+# bio15
+mean(raw_filtered_EM$bio15)
+mean(raw_filtered_AM$bio15)
 ```
 
 # Derived woodiness
@@ -309,4 +334,29 @@ boxplot(raw_filtered_woody$bio5,raw_filtered_non_woody$bio5,
     horizontal = TRUE,
     notch = TRUE
 )
+```
+
+### Means for each variable
+```{r}
+# monthCountByTemp10
+mean(raw_filtered_woody$monthCountByTemp10)
+mean(raw_filtered_non_woody$monthCountByTemp10)
+# PETWettestQuarter
+mean(raw_filtered_woody$PETWettestQuarter)
+mean(raw_filtered_non_woody$PETWettestQuarter)
+# OrganicCarbon
+mean(raw_filtered_woody$OrganicCarbon)
+mean(raw_filtered_non_woody$OrganicCarbon)
+# PhCaCL
+mean(raw_filtered_woody$PhCaCL)
+mean(raw_filtered_non_woody$PhCaCL)
+# Slope
+mean(raw_filtered_woody$Slope)
+slope_woody <- raw_filtered_non_woody$Slope
+slope_woody <- na.omit(slope_woody)
+print(slope_woody)
+mean(slope_woody)
+# bio5
+mean(raw_filtered_woody$bio5)
+mean(raw_filtered_non_woody$bio5)
 ```
