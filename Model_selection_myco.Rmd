@@ -36,55 +36,55 @@ myco_formula_4 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIn
 # 5. With maxTempColdest
 myco_formula_5 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + maxTempColdest + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18 + bio19
 
-# 6. With thermicityIndex
-myco_formula_6 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
+# 6. With PETColdestQuarter
+myco_formula_6 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETColdestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 +  bio18 + bio19
 
-# 7. With bio5 
-myco_formula_7 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 + bio19
+# 7. With PETDriestQuarter
+myco_formula_7 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio14 + bio15 +  bio18 + bio19
 
-# 8. With bio6
-myco_formula_8 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio6 + bio15 + bio18 + bio19
+# 8. With PETWarmestQuarter
+myco_formula_8 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio15 + bio18 + bio19
 
-# 9. bio8
-myco_formula_9 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio8 + bio18 + bio19
+# 9. With bio5 
+myco_formula_9 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18 + bio19
 
-# 10. bio9
-myco_formula_10 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio9 + bio18 + bio19
+# 10. With bio6
+myco_formula_10 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio6 + bio15 + bio18 + bio19
 
-# 11. With bio10
-myco_formula_11 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio10 + bio15 + bio18 + bio19
+# 11. bio8
+myco_formula_11 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio8 + bio18 + bio19
 
-# 12. With bio11
-myco_formula_12 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio11 + bio15 + bio18 + bio19
+# 12. bio9
+myco_formula_12 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio9 + bio18 + bio19
+
+# 13. With bio10
+myco_formula_13 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio10 + bio15 + bio18 + bio19
+
+# 14. With bio11
+myco_formula_14 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio11 + bio15 + bio18 + bio19
 ```
 
 ### Second set of model formulas 
 The rest of the variables that were not included yet. 
 
 ```{r}
-# 13. With annualPET
-myco_formula_13 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + annualPET + minTempWarmest + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio7 + bio14 + bio15 + bio18 + bio19
+# 15. With annualPET
+myco_formula_15 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + annualPET + minTempWarmest + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio7 + bio14 + bio15 + bio18 + bio19
 
-# 14. With growingDegDays0
-myco_formula_14 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + growingDegDays0 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
+# 16. With growingDegDays0
+myco_formula_16 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + growingDegDays0 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
 
-# 15. With growingDegDays5
-myco_formula_15 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + growingDegDays5 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
+# 17. With growingDegDays5
+myco_formula_17 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + growingDegDays5 + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
 
-# 16. With monthCountByTemp10
-myco_formula_16 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 +  bio18 + bio19
-
-# 17. With PETColdestQuarter
-myco_formula_17 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETColdestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 +  bio18 + bio19
-
-# 18. With PETDriestQuarter
-myco_formula_18 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + minTempWarmest + PETDriestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio14 + bio15 +  bio18 + bio19
+# 18. With monthCountByTemp10
+myco_formula_18 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 +  bio18 + bio19
 
 # 19. With PETseasonality
 myco_formula_19 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETseasonality + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 +  bio18 + bio19
 
-# 20. With PETWarmestQuarter
-myco_formula_20 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + minTempWarmest + PETWarmestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio4 + bio15 + bio18 + bio19
+# 20. With thermicityIndex
+myco_formula_20 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + PETWettestQuarter + thermicityIndex + OrganicCarbon + PhCaCL + Slope + bio2 + bio14 + bio15 + bio18 + bio19
 
 # 21. With bio1
 myco_formula_21 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + PETseasonality + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio1 + bio2 + bio15 + bio18 + bio19
