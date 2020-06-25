@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Load hypervolume package
+# Load hypervolume package
 ```{r}
 library(hypervolume)
 library(dplyr)
@@ -15,14 +15,44 @@ library(alphahull)
 library(stringi)
 ```
 
-# Raw_means data
+# Load Raw_means data
 ```{r}
 #load raw_means data
+project_root <- 'C:/Users/Esther/Documents/Master/Stage/'
 raw_means_file <- paste(c(project_root, 'angiosperm-traits/raw_means.csv'), collapse = '')
 raw_means <- read.table(raw_means_file, sep = ',', header = TRUE)
 raw_names <- as.character(unlist(c(raw_means[1])))
 raw_names <- stri_replace_all_charclass(raw_names, "\\p{WHITE_SPACE}", "_")
 raw_means$X <- raw_names
+```
+
+# Load GIS data
+```{r import GIS data}
+#import GIS data
+GIS_file <- paste(c(project_root, 'niche_traits_merged.csv'), collapse = '')
+GIS <- read.table(GIS_file, sep = ',', header = TRUE)
+
+#change names of GIS data 
+GIS_names <- as.character(unlist(c(GIS[1])))
+GIS_names <- gsub('  ', '. ', GIS_names)
+GIS_names <- stri_replace_all_charclass(GIS_names, "\\p{WHITE_SPACE}", "_")
+#there is a discrepancy with several names that should have a - instead of a _ in some places. 
+
+#change those specific GIS names:
+GIS_names[GIS_names == "Acaena_novae_zelandiae"] <- "Acaena_novae-zelandiae"
+GIS_names[GIS_names == "Impatiens_noli_tangere"] <- "Impatiens_noli-tangere"  
+GIS_names[GIS_names == "Myrrhidendron_donnell_smithii" ] <- "Myrrhidendron_donnell-smithii" 
+GIS_names[GIS_names == "Silene_flos_cuculi"] <- "Silene_flos-cuculi"
+GIS_names[GIS_names == "Pithecellobium_unguis_cati"] <- "Pithecellobium_unguis-cati"
+GIS_names[GIS_names == "Hyacinthoides_non_scripta" ] <- "Hyacinthoides_non-scripta" 
+GIS_names[GIS_names == "Alisma_plantago_aquatica"] <- "Alisma_plantago-aquatica" 
+GIS_names[GIS_names == "Apera_spica_venti"] <- "Apera_spica-venti"
+GIS_names[GIS_names == "Arctostaphylos_uva_ursi"] <- "Arctostaphylos_uva-ursi"
+GIS_names[GIS_names == "Blitum_bonus_henricus"] <- "Blitum_bonus-henricus"
+GIS_names[GIS_names == "Begonia_meyeri_johannis"] <- "Begonia_meyeri-johannis"
+
+#put the changed names back into the GIS table
+GIS$allmb_name <- GIS_names
 ```
 
 ## Load mycorrhiza GIS data
@@ -140,7 +170,7 @@ GIS_woody_0 <- woody_tsv_bi[woody_tsv_bi$woody == "0",]
 GIS_woody_1 <- woody_tsv_bi[woody_tsv_bi$woody == "1",]
 ```
 
-## Derived woodiness raw means GIS data boxplots
+## Derived woodiness raw means GIS data 
 ```{r boxplots}
 #make subselection of raw_means data
 keep_raw_woody <- as.character(unlist(c(woody_tsv_bi[1])))
@@ -149,20 +179,137 @@ raw_woody_full <- raw_means[raw_means$X %in% keep_raw_woody,]
 #insert woodiness column (state 0/1)
 raw_woody_full$woody[raw_woody_full$X %in% GIS_woody_1$allmb_name] <- "1"
 raw_woody_full$woody[raw_woody_full$X %in% GIS_woody_0$allmb_name] <- "0"
+```
 
+### Set 1: the three most significant variables
+```{r boxplots}
 #define two subsets
-raw_non_woody <- raw_woody_full %>%
+raw_non_woody1 <- raw_woody_full %>%
     subset(woody == 0) %>% 
     select(monthCountByTemp10, PhCaCL, Slope)
-raw_non_woody <- na.omit(raw_non_woody)
-raw_woody <- raw_woody_full %>%
+raw_non_woody1 <- na.omit(raw_non_woody1)
+raw_woody1 <- raw_woody_full %>%
     subset(woody == 1) %>%
     select(monthCountByTemp10, PhCaCL, Slope) 
 
 # calculate hypervolume
-hv.non.woody <- hypervolume(raw_non_woody, method = 'svm', name = 'Herbaceous', svm.nu = 0.001)
-hv.woody <- hypervolume(raw_woody, method = 'svm', name = 'Derived woody',  svm.nu = 0.001)
+hv.non.woody1 <- hypervolume(raw_non_woody1, method = 'svm', name = 'Herbaceous', svm.nu = 0.001)
+hv.woody1 <- hypervolume(raw_woody1, method = 'svm', name = 'Derived woody',  svm.nu = 0.001)
 
-hv.list.woody <- hypervolume_join(hv.non.woody,hv.woody)
-plot(hv.list.woody, show.3d = F, cex.names = 1.5, cex.legend = 2)
+hv.list.woody1 <- hypervolume_join(hv.non.woody1,hv.woody1)
+plot(hv.list.woody1, show.3d = F, cex.names = 1.5, cex.legend = 2)
+```
+
+### Set 2: the other three variables
+```{r boxplots}
+#define two subsets
+raw_non_woody2 <- raw_woody_full %>%
+    subset(woody == 0) %>% 
+    select(PETWettestQuarter, OrganicCarbon, bio5)
+raw_non_woody2 <- na.omit(raw_non_woody2)
+raw_woody2 <- raw_woody_full %>%
+    subset(woody == 1) %>%
+    select(PETWettestQuarter, OrganicCarbon, bio5) 
+
+# calculate hypervolume
+hv.non.woody2 <- hypervolume(raw_non_woody2, method = 'svm', name = 'Herbaceous', svm.nu = 0.001)
+hv.woody2 <- hypervolume(raw_woody2, method = 'svm', name = 'Derived woody',  svm.nu = 0.001)
+
+hv.list.woody2 <- hypervolume_join(hv.non.woody2,hv.woody2)
+plot(hv.list.woody2, show.3d = F, cex.names = 1.5, cex.legend = 2)
+```
+
+### Set 3: monthCountByTemp10 vs OrganicCarbon/bio5
+```{r boxplots}
+#define two subsets
+raw_non_woody3 <- raw_woody_full %>%
+    subset(woody == 0) %>% 
+    select(monthCountByTemp10, OrganicCarbon, bio5)
+raw_non_woody3 <- na.omit(raw_non_woody3)
+raw_woody3 <- raw_woody_full %>%
+    subset(woody == 1) %>%
+    select(monthCountByTemp10, OrganicCarbon, bio5) 
+
+# calculate hypervolume
+hv.non.woody3 <- hypervolume(raw_non_woody3, method = 'svm', name = 'Herbaceous', svm.nu = 0.001)
+hv.woody3 <- hypervolume(raw_woody3, method = 'svm', name = 'Derived woody',  svm.nu = 0.001)
+
+hv.list.woody3 <- hypervolume_join(hv.non.woody3,hv.woody3)
+plot(hv.list.woody3, show.3d = F, cex.names = 1.5, cex.legend = 2)
+```
+
+### Set 4: PhCaCL vs OrganicCarbon/bio5
+```{r boxplots}
+#define two subsets
+raw_non_woody4 <- raw_woody_full %>%
+    subset(woody == 0) %>% 
+    select(PhCaCL, OrganicCarbon, bio5)
+raw_non_woody4 <- na.omit(raw_non_woody4)
+raw_woody4 <- raw_woody_full %>%
+    subset(woody == 1) %>%
+    select(PhCaCL, OrganicCarbon, bio5) 
+
+# calculate hypervolume
+hv.non.woody4 <- hypervolume(raw_non_woody4, method = 'svm', name = 'Herbaceous', svm.nu = 0.001)
+hv.woody4 <- hypervolume(raw_woody4, method = 'svm', name = 'Derived woody',  svm.nu = 0.001)
+
+hv.list.woody4 <- hypervolume_join(hv.non.woody4,hv.woody4)
+plot(hv.list.woody4, show.3d = F, cex.names = 1.5, cex.legend = 2)
+```
+
+### Set 5: Slope vs OrganicCarbon/bio5
+```{r boxplots}
+#define two subsets
+raw_non_woody5 <- raw_woody_full %>%
+    subset(woody == 0) %>% 
+    select(Slope, OrganicCarbon, bio5)
+raw_non_woody5 <- na.omit(raw_non_woody5)
+raw_woody5 <- raw_woody_full %>%
+    subset(woody == 1) %>%
+    select(Slope, OrganicCarbon, bio5) 
+
+# calculate hypervolume
+hv.non.woody5 <- hypervolume(raw_non_woody5, method = 'svm', name = 'Herbaceous', svm.nu = 0.001)
+hv.woody5 <- hypervolume(raw_woody5, method = 'svm', name = 'Derived woody',  svm.nu = 0.001)
+
+hv.list.woody5 <- hypervolume_join(hv.non.woody5,hv.woody5)
+plot(hv.list.woody5, show.3d = F, cex.names = 1.5, cex.legend = 2)
+```
+
+### Set 6: PETWettestQuarter vs PhCaCL/Slope
+```{r boxplots}
+#define two subsets
+raw_non_woody6 <- raw_woody_full %>%
+    subset(woody == 0) %>% 
+    select(PETWettestQuarter, PhCaCL, Slope)
+raw_non_woody6 <- na.omit(raw_non_woody6)
+raw_woody6 <- raw_woody_full %>%
+    subset(woody == 1) %>%
+    select(PETWettestQuarter, PhCaCL, Slope) 
+
+# calculate hypervolume
+hv.non.woody6 <- hypervolume(raw_non_woody6, method = 'svm', name = 'Herbaceous', svm.nu = 0.001)
+hv.woody6 <- hypervolume(raw_woody6, method = 'svm', name = 'Derived woody',  svm.nu = 0.001)
+
+hv.list.woody6 <- hypervolume_join(hv.non.woody6,hv.woody6)
+plot(hv.list.woody6, show.3d = F, cex.names = 1.5, cex.legend = 2)
+```
+
+### Set 7: PETWettestQuarter vs monthCountByTemp10
+```{r boxplots}
+#define two subsets
+raw_non_woody7 <- raw_woody_full %>%
+    subset(woody == 0) %>% 
+    select(PETWettestQuarter, monthCountByTemp10)
+raw_non_woody7 <- na.omit(raw_non_woody7)
+raw_woody7 <- raw_woody_full %>%
+    subset(woody == 1) %>%
+    select(PETWettestQuarter, monthCountByTemp10) 
+
+# calculate hypervolume
+hv.non.woody7 <- hypervolume(raw_non_woody7, method = 'svm', name = 'Herbaceous', svm.nu = 0.001)
+hv.woody7 <- hypervolume(raw_woody7, method = 'svm', name = 'Derived woody',  svm.nu = 0.001)
+
+hv.list.woody7 <- hypervolume_join(hv.non.woody7,hv.woody7)
+plot(hv.list.woody7, show.3d = F, cex.names = 1.5, cex.legend = 2)
 ```
