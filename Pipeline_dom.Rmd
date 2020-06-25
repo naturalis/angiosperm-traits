@@ -143,29 +143,46 @@ print(dom_names)
 #search for a non-domesticated species (state 0) inside the matrix for every printed species 
 #(state 1) name above, sort the results based on the phylogenetic distance, and print the 
 #first 30 results
-head(sort(distances[,colnames(distances) == dom_names[26]]), n=30) 
+head(sort(distances[,colnames(distances) == dom_names[34]]), n=30) 
 
 #choose the one that has the shortest phylogenetic distance AND is not domesticated (use internet 
 #to make sure) AND is not in the dom_names list -> add it to a new vector
 #do this for [1] to [34], make sure the other new taxa you select are not already in the new vector.  
 
-#1 Euphorbia_usambarica                       		#2 Calycophysum_pedunculatum
-#3 Ibervillea_sonorae	                        		#4 Psiguria_triphylla
-#5 Gurania_eriantha	                           		#6 Doyerea_emetocathartica
-#7 Ficus_pandurata                             		#8 Fissicalyx_fendleri
-#9 Dendrosida_sharpiana_subsp._pubescens       		#10 Ipomoea_arborescens
-#11 Heliconia_psittacorum                     		#12 Tradescantia_zebrina
-#13 Amischotolype_hispida                   	  	#14 Scleria_gaertneri
-#15 Festuca_arundinacea_subsp._orientalis   	  	#16 Pogonarthria_squarrosa
-#17 Digitaria_ischaemum                        		#18 Digitaria_violascens
-#19 Elymus_repen					  			              	#20 Aegilops_cylindrica                    
-#21 Aegilops_crassa						              			#22 Elymus_elongatus                        
-#23 Poa_colensoi								                	#24 Molineria_capitulata                      
-#25 Polygonatum_verticillatum				          		#26 Epipactis_helleborine                   
-#27 Evodianthus_funifer							            	#28 Schoenoplectus_pungens_var._badius      
-#29 Helictotrichon_desertorum_subsp._basalticum		#30 Eleocharis_acutangula_subsp._breviseta  
-#31 Raddiella_esenbeckii					            		#32 Dienia_ophrydis                         
-#33 Arum_maculatum							              		#34 Calla_palustris
+#1 Euphorbia_usambarica                     		103.7416
+#2 Calycophysum_pedunculatum						        24.423458
+#3 Ibervillea_sonorae	                      		45.542846
+#4 Psiguria_triphylla								            45.542846
+#5 Gurania_eriantha	                        		45.542845
+#6 Doyerea_emetocathartica							        45.54284
+#7 Ficus_pandurata                             	84.92772
+#8 Fissicalyx_fendleri								          47.018474
+#9 Dendrosida_sharpiana_subsp._pubescens       	208.51654
+#10 Ipomoea_arborescens								          11.766572
+#11 Heliconia_psittacorum                   		116.52110
+#12 Tradescantia_zebrina							          159.60699
+#13 Amischotolype_hispida                   		159.60700
+#14 Scleria_gaertneri								            213.46728
+#15 Festuca_arundinacea_subsp._orientalis   		213.46698
+#16 Pogonarthria_squarrosa							        20.60938
+#17 Digitaria_ischaemum                        	41.63818
+#18 Digitaria_violascens							          41.63818
+#19 Elymus_repen									              10.966910
+#20 Aegilops_cylindrica                    			1.005114
+#21 Aegilops_crassa									            4.522990
+#22 Elymus_elongatus                        		10.464900
+#23 Poa_colensoi									              71.30912
+#24 Molineria_capitulata                      	239.54398
+#25 Polygonatum_verticillatum						        239.54398
+#26 Epipactis_helleborine                   		239.543985
+#27 Evodianthus_funifer								          220.957928
+#28 Schoenoplectus_pungens_var._badius      		239.54360
+#29 Helictotrichon_desertorum_subsp._basalticum	239.54372
+#30 Eleocharis_acutangula_subsp._breviseta  		239.54372
+#31 Raddiella_esenbeckii							          239.54373
+#32 Dienia_ophrydis                         		239.54381
+#33 Arum_maculatum									            183.7202
+#34 Calla_palustris									            237.7111
 
 allmb_name <- c("Euphorbia_usambarica", "Calycophysum_pedunculatum", "Ibervillea_sonorae", 
                 "Psiguria_triphylla", "Gurania_eriantha", "Doyerea_emetocathartica", 
