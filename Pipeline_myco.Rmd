@@ -181,9 +181,7 @@ results of the VIF analysis. Only the formulas that result in the best models ar
 
 ```{r define formula}
 # Formula 3. With continentality (no alpha warning AIC 1037,3)
-myco_formula_3 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite 
-+ continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 
-+ bio15 + bio18 + bio19
+myco_formula_3 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + continentality + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio15 + bio18 + bio19
 
 # Formula 4. With embergerQ (alpha warning, AIC 1026,5) 
 myco_formula_4 <- mycorrhiza ~ Aspect + BulkDensity + ClayPercentage + aridityIndexThornthwaite + embergerQ + minTempWarmest + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio4 + bio15 + bio18
@@ -218,7 +216,7 @@ phyloglmstep(myco_formula_3, starting.formula = NULL, data=GIS_myco, phy=tree_my
              log.alpha.bound = 8, start.beta=NULL, start.alpha=NULL, boot = 0, 
              full.matrix = TRUE, k=2)
 
-## alpha warning
+## with alpha warning
 phyloglmstep(myco_formula_4, starting.formula = NULL, data=GIS_myco, phy=tree_myco, 
              method="logistic_MPLE", direction = "both", trace = 0, btol = 100, 
              log.alpha.bound = 8, start.beta=NULL, start.alpha=NULL, boot = 0, 
@@ -246,7 +244,31 @@ model_myco <- phyloglm(formula = myco_best_model_alpha, data = GIS_myco, phy = t
                        method = "logistic_MPLE", btol = 100, log.alpha.bound = 8)
 summary(model_myco)
 ```
-Conclusion: Both these formulas can be used, they result in the same final model. 
+
+Coefficients:
+                   Estimate    StdErr z.value   p.value    
+(Intercept)       -0.545280  0.124625 -4.3754 1.212e-05 ***
+BulkDensity       -0.083022  0.328782 -0.2525  0.800644    
+ClayPercentage    -0.644497  0.248637 -2.5921  0.009539 ** 
+minTempWarmest    -0.011444  0.237225 -0.0482  0.961525    
+PETWettestQuarter  0.140902  0.199277  0.7071  0.479526    
+OrganicCarbon      0.198053  0.428093  0.4626  0.643621    
+PhCaCL             0.105180  0.217995  0.4825  0.629458    
+bio2              -0.665559  0.205055 -3.2458  0.001171 ** 
+bio15              0.503568  0.183735  2.7407  0.006130 ** 
+bio19              0.048930  0.127545  0.3836  0.701252    
+
+### Second round
+As BulkDensity, minTempWarmest, PETWettestQuarter, OrganicCarbon, PhCaCL, and bio19 were all non 
+significant, they were left out, which leads to the same model as myco_best_model_alpha. So, both 
+these formulas can be used, they result in the same final model, with the following significance 
+values:
+Coefficients:
+               Estimate   StdErr z.value   p.value    
+(Intercept)    -0.58705  0.11215 -5.2346 1.654e-07 ***
+ClayPercentage -0.57211  0.16058 -3.5628 0.0003670 ***
+bio2           -0.64992  0.14236 -4.5655 4.984e-06 ***
+bio15           0.55083  0.15636  3.5228 0.0004271 ***
 
 ### Define final model
 ```{r}

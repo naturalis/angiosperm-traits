@@ -167,9 +167,7 @@ results of the VIF analysis. Only the formula that results in the best model is 
 
 ```{r define formula}
 # 22a. With bio5
-woody_formula_22a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 
-+ PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 
-+ bio15 + bio18 + bio19
+woody_formula_22a <- woody ~ Aspect + BulkDensity + ClayPercentage + monthCountByTemp10 + PETDriestQuarter + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio2 + bio5 + bio14 + bio15 + bio18 + bio19
 ```
 
 ### Change data to match the wanted data format
@@ -210,8 +208,7 @@ function in the phylolm package that allows us to do this: phyloglm.
 
 ```{r phylogenetic generalized linear modelling}
 #construct the best model
-woody_best_model <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL 
-+ Slope + bio5 + bio14
+woody_best_model <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5 + bio14
 
 #fill in the arguments for the phyloglm function and execute it
 model_woody <- phyloglm(formula = woody_best_model, data = GIS_woody, phy = tree_woody, 
@@ -219,14 +216,24 @@ model_woody <- phyloglm(formula = woody_best_model, data = GIS_woody, phy = tree
 summary(model_woody) 
 ```
 
+Coefficients:
+                   Estimate   StdErr z.value   p.value    
+(Intercept)         1.85055  0.22169  8.3474 < 2.2e-16 ***
+monthCountByTemp10 -2.12497  0.22842 -9.3027 < 2.2e-16 ***
+PETWettestQuarter   0.29215  0.13315  2.1941 0.0282273 *  
+OrganicCarbon       1.40432  0.42058  3.3390 0.0008407 ***
+PhCaCL             -1.16725  0.22522 -5.1826 2.188e-07 ***
+Slope              -1.00205  0.15628 -6.4120 1.436e-10 ***
+bio5                1.33927  0.32704  4.0952 4.219e-05 ***
+bio14              -0.23157  0.15372 -1.5064 0.1319658    
+
 ### Second round
-The bio14 variable was not significant, so we will leave that out and do the phyloglm optimization 
-again. 
+The bio14 variable is the only one that is not significant, so that variable will be left out 
+and the phyloglm optimization will be run again. 
 
 ```{r}
 #construct best model
-woody_best_model2 <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL 
-+ Slope + bio5
+woody_best_model2 <- woody ~ 1 + monthCountByTemp10 + PETWettestQuarter + OrganicCarbon + PhCaCL + Slope + bio5
 
 #fill in arguments and execute function
 model_woody2 <- phyloglm(formula = woody_best_model2, data = GIS_woody, phy = tree_woody, 
@@ -234,11 +241,20 @@ model_woody2 <- phyloglm(formula = woody_best_model2, data = GIS_woody, phy = tr
 
 summary(model_woody2)
 ```
+Outcome:
+Coefficients:
+                   Estimate   StdErr z.value   p.value    
+(Intercept)         1.78041  0.20767  8.5733 < 2.2e-16 ***
+monthCountByTemp10 -2.20071  0.23094 -9.5295 < 2.2e-16 ***
+PETWettestQuarter   0.28208  0.13388  2.1069  0.035126 *  
+OrganicCarbon       1.28682  0.39536  3.2548  0.001135 ** 
+PhCaCL             -1.07275  0.20701 -5.1822 2.193e-07 ***
+Slope              -0.98976  0.15584 -6.3511 2.138e-10 ***
+bio5                1.48267  0.32854  4.5129 6.394e-06 ***
 
 ### Define final model
 ```{r}
-final_model_woody <- woody ~ 1.78041 - 2.20071*monthCountByTemp10 + 0.28208*PETWettestQuarter 
-+ 1.28682*OrganicCarbon - 1.07275*PhCaCL - 0.98976*Slope + 1.48267*bio5
+final_model_woody <- woody ~ 1.78041 - 2.20071*monthCountByTemp10 + 0.28208*PETWettestQuarter + 1.28682*OrganicCarbon - 1.07275*PhCaCL - 0.98976*Slope + 1.48267*bio5
 ```
 
 ## 8 Model evaluation
