@@ -331,6 +331,14 @@ model_dom <- phyloglm(formula = dom_best_model, data = GIS_dom, phy = tree_dom,
 summary(model_dom) 
 ```
 
+Coefficients:
+                  Estimate   StdErr z.value  p.value   
+(Intercept)       -1.54832  0.67640 -2.2891 0.022076 * 
+Aspect             1.95192  1.67705  1.1639 0.244464   
+ClayPercentage     2.23702  0.81566  2.7426 0.006096 **
+PETWarmestQuarter  2.16953  1.10521  1.9630 0.049645 * 
+PETWettestQuarter -0.90324  0.89711 -1.0068 0.314014   
+
 ### Second try
 The Aspect and PETWettestQuarter variables were not significant, so we will leave them out and 
 do the phyloglm optimization again. 
@@ -344,6 +352,12 @@ model_dom2 <- phyloglm(formula = dom_best_model2, data = GIS_dom, phy = tree_dom
 
 summary(model_dom2) 
 ```
+
+Coefficients:
+                  Estimate   StdErr z.value  p.value   
+(Intercept)       -1.90666  0.74739 -2.5511 0.010739 * 
+ClayPercentage     2.32367  0.80837  2.8745 0.004047 **
+PETWarmestQuarter  2.00246  0.96023  2.0854 0.037034 * 
 
 ### Define final model
 ```{r}
